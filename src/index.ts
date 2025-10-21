@@ -47,7 +47,7 @@ const runCode = () => {
   
   if (codeDiv) codeDiv.textContent = pyCode;
 
-  if (outputDiv) window.maze.draw(); // Maze wird in canvas gezeichnet
+  if (outputDiv) window.maze.initDraw(); // Maze wird in canvas gezeichnet
 
   eval(jsCode);
 };
