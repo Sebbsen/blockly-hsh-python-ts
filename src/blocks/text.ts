@@ -27,6 +27,16 @@ const addText = {
   helpUrl: '',
 };
 
+const start= {
+  type: 'start',
+  message0: 'Start',
+  nextStatement: null,
+  colour: 100,
+  tooltip: 'Startet die Ausführung des Programms',
+  helpUrl: '',
+  hat: 'cap',
+};
+
 const moveUp= {
   type: 'move_up',
   message0: 'move up',
@@ -72,6 +82,7 @@ const moveDown = {
 // This file has no side effects!
 export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
   addText,
+  start,
   moveUp,
   moveRight,
   moveLeft,

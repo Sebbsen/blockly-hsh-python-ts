@@ -55,14 +55,31 @@ const drawMaze = () => {
 // generated code from the workspace, and evals the code.
 // In a real application, you probably shouldn't use `eval`.
 const runCode = () => {
-  const pyCode = pythonGenerator.workspaceToCode(ws as Blockly.Workspace);
-  const jsCode = javascriptGenerator.workspaceToCode(ws as Blockly.Workspace);
+  // Finde den Start Block im Workspace
+  const startBlock = ws.getTopBlocks().find(block => block.type === 'start');
   
-  if (codeDiv) codeDiv.textContent = pyCode;
+  if (!startBlock) {
+    if (codeDiv) {
+      codeDiv.textContent = 'No start block found';
+      (codeDiv as HTMLElement).style.color = 'red';
+      (codeDiv as HTMLElement).style.fontWeight = 'bold';
+    }
+    return;
+  }
+
+  // Generiere Code nur vom Start Block und seinen angeschlossenen Blöcken
+  const pyCode = pythonGenerator.blockToCode(startBlock);
+  const jsCode = javascriptGenerator.blockToCode(startBlock)
+
+  // Handle the case where blockToCode returns an array
+  const pyCodeString = Array.isArray(pyCode) ? pyCode[0] : pyCode;
+  const jsCodeString = Array.isArray(jsCode) ? jsCode[0] : jsCode;
+  
+  if (codeDiv) codeDiv.textContent = pyCodeString;
 
   if (outputDiv) drawMaze(); // Maze wird in canvas gezeichnet
 
-  eval(jsCode);
+  eval(jsCodeString);
 };
 
 const runCodeBtn = document.getElementById('runCodeBtn')
@@ -72,8 +89,20 @@ runCodeBtn?.addEventListener('click', ()=> {
 
 if (ws) {
   drawMaze();
+  
+  // Prüfe ob bereits ein Start Block vorhanden ist
+  const existingStartBlock = ws.getTopBlocks().find(block => block.type === 'start');
+  if (!existingStartBlock) {
+    // Erstellt einen Start Block
+    const startBlock = ws.newBlock('start');
+    startBlock.initSvg();
+    startBlock.render();
+    startBlock.moveBy(50, 50);
+
+  }
+  
   // Load the initial state from storage and run the code.
-  load(ws);
+  //load(ws);
 
   // Every time the workspace changes state, save the changes to storage.
   ws.addChangeListener((e: Blockly.Events.Abstract) => {
@@ -81,20 +110,6 @@ if (ws) {
     // No need to save after one of these.
     if (e.isUiEvent) return;
     save(ws);
-  });
-
-  // Whenever the workspace changes meaningfully, run the code again.
-  ws.addChangeListener((e: Blockly.Events.Abstract) => {
-    // Don't run the code when the workspace finishes loading; we're
-    // already running it once when the application starts.
-    // Don't run the code during drags; we might have invalid state.
-    if (
-      e.isUiEvent ||
-      e.type == Blockly.Events.FINISHED_LOADING ||
-      ws.isDragging()
-    ) {
-      return;
-    }
   });
 }
 
