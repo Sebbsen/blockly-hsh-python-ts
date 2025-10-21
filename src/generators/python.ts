@@ -16,3 +16,17 @@ forBlock['move_right'] = function (
 ) {
   return "move_right()\n";
 };
+
+forBlock['move_left'] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  return "move_left()\n";
+};
+
+forBlock['move_down'] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  return "move_down()\n";
+};

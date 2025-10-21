@@ -47,11 +47,33 @@ const moveRight = {
   helpUrl: '',
 };
 
+const moveLeft = {
+  type: 'move_left',
+  message0: 'move left',
+  previousStatement: null,
+  nextStatement: null,
+  colour: 200,
+  tooltip: 'Bewege das Auto ein Feld nach links',
+  helpUrl: '',
+};
+
+const moveDown = {
+  type: 'move_down',
+  message0: 'move down',
+  previousStatement: null,
+  nextStatement: null,
+  colour: 200,
+  tooltip: 'Bewege das Auto ein Feld nach unten',
+  helpUrl: '',
+};
+
 // Create the block definitions for the JSON-only blocks.
 // This does not register their definitions with Blockly.
 // This file has no side effects!
 export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
   addText,
   moveUp,
-  moveRight
+  moveRight,
+  moveLeft,
+  moveDown
 ]);

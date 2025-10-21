@@ -47,3 +47,17 @@ forBlock['move_right'] = function (
   return "maze.animationScheduler('moveRight');\n";
 };
 
+forBlock['move_left'] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  return "maze.animationScheduler('moveLeft');\n";
+};
+
+forBlock['move_down'] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  return "maze.animationScheduler('moveDown');\n";
+};
+
