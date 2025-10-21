@@ -24,10 +24,15 @@ code {
 #outputPane {
   display: flex;
   flex-direction: column;
-  width: 400px;
-  flex: 0 0 400px;
+  width: 420px;
+  flex: 0 0 420px;
   overflow: auto;
   margin: 1rem;
+}
+
+#outputPane canvas {
+  border: 1px solid black;
+  border-radius: 15px;
 }
 
 #generatedCode {

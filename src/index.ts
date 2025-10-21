@@ -47,17 +47,21 @@ const runCode = () => {
   
   if (codeDiv) codeDiv.textContent = pyCode;
 
-  if (outputDiv) outputDiv.innerHTML = ''; // Führt JS aus
+  if (outputDiv) window.maze.draw(); // Maze wird in canvas gezeichnet
 
   eval(jsCode);
 };
 
 if (ws) {
   // init Maze
+  const canvasContainer = document.getElementById('output');
+  if (!canvasContainer) {
+    throw new Error('Element with id "output" not found');
+  }
   const startPosition = {x:0, y:0}
   const targetPosition = {x:10, y:10}
   
-  window.maze = new Maze(startPosition, targetPosition);
+  window.maze = new Maze(canvasContainer, startPosition, targetPosition);
 
   window.maze.init();
 
