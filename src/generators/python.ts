@@ -9,3 +9,10 @@ forBlock['move_up'] = function (
 ) {
   return "move_up()\n";
 };
+
+forBlock['move_right'] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  return "move_right()\n";
+};

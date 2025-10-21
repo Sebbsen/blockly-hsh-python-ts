@@ -31,6 +31,12 @@ export class Maze {
         this.draw();
     }
 
+    moveRight() {
+        console.log("Move Right");
+        this.carPosition.x = this.carPosition.x + 1;
+        this.draw();
+    }
+
     animationScheduler(move: string) {
         const delay = 500 * this.moveShedulerCount
         this.moveShedulerCount ++;
@@ -39,6 +45,9 @@ export class Maze {
             switch (move) {
                 case 'moveUp':
                     this.moveUp();
+                    break;
+                case 'moveRight':
+                    this.moveRight();
                     break;
                 default:
                     break;

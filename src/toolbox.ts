@@ -21,6 +21,7 @@ export const toolbox = {
       expanded: true,
       contents: [
         { kind: 'block', type: 'move_up' },
+        { kind: 'block', type: 'move_right' },
       ],
     },
   ],
