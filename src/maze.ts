@@ -2,6 +2,7 @@ export class Maze {
     canvasContainer: HTMLElement;
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
+    startPosition: {x: number, y: number};
     carPosition: {x: number, y: number};
     targetPosition: {x: number, y: number};
     mazeSize: number;
@@ -14,7 +15,8 @@ export class Maze {
         startPosition: {x: number, y: number}, 
         targetPosition: {x: number, y: number}
     ) {
-        this.carPosition = startPosition;
+        this.startPosition = startPosition;
+        this.carPosition = {...startPosition};
         this.targetPosition = targetPosition;
         this.mazeSize = 8;
         this.canvasContainer = canvasContainer;
@@ -50,8 +52,8 @@ export class Maze {
     }
 
     animationScheduler(move: string) {
-        const delay = 500 * this.moveShedulerCount
         this.moveShedulerCount ++;
+        const delay = 500 * this.moveShedulerCount
         
         setTimeout(() => {
             switch (move) {
@@ -71,10 +73,6 @@ export class Maze {
                     break;
             }
         }, delay);
-    }
-
-    init() {
-        console.log(`🎯 Maze (${this.mazeSize}x${this.mazeSize}) - Start: (${this.carPosition.x},${this.carPosition.y}) → Ziel: (${this.targetPosition.x},${this.targetPosition.y})`);
     }
 
     draw() {

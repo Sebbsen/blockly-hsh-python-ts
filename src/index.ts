@@ -38,21 +38,7 @@ if (!blocklyDiv) {
 }
 const ws = Blockly.inject(blocklyDiv, {toolbox});
 
-// This function resets the code and output divs, shows the
-// generated code from the workspace, and evals the code.
-// In a real application, you probably shouldn't use `eval`.
-const runCode = () => {
-  const pyCode = pythonGenerator.workspaceToCode(ws as Blockly.Workspace);
-  const jsCode = javascriptGenerator.workspaceToCode(ws as Blockly.Workspace);
-  
-  if (codeDiv) codeDiv.textContent = pyCode;
-
-  if (outputDiv) window.maze.draw(); // Maze wird in canvas gezeichnet
-
-  eval(jsCode);
-};
-
-if (ws) {
+const drawMaze = () => {
   // init Maze
   const canvasContainer = document.getElementById('output');
   if (!canvasContainer) {
@@ -62,13 +48,32 @@ if (ws) {
   const targetPosition = {x:7, y:0}
   
   window.maze = new Maze(canvasContainer, startPosition, targetPosition);
+  window.maze.draw(); // init draw
+}
 
-  window.maze.init();
+// This function resets the code and output divs, shows the
+// generated code from the workspace, and evals the code.
+// In a real application, you probably shouldn't use `eval`.
+const runCode = () => {
+  const pyCode = pythonGenerator.workspaceToCode(ws as Blockly.Workspace);
+  const jsCode = javascriptGenerator.workspaceToCode(ws as Blockly.Workspace);
+  
+  if (codeDiv) codeDiv.textContent = pyCode;
 
+  if (outputDiv) drawMaze(); // Maze wird in canvas gezeichnet
 
+  eval(jsCode);
+};
+
+const runCodeBtn = document.getElementById('runCodeBtn')
+runCodeBtn?.addEventListener('click', ()=> {
+  runCode();
+});
+
+if (ws) {
+  drawMaze();
   // Load the initial state from storage and run the code.
   load(ws);
-  runCode();
 
   // Every time the workspace changes state, save the changes to storage.
   ws.addChangeListener((e: Blockly.Events.Abstract) => {
@@ -90,6 +95,7 @@ if (ws) {
     ) {
       return;
     }
-    runCode();
   });
 }
+
+
