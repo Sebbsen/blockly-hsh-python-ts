@@ -47,7 +47,7 @@ const runCode = () => {
   
   if (codeDiv) codeDiv.textContent = pyCode;
 
-  if (outputDiv) window.maze.initDraw(); // Maze wird in canvas gezeichnet
+  if (outputDiv) window.maze.draw(); // Maze wird in canvas gezeichnet
 
   eval(jsCode);
 };
@@ -58,8 +58,8 @@ if (ws) {
   if (!canvasContainer) {
     throw new Error('Element with id "output" not found');
   }
-  const startPosition = {x:0, y:0}
-  const targetPosition = {x:10, y:10}
+  const startPosition = {x:2, y:3}
+  const targetPosition = {x:7, y:0}
   
   window.maze = new Maze(canvasContainer, startPosition, targetPosition);
 

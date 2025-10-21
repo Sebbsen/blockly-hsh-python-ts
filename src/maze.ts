@@ -2,7 +2,7 @@ export class Maze {
     canvasContainer: HTMLElement;
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
-    startPosition: {x: number, y: number};
+    carPosition: {x: number, y: number};
     targetPosition: {x: number, y: number};
     mazeSize: number;
     canvasSize: number;
@@ -13,7 +13,7 @@ export class Maze {
         startPosition: {x: number, y: number}, 
         targetPosition: {x: number, y: number}
     ) {
-        this.startPosition = startPosition;
+        this.carPosition = startPosition;
         this.targetPosition = targetPosition;
         this.mazeSize = 8;
         this.canvasContainer = canvasContainer;
@@ -24,16 +24,18 @@ export class Maze {
     }
 
     moveUp() {
-        console.log("Move Up")
+        console.log("Move Up");
+        this.carPosition.y = this.carPosition.y - 1;
+        this.draw();
     }
 
     init() {
-        console.log(`🎯 Maze (${this.mazeSize}x${this.mazeSize}) - Start: (${this.startPosition.x},${this.startPosition.y}) → Ziel: (${this.targetPosition.x},${this.targetPosition.y})`);
+        console.log(`🎯 Maze (${this.mazeSize}x${this.mazeSize}) - Start: (${this.carPosition.x},${this.carPosition.y}) → Ziel: (${this.targetPosition.x},${this.targetPosition.y})`);
     }
 
-    initDraw() {
+    draw() {
         this.drawGrid();
-        this.drawCar(this.startPosition);
+        this.drawCar(this.carPosition);
     }
 
     drawGrid() {
