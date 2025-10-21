@@ -7,6 +7,7 @@ export class Maze {
     mazeSize: number;
     canvasSize: number;
     carEmoji: string;
+    moveShedulerCount: number;
 
     constructor(
         canvasContainer: HTMLElement,
@@ -21,12 +22,28 @@ export class Maze {
         this.canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d')!
         this.carEmoji = '🚗' 
+        this.moveShedulerCount = 0;
     }
 
     moveUp() {
         console.log("Move Up");
         this.carPosition.y = this.carPosition.y - 1;
         this.draw();
+    }
+
+    animationScheduler(move: string) {
+        const delay = 500 * this.moveShedulerCount
+        this.moveShedulerCount ++;
+        
+        setTimeout(() => {
+            switch (move) {
+                case 'moveUp':
+                    this.moveUp();
+                    break;
+                default:
+                    break;
+            }
+        }, delay);
     }
 
     init() {
