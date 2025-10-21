@@ -27,9 +27,20 @@ const addText = {
   helpUrl: '',
 };
 
+const moveUp= {
+  type: 'move_up',
+  message0: 'move up',
+  previousStatement: null,
+  nextStatement: null,
+  colour: 200,
+  tooltip: 'Bewege das Auto ein Feld nach oben',
+  helpUrl: '',
+};
+
 // Create the block definitions for the JSON-only blocks.
 // This does not register their definitions with Blockly.
 // This file has no side effects!
 export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
   addText,
+  moveUp
 ]);

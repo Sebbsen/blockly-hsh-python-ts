@@ -4,17 +4,29 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+declare global {
+  interface Window {
+    maze: Maze;
+  }
+}
+
 import * as Blockly from 'blockly';
 import {blocks} from './blocks/text';
 import {forBlock} from './generators/javascript';
 import {javascriptGenerator} from 'blockly/javascript';
+import {pythonGenerator} from 'blockly/python';
 import {save, load} from './serialization';
 import {toolbox} from './toolbox';
 import './index.css';
 
+import { Maze } from './maze';
+import {forBlock as pythonForBlock} from './generators/python';
+
+
 // Register the blocks and generator with Blockly
 Blockly.common.defineBlocks(blocks);
 Object.assign(javascriptGenerator.forBlock, forBlock);
+Object.assign(pythonGenerator.forBlock, pythonForBlock);
 
 // Set up UI elements and inject Blockly
 const codeDiv = document.getElementById('generatedCode')?.firstChild;
@@ -30,15 +42,26 @@ const ws = Blockly.inject(blocklyDiv, {toolbox});
 // generated code from the workspace, and evals the code.
 // In a real application, you probably shouldn't use `eval`.
 const runCode = () => {
-  const code = javascriptGenerator.workspaceToCode(ws as Blockly.Workspace);
-  if (codeDiv) codeDiv.textContent = code;
+  const pyCode = pythonGenerator.workspaceToCode(ws as Blockly.Workspace);
+  const jsCode = javascriptGenerator.workspaceToCode(ws as Blockly.Workspace);
+  
+  if (codeDiv) codeDiv.textContent = pyCode;
 
-  if (outputDiv) outputDiv.innerHTML = '';
+  if (outputDiv) outputDiv.innerHTML = ''; // Führt JS aus
 
-  eval(code);
+  eval(jsCode);
 };
 
 if (ws) {
+  // init Maze
+  const startPosition = {x:0, y:0}
+  const targetPosition = {x:10, y:10}
+  
+  window.maze = new Maze(startPosition, targetPosition);
+
+  window.maze.init();
+
+
   // Load the initial state from storage and run the code.
   load(ws);
   runCode();

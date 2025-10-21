@@ -32,3 +32,11 @@ forBlock['add_text'] = function (
   const code = `${addText}(${text});\n`;
   return code;
 };
+
+forBlock['move_up'] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  return "maze.moveUp();\n";
+};
+

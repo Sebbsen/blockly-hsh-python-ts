@@ -20,7 +20,7 @@ export const toolbox = {
       name: 'Drive',
       expanded: true,
       contents: [
-        
+        { kind: 'block', type: 'move_up' },
       ],
     },
   ],
