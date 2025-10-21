@@ -23,31 +23,14 @@ npm run build
 ```
 Das kompilierte Projekt wird im `dist/` Ordner erstellt.
 
-## Block-Generatoren
+## 🧩 Neue Blöcke erstellen
+Für detaillierte Anleitungen zum Erstellen neuer Blöcke siehe: **[README_BLOCKS.md](./README_BLOCKS.md)**
 
-Jeder Block muss **zweimal** registriert werden:
+Wenn Blöcke mit KI erstellt werden, verweise auf diese Readme
 
-### 1. JavaScript-Generator (`src/generators/javascript.ts`)
-- **Zweck:** Ausführung der Funktionalität
-- **Wird ausgeführt:** `eval(jsCode)` - unsichtbar im Hintergrund
-- **Beispiel:**
-```typescript
-forBlock['move_up'] = function (block, generator) {
-  return "window.maze.moveUp();\n";
-};
-```
-
-### 2. Python-Generator (`src/generators/python.ts`)
-- **Zweck:** Anzeige des Python-Codes
-- **Wird angezeigt:** In `id="generatedCode"` - sichtbar für den Benutzer
-- **Beispiel:**
-```typescript
-forBlock['move_up'] = function (block, generator) {
-  return "maze.move_up()\n";
-};
-```
-
-## Workflow
-1. **Python-Code** wird in `generatedCode` angezeigt
-2. **JavaScript-Code** wird im Hintergrund ausgeführt
-3. Benutzer sieht Python-Syntax, aber JavaScript-Funktionalität
+### Kurzübersicht:
+- **4 Dateien** müssen geändert werden
+- **Block-Definition** in `src/blocks/text.ts`
+- **JavaScript-Generator** in `src/generators/javascript.ts`
+- **Python-Generator** in `src/generators/python.ts`
+- **Toolbox** in `src/toolbox.ts`
