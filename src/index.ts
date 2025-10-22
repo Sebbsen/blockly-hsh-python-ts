@@ -45,9 +45,9 @@ const drawMaze = () => {
     throw new Error('Element with id "output" not found');
   }
   const startPosition = {x:2, y:3}
-  const targetPosition = {x:7, y:0}
+  const destinationPosition = {x:7, y:0}
   
-  window.maze = new Maze(canvasContainer, startPosition, targetPosition);
+  window.maze = new Maze(canvasContainer, startPosition, destinationPosition);
   window.maze.draw(); // init draw
 }
 

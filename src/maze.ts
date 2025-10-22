@@ -4,7 +4,7 @@ export class Maze {
     ctx: CanvasRenderingContext2D;
     startPosition: {x: number, y: number};
     carPosition: {x: number, y: number};
-    targetPosition: {x: number, y: number};
+    destinationPosition: {x: number, y: number};
     mazeSize: number;
     canvasSize: number;
     carEmoji: string;
@@ -13,11 +13,11 @@ export class Maze {
     constructor(
         canvasContainer: HTMLElement,
         startPosition: {x: number, y: number}, 
-        targetPosition: {x: number, y: number}
+        destinationPosition: {x: number, y: number}
     ) {
         this.startPosition = startPosition;
         this.carPosition = {...startPosition};
-        this.targetPosition = targetPosition;
+        this.destinationPosition = destinationPosition;
         this.mazeSize = 8;
         this.canvasContainer = canvasContainer;
         this.canvasSize = 400
