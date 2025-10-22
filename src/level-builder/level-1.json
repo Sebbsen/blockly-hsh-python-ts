@@ -1,0 +1,15 @@
+{
+    "blocks": ["move_up"],
+    "objects": {
+        "car": {
+            "emoji": "🚗",
+            "pos": {"x": 3, "y":3}
+        },
+        "destination": {
+            "emoji": "🏠",
+            "pos": {"x": 0, "y":3}
+        },
+        "waypoints": [],
+        "obstacles": []
+    }
+}
