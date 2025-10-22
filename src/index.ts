@@ -21,6 +21,9 @@ import './index.css';
 
 import { Maze } from './maze';
 import {forBlock as pythonForBlock} from './generators/python';
+import level1 from './level/level-1.json';
+import {LevelData} from './interfaces';
+const levelConfig = level1 as LevelData;
 
 
 // Register the blocks and generator with Blockly
@@ -44,8 +47,11 @@ const drawMaze = () => {
   if (!canvasContainer) {
     throw new Error('Element with id "output" not found');
   }
-  const startPosition = {x:2, y:3}
-  const destinationPosition = {x:7, y:0}
+
+  // TODO: MAZE soll ganzes obj übergeben bekommen und dann damit arbeiten können
+  const {car, destination} = levelConfig.objects;
+  const startPosition = {...car.pos};
+  const destinationPosition = {...destination.pos};
   
   window.maze = new Maze(canvasContainer, startPosition, destinationPosition);
   window.maze.draw(); // init draw
@@ -112,5 +118,3 @@ if (ws) {
     save(ws);
   });
 }
-
-
