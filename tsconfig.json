@@ -6,7 +6,10 @@
     "declarationMap": true,
     "module": "ES2015",
     "moduleResolution": "node",
-    "destination": "ES2015",
-    "strict": true
+    "target": "ES2015",
+    "strict": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
   }
 }
