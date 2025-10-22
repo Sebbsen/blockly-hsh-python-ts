@@ -1,0 +1,7 @@
+# Level-Dateien erstellen und austauschen
+
+Die Levelkonfigurationen werden als JSON-Dateien gepflegt. Jedes Level folgt dem Schema aus `src/interfaces.ts` (`LevelData` mit `blocks`, `objects.car`, `objects.destination`, `objects.waypoints`, `objects.obstacles`).
+
+- Neue oder experimentelle Level legst du zuerst im Ordner `src/level-builder` an – z. B. `level-2.json`, `level-3.json` usw.
+- Zum Testen kopierst oder verschiebst du die gewünschte Datei nach `src/level/` und benennst sie dort **level.json**. Diese Datei wird beim Build automatisch nach `dist/level/level.json` kopiert und beim Start per `fetch('level/level.json')` geladen.
+- Möchtest du im fertigen Build ein anderes Level einsetzen, kannst du die erzeugte Datei `dist/level/level.json` austauschen. Wichtig: Der Dateiname muss weiterhin **level.json** heißen, damit der Fetch-Aufruf sie findet.
