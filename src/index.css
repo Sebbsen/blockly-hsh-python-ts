@@ -1,3 +1,17 @@
+:root {
+  --bg: #0f172a;            /* slate-900 */
+  --panel: #111827;         /* gray-900 */
+  --panel-2: #0b1220;       /* dark panel */
+  --text: #e5e7eb;          /* gray-200 */
+  --muted: #94a3b8;         /* slate-400 */
+  --primary: #ffd100;       /* brand yellow */
+  --primary-600: #e6bc00;   /* darker yellow for hover */
+  --ring: rgba(255,209,0,.4);
+  --radius: 12px;
+  --shadow-1: 0 10px 30px rgba(0,0,0,.35);
+  --shadow-2: 0 2px 10px rgba(0,0,0,.5);
+}
+
 body {
   margin: 0;
   max-width: 100vw;
@@ -13,21 +27,26 @@ code {
   width: 100%;
   max-width: 100vw;
   height: 100vh;
+  padding: 12px;
+  box-sizing: border-box;
 }
 
 #blocklyDiv {
   flex-basis: 100%;
   height: 100%;
   min-width: 600px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #dddddd;
 }
 
 #outputPane {
   display: flex;
   flex-direction: column;
-  width: 420px;
-  flex: 0 0 420px;
+  width: 402px;
+  flex: 0 0 402px;
   overflow: auto;
-  margin: 1rem;
+  margin: 0rem 1rem 0rem 0rem;
 }
 
 #outputPane canvas {
@@ -35,11 +54,24 @@ code {
   border-radius: 15px;
 }
 
+#runCodeBtn {
+  background: var(--primary-600);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 600;
+  letter-spacing: .2px;
+  cursor: pointer;
+}
+
 #generatedCode {
-  height: 50%;
+  border-radius: 12px;
+  padding: 13px;
+  flex-grow: 1;
   background-color: rgb(247, 240, 228);
 }
 
 #output {
-  height: 50%;
+  flex-grow: 1;
 }
