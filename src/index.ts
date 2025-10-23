@@ -70,11 +70,7 @@ const drawMaze = () => {
   }
 
   // TODO: MAZE soll ganzes obj übergeben bekommen und dann damit arbeiten können
-  const {car, destination} = levelConfig.objects;
-  const startPosition = {...car.pos};
-  const destinationPosition = {...destination.pos};
-  
-  window.maze = new Maze(canvasContainer, startPosition, destinationPosition);
+  window.maze = new Maze(canvasContainer, levelConfig);
   window.maze.draw(); // init draw
 }
 

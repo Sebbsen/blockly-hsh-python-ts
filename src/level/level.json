@@ -6,7 +6,7 @@
             "pos": {"x": 1, "y":0}
         },
         "destination": {
-            "emoji": "🚗",
+            "emoji": "🏠",
             "pos": {"x": 6, "y":5}
         },
         "waypoints": [

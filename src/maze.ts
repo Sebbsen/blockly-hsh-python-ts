@@ -1,53 +1,52 @@
+import {LevelData, LevelObject} from './interfaces';
+
 export class Maze {
     canvasContainer: HTMLElement;
-    canvas: HTMLCanvasElement;
-    ctx: CanvasRenderingContext2D;
-    startPosition: {x: number, y: number};
-    carPosition: {x: number, y: number};
-    destinationPosition: {x: number, y: number};
     mazeSize: number;
     canvasSize: number;
-    carEmoji: string;
+    canvas: HTMLCanvasElement;
+    ctx: CanvasRenderingContext2D;
     moveShedulerCount: number;
+    car: LevelObject;
+    destination: LevelObject;
+    obstacles: LevelObject[];
 
     constructor(
         canvasContainer: HTMLElement,
-        startPosition: {x: number, y: number}, 
-        destinationPosition: {x: number, y: number}
+        levelData: LevelData
     ) {
-        this.startPosition = startPosition;
-        this.carPosition = {...startPosition};
-        this.destinationPosition = destinationPosition;
         this.mazeSize = 8;
-        this.canvasContainer = canvasContainer;
         this.canvasSize = 400
+        this.canvasContainer = canvasContainer;
         this.canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d')!
-        this.carEmoji = '🚗' 
         this.moveShedulerCount = 0;
+        this.car = levelData.objects.car;
+        this.destination = levelData.objects.destination; 
+        this.obstacles = levelData.objects.obstacles
     }
 
     moveUp() {
         console.log("Move Up");
-        this.carPosition.y = this.carPosition.y - 1;
+        this.car.pos.y = this.car.pos.y - 1;
         this.draw();
     }
 
     moveRight() {
         console.log("Move Right");
-        this.carPosition.x = this.carPosition.x + 1;
+        this.car.pos.x = this.car.pos.x + 1;
         this.draw();
     }
 
     moveLeft() {
         console.log("Move Left");
-        this.carPosition.x = this.carPosition.x - 1;
+        this.car.pos.x = this.car.pos.x - 1;
         this.draw();
     }
 
     moveDown() {
         console.log("Move Down");
-        this.carPosition.y = this.carPosition.y + 1;
+        this.car.pos.y = this.car.pos.y + 1;
         this.draw();
     }
 
@@ -77,7 +76,8 @@ export class Maze {
 
     draw() {
         this.drawGrid();
-        this.drawCar(this.carPosition);
+        this.drawCar(this.car.pos);
+        this.drawDestination();
     }
 
     drawGrid() {
@@ -121,7 +121,11 @@ export class Maze {
     }
     
     drawCar(cell: {x: number, y:number}) {
-        this.drawEmojiToCell(this.carEmoji, cell);
+        this.drawEmojiToCell(this.car.emoji, cell);
+    }
+
+    drawDestination() {
+        this.drawEmojiToCell(this.destination.emoji, this.destination.pos);
     }
 
     drawEmojiToCell(emoji: string, cell: {x:number, y:number}) {
