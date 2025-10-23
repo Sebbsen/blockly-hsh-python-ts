@@ -21,10 +21,26 @@ import './index.css';
 
 import { Maze } from './maze';
 import {forBlock as pythonForBlock} from './generators/python';
-import level1 from './level/level-1.json';
 import {LevelData} from './interfaces';
-const levelConfig = level1 as LevelData;
+const loadLevel = async (): Promise<LevelData> => {
+  const response = await fetch('level/level.json');
+  if (!response.ok) {
+    throw new Error(`Failed to load level configuration (${response.status})`);
+  }
+  return response.json();
+};
 
+let levelConfig: LevelData | null = null;
+
+// Load level data
+const initializeLevel = async () => {
+  try {
+    levelConfig = await loadLevel();
+  } catch (error) {
+    console.error('Failed to load level:', error);
+    // You might want to show an error message to the user here
+  }
+};
 
 // Register the blocks and generator with Blockly
 Blockly.common.defineBlocks(blocks);
@@ -46,6 +62,11 @@ const drawMaze = () => {
   const canvasContainer = document.getElementById('output');
   if (!canvasContainer) {
     throw new Error('Element with id "output" not found');
+  }
+
+  if (!levelConfig) {
+    console.error('Level configuration not loaded');
+    return;
   }
 
   // TODO: MAZE soll ganzes obj übergeben bekommen und dann damit arbeiten können
@@ -93,28 +114,37 @@ runCodeBtn?.addEventListener('click', ()=> {
   runCode();
 });
 
-if (ws) {
-  drawMaze();
+// Initialize the application
+const initializeApp = async () => {
+  // Load level data first
+  await initializeLevel();
   
-  // Prüfe ob bereits ein Start Block vorhanden ist
-  const existingStartBlock = ws.getTopBlocks().find(block => block.type === 'start');
-  if (!existingStartBlock) {
-    // Erstellt einen Start Block
-    const startBlock = ws.newBlock('start');
-    startBlock.initSvg();
-    startBlock.render();
-    startBlock.moveBy(50, 50);
+  if (ws) {
+    drawMaze();
+    
+    // Prüfe ob bereits ein Start Block vorhanden ist
+    const existingStartBlock = ws.getTopBlocks().find(block => block.type === 'start');
+    if (!existingStartBlock) {
+      // Erstellt einen Start Block
+      const startBlock = ws.newBlock('start');
+      startBlock.initSvg();
+      startBlock.render();
+      startBlock.moveBy(50, 50);
 
+    }
+    
+    // Load the initial state from storage and run the code.
+    //load(ws);
+
+    // Every time the workspace changes state, save the changes to storage.
+    ws.addChangeListener((e: Blockly.Events.Abstract) => {
+      // UI events are things like scrolling, zooming, etc.
+      // No need to save after one of these.
+      if (e.isUiEvent) return;
+      save(ws);
+    });
   }
-  
-  // Load the initial state from storage and run the code.
-  //load(ws);
+};
 
-  // Every time the workspace changes state, save the changes to storage.
-  ws.addChangeListener((e: Blockly.Events.Abstract) => {
-    // UI events are things like scrolling, zooming, etc.
-    // No need to save after one of these.
-    if (e.isUiEvent) return;
-    save(ws);
-  });
-}
+// Start the application
+initializeApp();
