@@ -10,6 +10,7 @@ export class Maze {
     car: LevelObject;
     destination: LevelObject;
     obstacles: LevelObject[];
+    waypoints: LevelObject[];
 
     constructor(
         canvasContainer: HTMLElement,
@@ -24,6 +25,7 @@ export class Maze {
         this.car = levelData.objects.car;
         this.destination = levelData.objects.destination; 
         this.obstacles = levelData.objects.obstacles
+        this.waypoints = levelData.objects.waypoints
     }
 
     moveUp() {
@@ -78,6 +80,8 @@ export class Maze {
         this.drawGrid();
         this.drawCar(this.car.pos);
         this.drawDestination();
+        this.drawObstacles();
+        this.drawWaypoints();
     }
 
     drawGrid() {
@@ -126,6 +130,18 @@ export class Maze {
 
     drawDestination() {
         this.drawEmojiToCell(this.destination.emoji, this.destination.pos);
+    }
+
+    drawObstacles() {
+        this.obstacles.forEach(obstacle => {
+            this.drawEmojiToCell(obstacle.emoji, obstacle.pos);
+        });
+    }
+
+    drawWaypoints() {
+        this.waypoints.forEach(waypoint => {
+            this.drawEmojiToCell(waypoint.emoji, waypoint.pos);
+        });
     }
 
     drawEmojiToCell(emoji: string, cell: {x:number, y:number}) {
