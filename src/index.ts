@@ -68,7 +68,6 @@ const drawMaze = () => {
     console.error('Level configuration not loaded');
     return;
   }
-  console.log("new maze", levelConfig);
   
   // Maze wird zurückgesetzt und neu gezeichent
   const freshLevelConfig = JSON.parse(JSON.stringify(levelConfig)); // Hack um tiefe Kopie vom Level zu erhalten
