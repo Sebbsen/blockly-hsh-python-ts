@@ -68,9 +68,11 @@ const drawMaze = () => {
     console.error('Level configuration not loaded');
     return;
   }
-
-  // TODO: MAZE soll ganzes obj übergeben bekommen und dann damit arbeiten können
-  window.maze = new Maze(canvasContainer, levelConfig);
+  console.log("new maze", levelConfig);
+  
+  // Maze wird zurückgesetzt und neu gezeichent
+  const freshLevelConfig = JSON.parse(JSON.stringify(levelConfig)); // Hack um tiefe Kopie vom Level zu erhalten
+  window.maze = new Maze(canvasContainer, freshLevelConfig);
   window.maze.draw(); // init draw
 }
 
