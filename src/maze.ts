@@ -84,10 +84,10 @@ export class Maze {
 
     draw() {
         this.drawGrid();
-        this.drawCar(this.car.pos);
         this.drawDestination();
         this.drawObstacles();
         this.drawWaypoints();
+        this.drawCar(this.car.pos);
     }
 
     drawGrid() {
@@ -186,11 +186,31 @@ export class Maze {
         this.draw();
     }
 
+    showSuccess() {
+        const successMessage = document.querySelector('.success-message');
+        const failMessage = document.querySelector('.fail-message');
+        
+        if (successMessage && failMessage) {
+            failMessage.classList.add('hidden');
+            successMessage.classList.remove('hidden');
+        }
+    }
+
+    showFail() {
+        const successMessage = document.querySelector('.success-message');
+        const failMessage = document.querySelector('.fail-message');
+        
+        if (successMessage && failMessage) {
+            successMessage.classList.add('hidden');
+            failMessage.classList.remove('hidden');
+        }
+    }
+
     handleCarOnDestination() {
         if(this.waypoints.length == 0) {
-            alert('✅ Mission erfolgreich 🥳');
+            this.showSuccess();
         } else {
-            alert('❌ Zunächst die Zwischenziele einsammeln');
+            this.showFail();
         }
     }
 

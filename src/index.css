@@ -75,3 +75,34 @@ code {
 #output {
   flex-grow: 1;
 }
+
+#endOutput {
+  margin-bottom: 10px;
+}
+
+.message {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  letter-spacing: .2px;
+  font-size: 16px;
+  text-align: center;
+  border: 2px solid;
+  transition: all 0.3s ease;
+}
+
+.hidden {
+  display: none;
+}
+
+.success-message {
+  background-color: #d1fae5;
+  color: #065f46;
+  border-color: #a7f3d0;
+}
+
+.fail-message {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border-color: #fca5a5;
+}
