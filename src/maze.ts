@@ -12,6 +12,7 @@ export class Maze {
     obstacles: LevelObject[];
     waypoints: LevelObject[];
     inventory: LevelObject[];
+    moodleSuccessCode: string;
 
     constructor(
         canvasContainer: HTMLElement,
@@ -28,6 +29,7 @@ export class Maze {
         this.obstacles = levelData.objects.obstacles
         this.waypoints = levelData.objects.waypoints
         this.inventory = [];
+        this.moodleSuccessCode = levelData.moodleSuccessCode;
     }
 
     moveUp() {
@@ -189,10 +191,15 @@ export class Maze {
     showSuccess() {
         const successMessage = document.querySelector('.success-message');
         const failMessage = document.querySelector('.fail-message');
+        const moodleSuccessCodeElement = document.getElementById('moodleSuccessCode');
         
         if (successMessage && failMessage) {
             failMessage.classList.add('hidden');
             successMessage.classList.remove('hidden');
+        }
+        
+        if (moodleSuccessCodeElement) {
+            moodleSuccessCodeElement.textContent = this.moodleSuccessCode;
         }
     }
 

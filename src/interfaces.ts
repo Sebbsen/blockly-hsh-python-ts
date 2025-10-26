@@ -7,6 +7,7 @@ export interface LevelObject {
 
 export interface LevelData {
   blocks: string[];
+  moodleSuccessCode: string;
   objects: {
     car: LevelObject;
     destination: LevelObject;
