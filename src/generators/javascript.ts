@@ -37,10 +37,7 @@ forBlock['start'] = function (
   block: Blockly.Block,
   generator: Blockly.CodeGenerator,
 ) {
-  const nextBlock = block.getNextBlock();
-  if (nextBlock) {
-    return generator.blockToCode(nextBlock);
-  }
+
   return '';
 };
 
