@@ -11,6 +11,7 @@ export class Maze {
     destination: LevelObject;
     obstacles: LevelObject[];
     waypoints: LevelObject[];
+    inventory: LevelObject[];
 
     constructor(
         canvasContainer: HTMLElement,
@@ -26,30 +27,35 @@ export class Maze {
         this.destination = levelData.objects.destination; 
         this.obstacles = levelData.objects.obstacles
         this.waypoints = levelData.objects.waypoints
+        this.inventory = [];
     }
 
     moveUp() {
         console.log("Move Up");
         this.car.pos.y = this.car.pos.y - 1;
         this.draw();
+        this.checkGameState();
     }
 
     moveRight() {
         console.log("Move Right");
         this.car.pos.x = this.car.pos.x + 1;
         this.draw();
+        this.checkGameState();
     }
 
     moveLeft() {
         console.log("Move Left");
         this.car.pos.x = this.car.pos.x - 1;
         this.draw();
+        this.checkGameState();
     }
 
     moveDown() {
         console.log("Move Down");
         this.car.pos.y = this.car.pos.y + 1;
         this.draw();
+        this.checkGameState();
     }
 
     animationScheduler(move: string) {
@@ -159,6 +165,20 @@ export class Maze {
         const centerX = cell.x * cellSize + (cellSize/2);
         const centerY = cell.y * cellSize + (cellSize/2);
         return {centerX, centerY}
+    }
+
+    checkGameState() {
+        this.waypoints.forEach((waypoint, index) => {
+            if(waypoint.pos.x === this.car.pos.x && waypoint.pos.y === this.car.pos.y) {
+                this.handleCarOnWaypoint(waypoint, index);
+            }
+        });
+    }
+
+    handleCarOnWaypoint(waypoint: LevelObject, index: number) {
+        this.inventory.push(waypoint);
+        this.waypoints.splice(index, 1);
+        this.draw();
     }
 
 }
