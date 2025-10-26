@@ -1,5 +1,6 @@
 {
     "blocks": ["move_up"],
+    "moodleSuccessCode": "LEVEL1_AKN_DTZ",
     "objects": {
         "car": {
             "emoji": "🚗",

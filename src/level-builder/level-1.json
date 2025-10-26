@@ -1,5 +1,6 @@
 {
     "blocks": ["move_up"],
+    "moodleSuccessCode": "LEVEL1_FJB_PDT",
     "objects": {
         "car": {
             "emoji": "🚗",

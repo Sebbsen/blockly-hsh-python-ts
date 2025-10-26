@@ -1,5 +1,6 @@
 {
     "blocks": ["move_up", "move_left", "move_right", "move_down"],
+    "moodleSuccessCode": "LEVEL2_SCB_QAY",
     "objects": {
         "car": {
             "emoji": "🚗",
