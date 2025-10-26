@@ -92,6 +92,10 @@ const runCode = () => {
   }
 
   // Generiere Code nur vom Start Block und seinen angeschlossenen Blöcken
+  // Generatoren müssen initialisiert werden bevor blockToCode aufgerufen wird
+  javascriptGenerator.init(ws);
+  pythonGenerator.init(ws);
+  
   const pyCode = pythonGenerator.blockToCode(startBlock);
   const jsCode = javascriptGenerator.blockToCode(startBlock)
 
