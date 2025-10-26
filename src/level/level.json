@@ -1,45 +1,15 @@
 {
-    "blocks": ["move_up", "move_left", "move_right", "move_down"],
+    "blocks": ["move_up"],
     "objects": {
         "car": {
             "emoji": "🚗",
-            "pos": {"x": 1, "y":0}
+            "pos": {"x": 3, "y":3}
         },
         "destination": {
             "emoji": "🏠",
-            "pos": {"x": 6, "y":5}
+            "pos": {"x": 0, "y":3}
         },
-        "waypoints": [
-            {
-                "emoji": "🍕",
-                "pos": {"x": 0, "y":2}
-            },
-            {
-                "emoji": "🍕",
-                "pos": {"x": 3, "y":1}
-            }
-        ],
-        "obstacles": [
-            {
-                "emoji": "🚧",
-                "pos": {"x": 3, "y":3}
-            },
-            {
-                "emoji": "🚧",
-                "pos": {"x": 4, "y":3}
-            },
-            {
-                "emoji": "🚧",
-                "pos": {"x": 5, "y":3}
-            },
-            {
-                "emoji": "🚧",
-                "pos": {"x": 5, "y":4}
-            },
-            {
-                "emoji": "🚧",
-                "pos": {"x": 5, "y":5}
-            }
-        ]
+        "waypoints": [],
+        "obstacles": []
     }
 }
