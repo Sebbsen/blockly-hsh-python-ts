@@ -168,6 +168,11 @@ export class Maze {
     }
 
     checkGameState() {
+        // car is at destination
+        if(this.destination.pos.x === this.car.pos.x && this.destination.pos.y === this.car.pos.y) {
+            this.handleCarOnDestination();
+        }
+
         this.waypoints.forEach((waypoint, index) => {
             if(waypoint.pos.x === this.car.pos.x && waypoint.pos.y === this.car.pos.y) {
                 this.handleCarOnWaypoint(waypoint, index);
@@ -179,6 +184,14 @@ export class Maze {
         this.inventory.push(waypoint);
         this.waypoints.splice(index, 1);
         this.draw();
+    }
+
+    handleCarOnDestination() {
+        if(this.waypoints.length == 0) {
+            alert('✅ Mission erfolgreich 🥳');
+        } else {
+            alert('❌ Zunächst die Zwischenziele einsammeln');
+        }
     }
 
 }
