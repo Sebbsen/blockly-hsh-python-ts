@@ -1,4 +1,5 @@
 import {LevelData, LevelObject} from './interfaces';
+import {message} from './message';
 
 export class Maze {
     canvasContainer: HTMLElement;
@@ -217,36 +218,11 @@ export class Maze {
         this.draw();
     }
 
-    showSuccess() {
-        const successMessage = document.querySelector('.success-message');
-        const failMessage = document.querySelector('.fail-message');
-        const moodleSuccessCodeElement = document.getElementById('moodleSuccessCode');
-        
-        if (successMessage && failMessage) {
-            failMessage.classList.add('hidden');
-            successMessage.classList.remove('hidden');
-        }
-        
-        if (moodleSuccessCodeElement) {
-            moodleSuccessCodeElement.textContent = this.moodleSuccessCode;
-        }
-    }
-
-    showFail() {
-        const successMessage = document.querySelector('.success-message');
-        const failMessage = document.querySelector('.fail-message');
-        
-        if (successMessage && failMessage) {
-            successMessage.classList.add('hidden');
-            failMessage.classList.remove('hidden');
-        }
-    }
-
     handleCarOnDestination() {
         if(this.waypoints.length == 0) {
-            this.showSuccess();
+            message('green', `✅ Mission erfolgreich 🥳 <br> Füge diesem Code in Moodle ein um fortzufahren: <span id="moodleSuccessCode">${this.moodleSuccessCode}</span>`);
         } else {
-            this.showFail();
+            message('yellow', 'Achte auf die Reihenfolge der Dinge, die du einsammeln musst');
         }
     }
 

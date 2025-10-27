@@ -106,3 +106,9 @@ code {
   color: #991b1b;
   border-color: #fca5a5;
 }
+
+.warning-message {
+  background-color: #fef3c7;
+  color: #92400e;
+  border-color: #fcd34d;
+}
