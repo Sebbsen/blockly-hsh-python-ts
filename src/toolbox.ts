@@ -13,26 +13,12 @@ listed here.
 */
 
 export const toolbox = {
-  kind: 'categoryToolbox',
+  kind: 'flyoutToolbox',
   contents: [
-    {
-      kind: 'category',
-      name: 'Drive',
-      expanded: true,
-      contents: [
-        { kind: 'block', type: 'move_up' },
-        { kind: 'block', type: 'move_right' },
-        { kind: 'block', type: 'move_left' },
-        { kind: 'block', type: 'move_down' },
-      ],
-    },
-    {
-      kind: 'category',
-      name: 'Loops',
-      expanded: true,
-      contents: [
-        { kind: 'block', type: 'repeat_loop' },
-      ],
-    },
+    { kind: 'block', type: 'move_up' },
+    { kind: 'block', type: 'move_right' },
+    { kind: 'block', type: 'move_left' },
+    { kind: 'block', type: 'move_down' },
+    { kind: 'block', type: 'repeat_loop' },
   ],
 };
