@@ -1,9 +1,17 @@
-export type MessageColor = 'green' | 'yellow' | 'red';
+export type MessageColor = 'green' | 'yellow' | 'red' | 'hide';
 
 export function message(color: MessageColor, text: string) {
     const successMessage = document.querySelector('.success-message');
     const failMessage = document.querySelector('.fail-message');
     const warningMessage = document.querySelector('.warning-message');
+    
+    // Wenn 'hide', einfach alle verstecken und beenden
+    if (color === 'hide') {
+        if (successMessage) successMessage.classList.add('hidden');
+        if (failMessage) failMessage.classList.add('hidden');
+        if (warningMessage) warningMessage.classList.add('hidden');
+        return;
+    }
     
     // Alle Nachrichten verstecken
     if (successMessage) successMessage.classList.add('hidden');

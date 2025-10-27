@@ -33,6 +33,7 @@ export class Maze {
         this.waypoints = levelData.objects.waypoints
         this.inventory = [];
         this.moodleSuccessCode = levelData.moodleSuccessCode;
+        message('hide', '');
     }
 
     moveUp() {
@@ -205,11 +206,13 @@ export class Maze {
     handleCarOutsideGrid(){
         this.car.pos = {...this.cachedCarPos};
         this.draw();
+        message('yellow', 'Achtung, du fährt gegen das Ende des Grids');
     }
 
     handleCarHitObstacle(){
         this.car.pos = {...this.cachedCarPos};
         this.draw();
+        message('yellow', 'Achtung, du bist gegen ein Hindernis gefahren');
     }
 
     handleCarOnWaypoint(waypoint: LevelObject, index: number) {
@@ -222,7 +225,7 @@ export class Maze {
         if(this.waypoints.length == 0) {
             message('green', `✅ Mission erfolgreich 🥳 <br> Füge diesem Code in Moodle ein um fortzufahren: <span id="moodleSuccessCode">${this.moodleSuccessCode}</span>`);
         } else {
-            message('yellow', 'Achte auf die Reihenfolge der Dinge, die du einsammeln musst');
+            message('red', 'Achte auf die Reihenfolge der Dinge, die du einsammeln musst');
         }
     }
 
