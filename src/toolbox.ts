@@ -26,5 +26,13 @@ export const toolbox = {
         { kind: 'block', type: 'move_down' },
       ],
     },
+    {
+      kind: 'category',
+      name: 'Loops',
+      expanded: true,
+      contents: [
+        { kind: 'block', type: 'repeat_loop' },
+      ],
+    },
   ],
 };

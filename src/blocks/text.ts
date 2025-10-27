@@ -77,6 +77,31 @@ const moveDown = {
   helpUrl: '',
 };
 
+const repeatLoop = {
+  type: 'repeat_loop',
+  message0: 'Wiederhole %1 mal',
+  args0: [
+    {
+      type: 'field_number',
+      name: 'TIMES',
+      value: 1,
+      min: 1,
+    },
+  ],
+  message1: '%1',
+  args1: [
+    {
+      type: 'input_statement',
+      name: 'DO',
+    },
+  ],
+  previousStatement: null,
+  nextStatement: null,
+  colour: 270,
+  tooltip: 'Wiederhole einen Block mehrmals',
+  helpUrl: '',
+};
+
 // Create the block definitions for the JSON-only blocks.
 // This does not register their definitions with Blockly.
 // This file has no side effects!
@@ -86,5 +111,6 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
   moveUp,
   moveRight,
   moveLeft,
-  moveDown
+  moveDown,
+  repeatLoop
 ]);

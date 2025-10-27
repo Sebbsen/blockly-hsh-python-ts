@@ -69,3 +69,13 @@ forBlock['move_down'] = function (
   return "maze.animationScheduler('moveDown');\n";
 };
 
+forBlock['repeat_loop'] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  const times = block.getFieldValue('TIMES') || '1';
+  const statements = generator.statementToCode(block, 'DO');
+  
+  return `for (let i = 0; i < ${times}; i++) {\n${statements}}\n`;
+};
+

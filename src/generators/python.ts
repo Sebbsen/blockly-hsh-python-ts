@@ -38,3 +38,13 @@ forBlock['move_down'] = function (
 ) {
   return "move_down()\n";
 };
+
+forBlock['repeat_loop'] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  const times = block.getFieldValue('TIMES') || '1';
+  const statements = generator.statementToCode(block, 'DO');
+  
+  return `for i in range(${times}):\n${statements}`;
+};
