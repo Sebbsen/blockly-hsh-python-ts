@@ -194,6 +194,16 @@ export class Maze {
                 this.handleCarHitObstacle();
             }
         });
+
+        // check if going outside grid
+        if(this.car.pos.x < 0 || this.car.pos.x > 7 || this.car.pos.y < 0 || this.car.pos.y > 7) {
+            this.handleCarOutsideGrid();
+        }
+    }
+
+    handleCarOutsideGrid(){
+        this.car.pos = {...this.cachedCarPos};
+        this.draw();
     }
 
     handleCarHitObstacle(){
