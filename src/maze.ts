@@ -7,6 +7,7 @@ export class Maze {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
     moveShedulerCount: number;
+    cachedCarPos: {x: number, y:number}
     car: LevelObject;
     destination: LevelObject;
     obstacles: LevelObject[];
@@ -25,6 +26,7 @@ export class Maze {
         this.ctx = this.canvas.getContext('2d')!
         this.moveShedulerCount = 0;
         this.car = levelData.objects.car;
+        this.cachedCarPos = {...this.car.pos}
         this.destination = levelData.objects.destination; 
         this.obstacles = levelData.objects.obstacles
         this.waypoints = levelData.objects.waypoints
@@ -34,6 +36,7 @@ export class Maze {
 
     moveUp() {
         console.log("Move Up");
+        this.cachedCarPos = {...this.car.pos}
         this.car.pos.y = this.car.pos.y - 1;
         this.draw();
         this.checkGameState();
@@ -41,6 +44,7 @@ export class Maze {
 
     moveRight() {
         console.log("Move Right");
+        this.cachedCarPos = {...this.car.pos}
         this.car.pos.x = this.car.pos.x + 1;
         this.draw();
         this.checkGameState();
@@ -48,6 +52,7 @@ export class Maze {
 
     moveLeft() {
         console.log("Move Left");
+        this.cachedCarPos = {...this.car.pos}
         this.car.pos.x = this.car.pos.x - 1;
         this.draw();
         this.checkGameState();
@@ -55,6 +60,7 @@ export class Maze {
 
     moveDown() {
         console.log("Move Down");
+        this.cachedCarPos = {...this.car.pos}
         this.car.pos.y = this.car.pos.y + 1;
         this.draw();
         this.checkGameState();
@@ -170,16 +176,29 @@ export class Maze {
     }
 
     checkGameState() {
-        // car is at destination
+        // check if car is at destination
         if(this.destination.pos.x === this.car.pos.x && this.destination.pos.y === this.car.pos.y) {
             this.handleCarOnDestination();
         }
 
+        // check if car is at waypoint
         this.waypoints.forEach((waypoint, index) => {
             if(waypoint.pos.x === this.car.pos.x && waypoint.pos.y === this.car.pos.y) {
                 this.handleCarOnWaypoint(waypoint, index);
             }
         });
+
+        // check if car hits obstacles
+        this.obstacles.forEach((obstacle) => {
+            if(obstacle.pos.x === this.car.pos.x && obstacle.pos.y === this.car.pos.y) {
+                this.handleCarHitObstacle();
+            }
+        });
+    }
+
+    handleCarHitObstacle(){
+        this.car.pos = {...this.cachedCarPos};
+        this.draw();
     }
 
     handleCarOnWaypoint(waypoint: LevelObject, index: number) {
