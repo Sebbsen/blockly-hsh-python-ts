@@ -414,18 +414,13 @@ export class MapEditorUI {
     formatButton.addEventListener('click', () => this.formatJSON());
     
     const validateButton = document.createElement('button');
-    validateButton.textContent = 'Validieren';
+    validateButton.textContent = 'Speichern';
     validateButton.className = 'json-button primary';
     validateButton.addEventListener('click', () => this.validateAndApplyJSON());
     
-    const resetButton = document.createElement('button');
-    resetButton.textContent = 'Zurücksetzen';
-    resetButton.className = 'json-button';
-    resetButton.addEventListener('click', () => this.resetJSONFromEditor());
     
     actions.appendChild(formatButton);
     actions.appendChild(validateButton);
-    actions.appendChild(resetButton);
     
     // Content
     const content = document.createElement('div');
@@ -498,22 +493,10 @@ export class MapEditorUI {
     exportButton.className = 'action-button';
     exportButton.addEventListener('click', () => this.exportLevel());
     
-    const importButton = document.createElement('label');
-    importButton.textContent = 'Importieren';
-    importButton.className = 'action-button secondary';
-    importButton.style.cursor = 'pointer';
-    
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = '.json';
-    fileInput.className = 'file-input';
-    fileInput.addEventListener('change', (e) => this.handleFileImport(e));
     
     actionSection.appendChild(removeModeButton);
     actionSection.appendChild(clearButton);
     actionSection.appendChild(exportButton);
-    actionSection.appendChild(importButton);
-    actionSection.appendChild(fileInput);
     
     this.toolbar.appendChild(objectSection);
     this.toolbar.appendChild(actionSection);
@@ -614,7 +597,7 @@ export class MapEditorUI {
     statusInfo.appendChild(gridInfo);
     
     const instructions = document.createElement('span');
-    instructions.textContent = 'Klicke auf ein Objekt und dann auf das Grid, um es zu platzieren. Rechtsklick zum Entfernen.';
+    instructions.textContent = 'Klicke auf ein Objekt und dann auf das Grid, um es zu platzieren. Rechtsklick zum Entfernen. Emojis und Waypoint-Reihenfolge über JSON View bearbeiten.';
     
     this.statusBar.appendChild(statusInfo);
     this.statusBar.appendChild(instructions);
@@ -690,24 +673,6 @@ export class MapEditorUI {
     URL.revokeObjectURL(url);
   }
 
-  private handleFileImport(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const levelData = JSON.parse(e.target?.result as string);
-          this.mapEditor.loadLevel(levelData);
-          this.updateBlocksDisplay();
-        } catch (error) {
-          alert('Fehler beim Laden der Datei. Bitte überprüfe das Format.');
-        }
-      };
-      reader.readAsText(file);
-    }
-  }
 
   private toggleBlock(blockName: string): void {
     if (this.mapEditor.hasBlock(blockName)) {
