@@ -1,3 +1,8 @@
+import { LevelData, LevelObject, LevelPosition } from '../interfaces';
+
+// Re-export the interfaces from interfaces.ts
+export { LevelData, LevelObject, LevelPosition };
+
 export interface MapEditorConfig {
   gridSize: number;
   canvasSize: number;
@@ -17,26 +22,4 @@ export interface ObjectTemplate {
   emoji: string;
   label: string;
   color: string;
-}
-
-export interface LevelData {
-  blocks: string[];
-  moodleSuccessCode: string;
-  enforceWaypointOrder?: boolean;
-  objects: {
-    car: LevelObject;
-    destination: LevelObject;
-    waypoints: LevelObject[];
-    obstacles: LevelObject[];
-  };
-}
-
-export interface LevelObject {
-  emoji: string;
-  pos: LevelPosition;
-}
-
-export interface LevelPosition {
-  x: number;
-  y: number;
 }
