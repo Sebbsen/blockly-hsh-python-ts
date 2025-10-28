@@ -1,20 +1,44 @@
 {
-    "blocks": ["move_left"],
-    "moodleSuccessCode": "LEVEL1_AKN_DTZ",
-    "enforceWaypointOrder": false,
+    "blocks": [
+      "move_up",
+      "move_right",
+      "move_left",
+      "move_down",
+      "repeat_loop"
+    ],
+    "moodleSuccessCode": "NEW_LEVEL",
+    "enforceWaypointOrder": true,
     "objects": {
-        "car": {
-            "emoji": "🚗",
-            "pos": {"x": 3, "y":3}
+      "car": {
+        "emoji": "🚗",
+        "pos": {
+          "x": 3,
+          "y": 4
+        }
+      },
+      "destination": {
+        "emoji": "🏠",
+        "pos": {
+          "x": 3,
+          "y": 1
+        }
+      },
+      "waypoints": [
+        {
+          "emoji": "1️⃣",
+          "pos": {
+            "x": 3,
+            "y": 2
+          }
         },
-        "destination": {
-            "emoji": "🏠",
-            "pos": {"x": 1, "y":3}
-        },
-        "waypoints": [],
-        "obstacles": [{
-            "emoji": "❌",
-            "pos": {"x": 2, "y":3}
-        }]
+        {
+          "emoji": "2️⃣",
+          "pos": {
+            "x": 3,
+            "y": 3
+          }
+        }
+      ],
+      "obstacles": []
     }
-}
+  }
