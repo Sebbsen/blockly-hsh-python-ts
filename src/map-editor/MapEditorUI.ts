@@ -1,6 +1,7 @@
 import { MapEditor } from './MapEditor';
 import { ObjectType, ObjectTemplate } from './types';
 import { allBlocks } from '../blocks/blockRegistry';
+import './map-editor.css';
 
 export class MapEditorUI {
   private mapEditor: MapEditor;
@@ -30,478 +31,160 @@ export class MapEditorUI {
     // CSS Styles hinzufügen
     this.addStyles();
     
-    // Haupt-Layout erstellen (zwei Spalten)
-    this.createMainLayout();
+    // HTML Template laden
+    this.loadHTMLTemplate();
     
     // Event Listeners einrichten
     this.setupEventListeners();
   }
 
   private addStyles(): void {
-    const style = document.createElement('style');
-    style.textContent = `
-      .map-editor-container {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        padding: 16px;
-        background: #F3F4F6;
-        border-radius: 8px;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        height: 100vh;
-        box-sizing: border-box;
-      }
-      
-      .main-layout {
-        display: flex;
-        gap: 16px;
-        flex: 1;
-        min-height: 0;
-      }
-      
-      .left-panel {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        flex: 1;
-        min-width: 0;
-      }
-      
-      .right-panel {
-        display: flex;
-        flex-direction: column;
-        width: 400px;
-        min-width: 400px;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-      }
-      
-      .map-editor-toolbar {
-        display: flex;
-        gap: 12px;
-        align-items: center;
-        padding: 12px;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-      }
-      
-      .toolbar-section {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-      }
-      
-      .toolbar-section:not(:last-child) {
-        border-right: 1px solid #E5E7EB;
-        padding-right: 12px;
-      }
-      
-      .object-button {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-        padding: 8px 12px;
-        border: 2px solid transparent;
-        border-radius: 6px;
-        background: white;
-        cursor: pointer;
-        transition: all 0.2s;
-        min-width: 60px;
-      }
-      
-      .object-button:hover {
-        background: #F9FAFB;
-        border-color: #D1D5DB;
-      }
-      
-      .object-button.active {
-        border-color: #3B82F6;
-        background: #EFF6FF;
-      }
-      
-      .object-emoji {
-        font-size: 24px;
-        line-height: 1;
-      }
-      
-      .object-label {
-        font-size: 12px;
-        font-weight: 500;
-        color: #374151;
-      }
-      
-      .action-button {
-        padding: 8px 16px;
-        border: none;
-        border-radius: 6px;
-        background: #3B82F6;
-        color: white;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background 0.2s;
-      }
-      
-      .action-button:hover {
-        background: #2563EB;
-      }
-      
-      .action-button.secondary {
-        background: #6B7280;
-      }
-      
-      .action-button.secondary:hover {
-        background: #4B5563;
-      }
-      
-      .action-button.danger {
-        background: #EF4444;
-      }
-      
-      .action-button.danger:hover {
-        background: #DC2626;
-      }
-      
-      .canvas-container {
-        display: flex;
-        justify-content: center;
-        padding: 16px;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-      }
-      
-      .status-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 8px 16px;
-        background: white;
-        border-radius: 6px;
-        font-size: 14px;
-        color: #6B7280;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-      }
-      
-      .status-info {
-        display: flex;
-        gap: 16px;
-      }
-      
-      .file-input {
-        display: none;
-      }
-      
-      .file-label {
-        padding: 8px 16px;
-        border: 2px dashed #D1D5DB;
-        border-radius: 6px;
-        background: white;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-size: 14px;
-        color: #6B7280;
-      }
-      
-      .file-label:hover {
-        border-color: #3B82F6;
-        color: #3B82F6;
-      }
-      
-      .blocks-section {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        padding: 12px;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-      }
-      
-      .blocks-title {
-        font-weight: 500;
-        color: #374151;
-        margin-bottom: 8px;
-      }
-      
-      .blocks-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-      
-      .block-button {
-        padding: 6px 12px;
-        border: 1px solid #D1D5DB;
-        border-radius: 4px;
-        background: white;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-size: 14px;
-        color: #374151;
-      }
-      
-      .block-button:hover {
-        background: #F9FAFB;
-        border-color: #3B82F6;
-        color: #3B82F6;
-      }
-      
-      .block-button.added {
-        background: #EFF6FF;
-        border-color: #3B82F6;
-        color: #3B82F6;
-      }
-      
-      .current-blocks {
-        margin-top: 8px;
-        padding: 8px;
-        background: #F9FAFB;
-        border-radius: 4px;
-        font-size: 12px;
-        color: #6B7280;
-      }
-      
-      .json-view-header {
-        padding: 12px 16px;
-        background: #F9FAFB;
-        border-bottom: 1px solid #E5E7EB;
-        font-weight: 500;
-        color: #374151;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      
-      .json-view-content {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        min-height: 0;
-      }
-      
-      .json-textarea {
-        flex: 1;
-        border: none;
-        padding: 16px;
-        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-        font-size: 13px;
-        line-height: 1.5;
-        resize: none;
-        outline: none;
-        background: #FAFAFA;
-        color: #374151;
-        min-height: 300px;
-      }
-      
-      .json-textarea:focus {
-        background: white;
-        box-shadow: inset 0 0 0 2px #3B82F6;
-      }
-      
-      .json-error {
-        background: #FEF2F2;
-        color: #DC2626;
-        padding: 8px 16px;
-        font-size: 12px;
-        border-top: 1px solid #FECACA;
-      }
-      
-      .json-actions {
-        padding: 12px 16px;
-        background: #F9FAFB;
-        border-top: 1px solid #E5E7EB;
-        display: flex;
-        gap: 8px;
-      }
-      
-      .json-button {
-        padding: 6px 12px;
-        border: 1px solid #D1D5DB;
-        border-radius: 4px;
-        background: white;
-        cursor: pointer;
-        font-size: 12px;
-        color: #374151;
-        transition: all 0.2s;
-      }
-      
-      .json-button:hover {
-        background: #F9FAFB;
-        border-color: #3B82F6;
-        color: #3B82F6;
-      }
-      
-      .json-button.primary {
-        background: #3B82F6;
-        color: white;
-        border-color: #3B82F6;
-      }
-      
-      .json-button.primary:hover {
-        background: #2563EB;
-      }
+    // CSS wird bereits über den Import geladen
+  }
+
+  private loadHTMLTemplate(): void {
+    // HTML Template als String definieren
+    const htmlTemplate = `
+      <div class="main-layout">
+        <!-- Linkes Panel (Map Editor) -->
+        <div class="left-panel">
+          <!-- Toolbar -->
+          <div class="map-editor-toolbar">
+            <div class="toolbar-section">
+              <span style="font-weight: 500; color: #374151;">Objekt auswählen:</span>
+              <!-- Objekt-Buttons werden dynamisch generiert -->
+            </div>
+            <div class="toolbar-section">
+              <button class="action-button secondary" id="remove-mode-btn">Entfernen-Modus</button>
+              <button class="action-button danger" id="clear-btn">Level leeren</button>
+              <button class="action-button" id="export-btn">Exportieren</button>
+            </div>
+          </div>
+
+          <!-- Blocks-Sektion -->
+          <div class="blocks-section">
+            <div class="blocks-title">Verfügbare Blocks:</div>
+            <div class="blocks-list" id="blocks-list">
+              <!-- Block-Buttons werden dynamisch generiert -->
+            </div>
+            <div class="current-blocks" id="current-blocks-display">
+              Aktuelle Blocks: Keine
+            </div>
+          </div>
+
+          <!-- Canvas Container -->
+          <div class="canvas-container" id="canvas-container">
+            <!-- Canvas wird vom MapEditor erstellt -->
+          </div>
+
+          <!-- Status Bar -->
+          <div class="status-bar">
+            <div class="status-info">
+              <span id="selected-object-info">Kein Objekt ausgewählt</span>
+              <span>8x8 Grid</span>
+            </div>
+            <span>Klicke auf ein Objekt und dann auf das Grid, um es zu platzieren.</span>
+          </div>
+        </div>
+
+        <!-- Rechtes Panel (JSON View) -->
+        <div class="right-panel">
+          <!-- Header -->
+          <div class="json-view-header">
+            <span>Live JSON View</span>
+            <span id="json-status" style="font-size: 12px; color: #10B981;">Live</span>
+          </div>
+
+          <!-- Actions -->
+          <div class="json-actions">
+            <button class="json-button" id="format-btn">Formatieren</button>
+            <button class="json-button primary" id="save-btn">Speichern</button>
+          </div>
+
+          <!-- Content -->
+          <div class="json-view-content">
+            <textarea class="json-textarea" id="json-textarea" placeholder="JSON wird automatisch aktualisiert..."></textarea>
+            <div class="json-error" id="json-error" style="display: none;"></div>
+          </div>
+        </div>
+      </div>
     `;
-    document.head.appendChild(style);
-  }
-
-  private createMainLayout(): void {
-    // Haupt-Layout Container
-    const mainLayout = document.createElement('div');
-    mainLayout.className = 'main-layout';
     
-    // Linke Panel (Map Editor)
-    const leftPanel = document.createElement('div');
-    leftPanel.className = 'left-panel';
+    // HTML Template in den Container laden
+    this.container.innerHTML = htmlTemplate;
     
-    // Toolbar erstellen
-    this.createToolbar();
+    // Referenzen zu den UI-Elementen setzen
+    this.toolbar = this.container.querySelector('.map-editor-toolbar')!;
+    this.canvasContainer = this.container.querySelector('#canvas-container')!;
+    this.statusBar = this.container.querySelector('.status-bar')!;
+    this.jsonTextarea = this.container.querySelector('#json-textarea')!;
+    this.jsonErrorElement = this.container.querySelector('#json-error')!;
     
-    // Blocks-Sektion erstellen
-    this.createBlocksSection();
+    // Dynamische Inhalte generieren
+    this.createObjectButtons();
+    this.createBlockButtons();
+    this.setupActionButtons();
     
-    // Canvas Container erstellen
-    this.createCanvasContainer();
-    
-    // Status Bar erstellen
-    this.createStatusBar();
-    
-    // Alle Komponenten zum linken Panel hinzufügen
-    leftPanel.appendChild(this.toolbar);
-    leftPanel.appendChild(this.container.querySelector('.blocks-section')!);
-    leftPanel.appendChild(this.canvasContainer);
-    leftPanel.appendChild(this.statusBar);
-    
-    // Rechtes Panel (JSON View)
-    const rightPanel = this.createJSONView();
-    
-    // Layout zusammenbauen
-    mainLayout.appendChild(leftPanel);
-    mainLayout.appendChild(rightPanel);
-    this.container.appendChild(mainLayout);
-  }
-
-  private createJSONView(): HTMLElement {
-    const rightPanel = document.createElement('div');
-    rightPanel.className = 'right-panel';
-    
-    // Header
-    const header = document.createElement('div');
-    header.className = 'json-view-header';
-    
-    const title = document.createElement('span');
-    title.textContent = 'Live JSON View';
-    
-    const status = document.createElement('span');
-    status.id = 'json-status';
-    status.textContent = 'Live';
-    status.style.fontSize = '12px';
-    status.style.color = '#10B981';
-    
-    header.appendChild(title);
-    header.appendChild(status);
-    
-    // Actions direkt unter Header
-    const actions = document.createElement('div');
-    actions.className = 'json-actions';
-    
-    const formatButton = document.createElement('button');
-    formatButton.textContent = 'Formatieren';
-    formatButton.className = 'json-button';
-    formatButton.addEventListener('click', () => this.formatJSON());
-    
-    const validateButton = document.createElement('button');
-    validateButton.textContent = 'Speichern';
-    validateButton.className = 'json-button primary';
-    validateButton.addEventListener('click', () => this.validateAndApplyJSON());
-    
-    
-    actions.appendChild(formatButton);
-    actions.appendChild(validateButton);
-    
-    // Content
-    const content = document.createElement('div');
-    content.className = 'json-view-content';
-    
-    // Textarea für JSON
-    this.jsonTextarea = document.createElement('textarea');
-    this.jsonTextarea.className = 'json-textarea';
-    this.jsonTextarea.placeholder = 'JSON wird automatisch aktualisiert...';
-    
-    // Error Element
-    this.jsonErrorElement = document.createElement('div');
-    this.jsonErrorElement.className = 'json-error';
-    this.jsonErrorElement.style.display = 'none';
-    
-    // Event Listeners für Textarea
-    this.jsonTextarea.addEventListener('input', () => this.onJSONInput());
-    this.jsonTextarea.addEventListener('blur', () => this.validateAndApplyJSON());
-    
-    // Zusammenbauen
-    content.appendChild(this.jsonTextarea);
-    content.appendChild(this.jsonErrorElement);
-    
-    rightPanel.appendChild(header);
-    rightPanel.appendChild(actions);
-    rightPanel.appendChild(content);
+    // Canvas hinzufügen
+    const canvasElement = this.mapEditor['canvas'];
+    this.canvasContainer.appendChild(canvasElement);
     
     // Initial JSON laden
     this.updateJSONFromEditor();
-    
-    return rightPanel;
   }
 
-  private createToolbar(): void {
-    this.toolbar = document.createElement('div');
-    this.toolbar.className = 'map-editor-toolbar';
-    
-    // Objekt-Auswahl
-    const objectSection = document.createElement('div');
-    objectSection.className = 'toolbar-section';
-    
-    const objectLabel = document.createElement('span');
-    objectLabel.textContent = 'Objekt auswählen:';
-    objectLabel.style.fontWeight = '500';
-    objectLabel.style.color = '#374151';
-    objectSection.appendChild(objectLabel);
-    
+  private createObjectButtons(): void {
+    const objectSection = this.toolbar.querySelector('.toolbar-section:first-child')!;
     const templates = this.mapEditor.getObjectTemplates();
+    
     templates.forEach(template => {
       const button = this.createObjectButton(template);
       objectSection.appendChild(button);
     });
-    
-    // Aktions-Buttons
-    const actionSection = document.createElement('div');
-    actionSection.className = 'toolbar-section';
-    
-    const removeModeButton = document.createElement('button');
-    removeModeButton.textContent = 'Entfernen-Modus';
-    removeModeButton.className = 'action-button secondary';
-    removeModeButton.addEventListener('click', () => this.toggleRemoveMode());
-    
-    const clearButton = document.createElement('button');
-    clearButton.textContent = 'Level leeren';
-    clearButton.className = 'action-button danger';
-    clearButton.addEventListener('click', () => this.clearLevel());
-    
-    const exportButton = document.createElement('button');
-    exportButton.textContent = 'Exportieren';
-    exportButton.className = 'action-button';
-    exportButton.addEventListener('click', () => this.exportLevel());
-    
-    
-    actionSection.appendChild(removeModeButton);
-    actionSection.appendChild(clearButton);
-    actionSection.appendChild(exportButton);
-    
-    this.toolbar.appendChild(objectSection);
-    this.toolbar.appendChild(actionSection);
-    this.container.appendChild(this.toolbar);
   }
+
+  private createBlockButtons(): void {
+    const blocksList = this.container.querySelector('#blocks-list')!;
+    const availableBlocks: string[] = [];
+
+    allBlocks.forEach((block) => {
+      availableBlocks.push(block.type);
+    });
+    
+    availableBlocks.forEach(blockName => {
+      const button = document.createElement('button');
+      button.className = 'block-button';
+      button.textContent = blockName;
+      button.dataset.block = blockName;
+      
+      button.addEventListener('click', () => {
+        this.toggleBlock(blockName);
+      });
+      
+      blocksList.appendChild(button);
+    });
+  }
+
+  private setupActionButtons(): void {
+    const removeModeBtn = this.container.querySelector('#remove-mode-btn') as HTMLButtonElement;
+    const clearBtn = this.container.querySelector('#clear-btn') as HTMLButtonElement;
+    const exportBtn = this.container.querySelector('#export-btn') as HTMLButtonElement;
+    const formatBtn = this.container.querySelector('#format-btn') as HTMLButtonElement;
+    const saveBtn = this.container.querySelector('#save-btn') as HTMLButtonElement;
+    
+    removeModeBtn.addEventListener('click', () => this.toggleRemoveMode());
+    clearBtn.addEventListener('click', () => this.clearLevel());
+    exportBtn.addEventListener('click', () => this.exportLevel());
+    formatBtn.addEventListener('click', () => this.formatJSON());
+    saveBtn.addEventListener('click', () => this.validateAndApplyJSON());
+  }
+
+  private setupJSONEventListeners(): void {
+    // Event Listeners für Textarea
+    this.jsonTextarea.addEventListener('input', () => this.onJSONInput());
+    this.jsonTextarea.addEventListener('blur', () => this.validateAndApplyJSON());
+  }
+
 
   private createObjectButton(template: ObjectTemplate): HTMLElement {
     const button = document.createElement('div');
@@ -526,85 +209,13 @@ export class MapEditorUI {
     return button;
   }
 
-  private createBlocksSection(): void {
-    const blocksSection = document.createElement('div');
-    blocksSection.className = 'blocks-section';
-    
-    const title = document.createElement('div');
-    title.className = 'blocks-title';
-    title.textContent = 'Verfügbare Blocks:';
-    
-    const blocksList = document.createElement('div');
-    blocksList.className = 'blocks-list';
-    
-    // Verfügbare Blocks definieren
-    const availableBlocks: string[] = [];
 
-    allBlocks.forEach((block) => {
-      availableBlocks.push(block.type)
-    })
-    
-    availableBlocks.forEach(blockName => {
-      const button = document.createElement('button');
-      button.className = 'block-button';
-      button.textContent = blockName;
-      button.dataset.block = blockName;
-      
-      button.addEventListener('click', () => {
-        this.toggleBlock(blockName);
-      });
-      
-      blocksList.appendChild(button);
-    });
-    
-    const currentBlocks = document.createElement('div');
-    currentBlocks.className = 'current-blocks';
-    currentBlocks.id = 'current-blocks-display';
-    currentBlocks.textContent = 'Aktuelle Blocks: Keine';
-    
-    blocksSection.appendChild(title);
-    blocksSection.appendChild(blocksList);
-    blocksSection.appendChild(currentBlocks);
-    
-    this.container.appendChild(blocksSection);
-  }
 
-  private createCanvasContainer(): void {
-    this.canvasContainer = document.createElement('div');
-    this.canvasContainer.className = 'canvas-container';
-    this.container.appendChild(this.canvasContainer);
-    
-    // Canvas wird vom MapEditor erstellt
-    const canvasElement = this.mapEditor['canvas'];
-    this.canvasContainer.appendChild(canvasElement);
-  }
-
-  private createStatusBar(): void {
-    this.statusBar = document.createElement('div');
-    this.statusBar.className = 'status-bar';
-    
-    const statusInfo = document.createElement('div');
-    statusInfo.className = 'status-info';
-    
-    const selectedInfo = document.createElement('span');
-    selectedInfo.id = 'selected-object-info';
-    selectedInfo.textContent = 'Kein Objekt ausgewählt';
-    
-    const gridInfo = document.createElement('span');
-    gridInfo.textContent = '8x8 Grid';
-    
-    statusInfo.appendChild(selectedInfo);
-    statusInfo.appendChild(gridInfo);
-    
-    const instructions = document.createElement('span');
-    instructions.textContent = 'Klicke auf ein Objekt und dann auf das Grid, um es zu platzieren.';
-    
-    this.statusBar.appendChild(statusInfo);
-    this.statusBar.appendChild(instructions);
-    this.container.appendChild(this.statusBar);
-  }
 
   private setupEventListeners(): void {
+    // JSON Event Listeners einrichten
+    this.setupJSONEventListeners();
+    
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
