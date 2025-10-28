@@ -59,6 +59,13 @@ export class MapEditorUI {
               <button class="action-button danger" id="clear-btn">Level leeren</button>
               <button class="action-button" id="export-btn">Exportieren</button>
             </div>
+            <div class="toolbar-section">
+              <label class="checkbox-container">
+                <input type="checkbox" id="enforce-waypoint-order-checkbox">
+                <span class="checkmark"></span>
+                <span class="checkbox-label">Wegpunkt-Reihenfolge erzwingen</span>
+              </label>
+            </div>
           </div>
 
           <!-- Blocks-Sektion -->
@@ -171,12 +178,14 @@ export class MapEditorUI {
     const exportBtn = this.container.querySelector('#export-btn') as HTMLButtonElement;
     const formatBtn = this.container.querySelector('#format-btn') as HTMLButtonElement;
     const saveBtn = this.container.querySelector('#save-btn') as HTMLButtonElement;
+    const enforceWaypointOrderCheckbox = this.container.querySelector('#enforce-waypoint-order-checkbox') as HTMLInputElement;
     
     removeModeBtn.addEventListener('click', () => this.toggleRemoveMode());
     clearBtn.addEventListener('click', () => this.clearLevel());
     exportBtn.addEventListener('click', () => this.exportLevel());
     formatBtn.addEventListener('click', () => this.formatJSON());
     saveBtn.addEventListener('click', () => this.validateAndApplyJSON());
+    enforceWaypointOrderCheckbox.addEventListener('change', () => this.toggleEnforceWaypointOrder());
   }
 
   private setupJSONEventListeners(): void {
@@ -356,6 +365,19 @@ export class MapEditorUI {
     buttons.forEach(button => button.classList.remove('active'));
   }
 
+  private toggleEnforceWaypointOrder(): void {
+    const checkbox = this.container.querySelector('#enforce-waypoint-order-checkbox') as HTMLInputElement;
+    const levelData = this.mapEditor.getCurrentLevel();
+    
+    if (checkbox.checked) {
+      levelData.enforceWaypointOrder = true;
+    } else {
+      delete levelData.enforceWaypointOrder;
+    }
+    
+    this.mapEditor.loadLevel(levelData);
+  }
+
   // JSON View Management Methods
   private updateJSONFromEditor(): void {
     if (this.isUpdatingFromEditor) return;
@@ -363,6 +385,13 @@ export class MapEditorUI {
     this.isUpdatingFromEditor = true;
     const levelData = this.mapEditor.getCurrentLevel();
     this.jsonTextarea.value = JSON.stringify(levelData, null, 2);
+    
+    // Checkbox-Status synchronisieren
+    const checkbox = this.container.querySelector('#enforce-waypoint-order-checkbox') as HTMLInputElement;
+    if (checkbox) {
+      checkbox.checked = levelData.enforceWaypointOrder === true;
+    }
+    
     this.hideJSONError();
     this.updateJSONStatus('Live', '#10B981');
     this.isUpdatingFromEditor = false;
@@ -416,6 +445,7 @@ export class MapEditorUI {
       typeof data === 'object' &&
       Array.isArray(data.blocks) &&
       typeof data.moodleSuccessCode === 'string' &&
+      (data.enforceWaypointOrder === undefined || typeof data.enforceWaypointOrder === 'boolean') &&
       data.objects &&
       typeof data.objects === 'object' &&
       data.objects.car &&
