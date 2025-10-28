@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Editor Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #F3F4F6;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #1F2937;
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        
+        .header p {
+            color: #6B7280;
+            margin: 10px 0 0 0;
+            font-size: 1.1rem;
+        }
+        
+        #map-editor-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .instructions {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .instructions h3 {
+            color: #1F2937;
+            margin-top: 0;
+        }
+        
+        .instructions ul {
+            color: #4B5563;
+            line-height: 1.6;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🗺️ Map Editor</h1>
+        <p>Erstelle und bearbeite Level für das Blockly-Projekt</p>
+        <p><strong>Gestartet mit:</strong> <code>npm run editor</code></p>
+    </div>
+    
+    <div class="instructions">
+        <h3>📋 Anleitung:</h3>
+        
+        <h4>🎨 Visueller Editor (Linke Seite):</h4>
+        <ul>
+            <li><strong>Objekt auswählen:</strong> Klicke auf ein Objekt in der Toolbar (Auto 🚗, Ziel 🏠, Wegpunkt ⭐, Hindernis ❌)</li>
+            <li><strong>Platzieren:</strong> Klicke auf das Grid, um das ausgewählte Objekt zu platzieren</li>
+            <li><strong>Vorschau:</strong> Bewege die Maus über das Grid, um eine Vorschau zu sehen</li>
+            <li><strong>Abbrechen:</strong> Drücke <code>ESC</code> oder wähle ein anderes Objekt</li>
+            <li><strong>Entfernen:</strong> Aktiviere den "Entfernen-Modus" und klicke auf Objekte</li>
+            <li><strong>Exportieren:</strong> Speichere dein Level als JSON-Datei</li>
+            <li><strong>Leeren:</strong> Entferne alle Objekte vom Level</li>
+        </ul>
+        
+        <h4>📝 JSON View (Rechte Seite):</h4>
+        <ul>
+            <li><strong>Live-Updates:</strong> Das JSON wird automatisch aktualisiert beim Platzieren von Objekten</li>
+            <li><strong>Emojis ändern:</strong> Bearbeite die Emoji-Werte direkt im JSON</li>
+            <li><strong>Waypoint-Reihenfolge:</strong> Ändere die Reihenfolge im Array für die Einsammel-Reihenfolge</li>
+            <li><strong>Formatieren:</strong> Formatiert das JSON für bessere Lesbarkeit</li>
+            <li><strong>Speichern:</strong> Validiert und übernimmt die JSON-Änderungen in den Editor</li>
+        </ul>
+        
+        <h4>🎯 Objekt-Typen:</h4>
+        <ul>
+            <li><strong>Auto (🚗):</strong> Das spielbare Auto</li>
+            <li><strong>Ziel (🏠):</strong> Das Ziel</li>
+            <li><strong>Wegpunkt (⭐):</strong> Wegpunkt zum Einsammeln</li>
+            <li><strong>Hindernis (❌):</strong> Hindernis</li>
+        </ul>
+    </div>
+    
+    <div id="map-editor-container"></div>
+    
+    <!-- Webpack wird automatisch das Bundle einbinden -->
+</body>
+</html>
