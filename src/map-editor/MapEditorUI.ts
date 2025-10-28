@@ -597,7 +597,7 @@ export class MapEditorUI {
     statusInfo.appendChild(gridInfo);
     
     const instructions = document.createElement('span');
-    instructions.textContent = 'Klicke auf ein Objekt und dann auf das Grid, um es zu platzieren. Rechtsklick zum Entfernen. Emojis und Waypoint-Reihenfolge über JSON View bearbeiten.';
+    instructions.textContent = 'Klicke auf ein Objekt und dann auf das Grid, um es zu platzieren.';
     
     this.statusBar.appendChild(statusInfo);
     this.statusBar.appendChild(instructions);
