@@ -265,11 +265,6 @@ export class MapEditor {
   }
 
   public loadLevel(level: LevelData): void {
-    // Sicherstellen, dass enforceWaypointOrder immer gesetzt ist
-    if (level.enforceWaypointOrder === undefined) {
-      level.enforceWaypointOrder = false;
-    }
-    
     this.state.currentLevel = level;
     this.draw();
     this.notifyChange();

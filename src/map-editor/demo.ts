@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const exampleLevel = {
       blocks: ["move_left"],
       moodleSuccessCode: "DEMO_LEVEL",
+      enforceWaypointOrder: false,
       objects: {
         car: {
           emoji: "🚗",

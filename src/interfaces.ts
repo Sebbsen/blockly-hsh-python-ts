@@ -8,7 +8,7 @@ export interface LevelObject {
 export interface LevelData {
   blocks: string[];
   moodleSuccessCode: string;
-  enforceWaypointOrder?: boolean;
+  enforceWaypointOrder: boolean;
   objects: {
     car: LevelObject;
     destination: LevelObject;

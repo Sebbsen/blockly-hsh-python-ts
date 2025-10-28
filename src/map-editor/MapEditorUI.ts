@@ -385,7 +385,7 @@ export class MapEditorUI {
     // Checkbox-Status synchronisieren
     const checkbox = this.container.querySelector('#enforce-waypoint-order-checkbox') as HTMLInputElement;
     if (checkbox) {
-      checkbox.checked = levelData.enforceWaypointOrder === true;
+      checkbox.checked = levelData.enforceWaypointOrder;
     }
     
     this.hideJSONError();
@@ -441,7 +441,7 @@ export class MapEditorUI {
       typeof data === 'object' &&
       Array.isArray(data.blocks) &&
       typeof data.moodleSuccessCode === 'string' &&
-      (data.enforceWaypointOrder === undefined || typeof data.enforceWaypointOrder === 'boolean') &&
+      typeof data.enforceWaypointOrder === 'boolean' &&
       data.objects &&
       typeof data.objects === 'object' &&
       data.objects.car &&
