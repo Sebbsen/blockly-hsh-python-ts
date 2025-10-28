@@ -5,6 +5,7 @@
  */
 
 import {LevelData} from './interfaces';
+import {allBlocks} from './blocks/blockRegistry';
 
 /*
 This toolbox contains nearly every single built-in block that Blockly offers,
@@ -13,15 +14,6 @@ You probably don't need every single block, and should consider either rewriting
 your toolbox from scratch, or carefully choosing whether you need each block
 listed here.
 */
-
-// Alle verfügbaren Blöcke definieren
-const allBlocks = [
-  { kind: 'block', type: 'move_up' },
-  { kind: 'block', type: 'move_right' },
-  { kind: 'block', type: 'move_left' },
-  { kind: 'block', type: 'move_down' },
-  { kind: 'block', type: 'repeat_loop' },
-];
 
 // Standard Toolbox mit allen Blöcken (für Fallback)
 export const defaultToolbox = {
