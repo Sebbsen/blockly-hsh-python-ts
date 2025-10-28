@@ -369,11 +369,7 @@ export class MapEditorUI {
     const checkbox = this.container.querySelector('#enforce-waypoint-order-checkbox') as HTMLInputElement;
     const levelData = this.mapEditor.getCurrentLevel();
     
-    if (checkbox.checked) {
-      levelData.enforceWaypointOrder = true;
-    } else {
-      delete levelData.enforceWaypointOrder;
-    }
+    levelData.enforceWaypointOrder = checkbox.checked;
     
     this.mapEditor.loadLevel(levelData);
   }

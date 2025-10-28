@@ -244,6 +244,7 @@ export class MapEditor {
     return {
       blocks: [],
       moodleSuccessCode: 'NEW_LEVEL',
+      enforceWaypointOrder: false,
       objects: {
         car: { emoji: '🚗', pos: { x: 0, y: 0 } },
         destination: { emoji: '🏠', pos: { x: 7, y: 7 } },
@@ -264,6 +265,11 @@ export class MapEditor {
   }
 
   public loadLevel(level: LevelData): void {
+    // Sicherstellen, dass enforceWaypointOrder immer gesetzt ist
+    if (level.enforceWaypointOrder === undefined) {
+      level.enforceWaypointOrder = false;
+    }
+    
     this.state.currentLevel = level;
     this.draw();
     this.notifyChange();
