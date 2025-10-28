@@ -8,11 +8,19 @@ export class MapEditorUI {
   private toolbar!: HTMLElement;
   private canvasContainer!: HTMLElement;
   private statusBar!: HTMLElement;
+  private jsonTextarea!: HTMLTextAreaElement;
+  private jsonErrorElement!: HTMLElement;
+  private isUpdatingFromEditor: boolean = false;
 
   constructor(container: HTMLElement, mapEditor: MapEditor) {
     this.container = container;
     this.mapEditor = mapEditor;
     this.createUI();
+    
+    // Callback für automatische JSON-Updates setzen
+    this.mapEditor.setOnChangeCallback(() => {
+      this.updateJSONFromEditor();
+    });
   }
 
   private createUI(): void {
@@ -22,17 +30,8 @@ export class MapEditorUI {
     // CSS Styles hinzufügen
     this.addStyles();
     
-    // Toolbar erstellen
-    this.createToolbar();
-    
-    // Blocks-Sektion erstellen
-    this.createBlocksSection();
-    
-    // Canvas Container erstellen
-    this.createCanvasContainer();
-    
-    // Status Bar erstellen
-    this.createStatusBar();
+    // Haupt-Layout erstellen (zwei Spalten)
+    this.createMainLayout();
     
     // Event Listeners einrichten
     this.setupEventListeners();
@@ -49,6 +48,34 @@ export class MapEditorUI {
         background: #F3F4F6;
         border-radius: 8px;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        height: 100vh;
+        box-sizing: border-box;
+      }
+      
+      .main-layout {
+        display: flex;
+        gap: 16px;
+        flex: 1;
+        min-height: 0;
+      }
+      
+      .left-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        flex: 1;
+        min-width: 0;
+      }
+      
+      .right-panel {
+        display: flex;
+        flex-direction: column;
+        width: 400px;
+        min-width: 400px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
       }
       
       .map-editor-toolbar {
@@ -237,8 +264,199 @@ export class MapEditorUI {
         font-size: 12px;
         color: #6B7280;
       }
+      
+      .json-view-header {
+        padding: 12px 16px;
+        background: #F9FAFB;
+        border-bottom: 1px solid #E5E7EB;
+        font-weight: 500;
+        color: #374151;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .json-view-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+      
+      .json-textarea {
+        flex: 1;
+        border: none;
+        padding: 16px;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 13px;
+        line-height: 1.5;
+        resize: none;
+        outline: none;
+        background: #FAFAFA;
+        color: #374151;
+        min-height: 300px;
+      }
+      
+      .json-textarea:focus {
+        background: white;
+        box-shadow: inset 0 0 0 2px #3B82F6;
+      }
+      
+      .json-error {
+        background: #FEF2F2;
+        color: #DC2626;
+        padding: 8px 16px;
+        font-size: 12px;
+        border-top: 1px solid #FECACA;
+      }
+      
+      .json-actions {
+        padding: 12px 16px;
+        background: #F9FAFB;
+        border-top: 1px solid #E5E7EB;
+        display: flex;
+        gap: 8px;
+      }
+      
+      .json-button {
+        padding: 6px 12px;
+        border: 1px solid #D1D5DB;
+        border-radius: 4px;
+        background: white;
+        cursor: pointer;
+        font-size: 12px;
+        color: #374151;
+        transition: all 0.2s;
+      }
+      
+      .json-button:hover {
+        background: #F9FAFB;
+        border-color: #3B82F6;
+        color: #3B82F6;
+      }
+      
+      .json-button.primary {
+        background: #3B82F6;
+        color: white;
+        border-color: #3B82F6;
+      }
+      
+      .json-button.primary:hover {
+        background: #2563EB;
+      }
     `;
     document.head.appendChild(style);
+  }
+
+  private createMainLayout(): void {
+    // Haupt-Layout Container
+    const mainLayout = document.createElement('div');
+    mainLayout.className = 'main-layout';
+    
+    // Linke Panel (Map Editor)
+    const leftPanel = document.createElement('div');
+    leftPanel.className = 'left-panel';
+    
+    // Toolbar erstellen
+    this.createToolbar();
+    
+    // Blocks-Sektion erstellen
+    this.createBlocksSection();
+    
+    // Canvas Container erstellen
+    this.createCanvasContainer();
+    
+    // Status Bar erstellen
+    this.createStatusBar();
+    
+    // Alle Komponenten zum linken Panel hinzufügen
+    leftPanel.appendChild(this.toolbar);
+    leftPanel.appendChild(this.container.querySelector('.blocks-section')!);
+    leftPanel.appendChild(this.canvasContainer);
+    leftPanel.appendChild(this.statusBar);
+    
+    // Rechtes Panel (JSON View)
+    const rightPanel = this.createJSONView();
+    
+    // Layout zusammenbauen
+    mainLayout.appendChild(leftPanel);
+    mainLayout.appendChild(rightPanel);
+    this.container.appendChild(mainLayout);
+  }
+
+  private createJSONView(): HTMLElement {
+    const rightPanel = document.createElement('div');
+    rightPanel.className = 'right-panel';
+    
+    // Header
+    const header = document.createElement('div');
+    header.className = 'json-view-header';
+    
+    const title = document.createElement('span');
+    title.textContent = 'Live JSON View';
+    
+    const status = document.createElement('span');
+    status.id = 'json-status';
+    status.textContent = 'Live';
+    status.style.fontSize = '12px';
+    status.style.color = '#10B981';
+    
+    header.appendChild(title);
+    header.appendChild(status);
+    
+    // Content
+    const content = document.createElement('div');
+    content.className = 'json-view-content';
+    
+    // Textarea für JSON
+    this.jsonTextarea = document.createElement('textarea');
+    this.jsonTextarea.className = 'json-textarea';
+    this.jsonTextarea.placeholder = 'JSON wird automatisch aktualisiert...';
+    
+    // Error Element
+    this.jsonErrorElement = document.createElement('div');
+    this.jsonErrorElement.className = 'json-error';
+    this.jsonErrorElement.style.display = 'none';
+    
+    // Actions
+    const actions = document.createElement('div');
+    actions.className = 'json-actions';
+    
+    const formatButton = document.createElement('button');
+    formatButton.textContent = 'Formatieren';
+    formatButton.className = 'json-button';
+    formatButton.addEventListener('click', () => this.formatJSON());
+    
+    const validateButton = document.createElement('button');
+    validateButton.textContent = 'Validieren';
+    validateButton.className = 'json-button primary';
+    validateButton.addEventListener('click', () => this.validateAndApplyJSON());
+    
+    const resetButton = document.createElement('button');
+    resetButton.textContent = 'Zurücksetzen';
+    resetButton.className = 'json-button';
+    resetButton.addEventListener('click', () => this.resetJSONFromEditor());
+    
+    actions.appendChild(formatButton);
+    actions.appendChild(validateButton);
+    actions.appendChild(resetButton);
+    
+    // Event Listeners für Textarea
+    this.jsonTextarea.addEventListener('input', () => this.onJSONInput());
+    this.jsonTextarea.addEventListener('blur', () => this.validateAndApplyJSON());
+    
+    // Zusammenbauen
+    content.appendChild(this.jsonTextarea);
+    content.appendChild(this.jsonErrorElement);
+    
+    rightPanel.appendChild(header);
+    rightPanel.appendChild(content);
+    rightPanel.appendChild(actions);
+    
+    // Initial JSON laden
+    this.updateJSONFromEditor();
+    
+    return rightPanel;
   }
 
   private createToolbar(): void {
@@ -560,5 +778,103 @@ export class MapEditorUI {
   private updateObjectButtons(): void {
     const buttons = this.toolbar.querySelectorAll('.object-button');
     buttons.forEach(button => button.classList.remove('active'));
+  }
+
+  // JSON View Management Methods
+  private updateJSONFromEditor(): void {
+    if (this.isUpdatingFromEditor) return;
+    
+    this.isUpdatingFromEditor = true;
+    const levelData = this.mapEditor.getCurrentLevel();
+    this.jsonTextarea.value = JSON.stringify(levelData, null, 2);
+    this.hideJSONError();
+    this.updateJSONStatus('Live', '#10B981');
+    this.isUpdatingFromEditor = false;
+  }
+
+  private onJSONInput(): void {
+    this.updateJSONStatus('Bearbeitet', '#F59E0B');
+  }
+
+  private formatJSON(): void {
+    try {
+      const parsed = JSON.parse(this.jsonTextarea.value);
+      this.jsonTextarea.value = JSON.stringify(parsed, null, 2);
+      this.hideJSONError();
+      this.updateJSONStatus('Formatiert', '#10B981');
+    } catch (error) {
+      this.showJSONError('Ungültiges JSON Format');
+    }
+  }
+
+  private validateAndApplyJSON(): void {
+    try {
+      const parsed = JSON.parse(this.jsonTextarea.value);
+      
+      // Validierung der Level-Struktur
+      if (!this.validateLevelStructure(parsed)) {
+        this.showJSONError('Ungültige Level-Struktur');
+        return;
+      }
+      
+      // Level im Editor aktualisieren
+      this.mapEditor.loadLevel(parsed);
+      this.updateBlocksDisplay();
+      this.updateBlockButtons();
+      
+      this.hideJSONError();
+      this.updateJSONStatus('Angewendet', '#10B981');
+      
+    } catch (error) {
+      this.showJSONError(`JSON Fehler: ${error instanceof Error ? error.message : 'Unbekannter Fehler'}`);
+    }
+  }
+
+  private resetJSONFromEditor(): void {
+    this.updateJSONFromEditor();
+  }
+
+  private validateLevelStructure(data: any): boolean {
+    return (
+      data &&
+      typeof data === 'object' &&
+      Array.isArray(data.blocks) &&
+      typeof data.moodleSuccessCode === 'string' &&
+      data.objects &&
+      typeof data.objects === 'object' &&
+      data.objects.car &&
+      data.objects.destination &&
+      Array.isArray(data.objects.waypoints) &&
+      Array.isArray(data.objects.obstacles) &&
+      data.objects.car.pos &&
+      data.objects.destination.pos &&
+      typeof data.objects.car.pos.x === 'number' &&
+      typeof data.objects.car.pos.y === 'number' &&
+      typeof data.objects.destination.pos.x === 'number' &&
+      typeof data.objects.destination.pos.y === 'number'
+    );
+  }
+
+  private showJSONError(message: string): void {
+    this.jsonErrorElement.textContent = message;
+    this.jsonErrorElement.style.display = 'block';
+    this.updateJSONStatus('Fehler', '#EF4444');
+  }
+
+  private hideJSONError(): void {
+    this.jsonErrorElement.style.display = 'none';
+  }
+
+  private updateJSONStatus(text: string, color: string): void {
+    const statusElement = document.getElementById('json-status');
+    if (statusElement) {
+      statusElement.textContent = text;
+      statusElement.style.color = color;
+    }
+  }
+
+  // Öffentliche Methode für externe Updates
+  public refreshJSONView(): void {
+    this.updateJSONFromEditor();
   }
 }

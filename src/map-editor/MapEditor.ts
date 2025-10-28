@@ -8,6 +8,7 @@ export class MapEditor {
   private state: MapEditorState;
   private objectTemplates: ObjectTemplate[];
   private isRemoveMode: boolean = false;
+  private onChangeCallback?: () => void;
 
   constructor(canvasContainer: HTMLElement, initialLevel?: LevelData) {
     this.canvasContainer = canvasContainer;
@@ -33,6 +34,17 @@ export class MapEditor {
     this.initializeCanvas();
     this.setupEventListeners();
     this.draw();
+  }
+
+  // Callback für Änderungen setzen
+  public setOnChangeCallback(callback: () => void): void {
+    this.onChangeCallback = callback;
+  }
+
+  private notifyChange(): void {
+    if (this.onChangeCallback) {
+      this.onChangeCallback();
+    }
   }
 
   private initializeCanvas(): void {
@@ -143,6 +155,7 @@ export class MapEditor {
     }
 
     this.draw();
+    this.notifyChange();
   }
 
   private drawPreview(x: number, y: number): void {
@@ -253,11 +266,13 @@ export class MapEditor {
   public loadLevel(level: LevelData): void {
     this.state.currentLevel = level;
     this.draw();
+    this.notifyChange();
   }
 
   public clearLevel(): void {
     this.state.currentLevel = this.createEmptyLevel();
     this.draw();
+    this.notifyChange();
   }
 
   public removeObjectAt(position: LevelPosition): void {
@@ -272,6 +287,7 @@ export class MapEditor {
     );
     
     this.draw();
+    this.notifyChange();
   }
 
   public getObjectTemplates(): ObjectTemplate[] {
@@ -286,6 +302,7 @@ export class MapEditor {
   public addBlock(blockName: string): void {
     if (!this.state.currentLevel.blocks.includes(blockName)) {
       this.state.currentLevel.blocks.push(blockName);
+      this.notifyChange();
     }
   }
 
@@ -293,6 +310,7 @@ export class MapEditor {
     this.state.currentLevel.blocks = this.state.currentLevel.blocks.filter(
       block => block !== blockName
     );
+    this.notifyChange();
   }
 
   public getBlocks(): string[] {
@@ -301,10 +319,12 @@ export class MapEditor {
 
   public setBlocks(blocks: string[]): void {
     this.state.currentLevel.blocks = [...blocks];
+    this.notifyChange();
   }
 
   public clearBlocks(): void {
     this.state.currentLevel.blocks = [];
+    this.notifyChange();
   }
 
   public hasBlock(blockName: string): boolean {
