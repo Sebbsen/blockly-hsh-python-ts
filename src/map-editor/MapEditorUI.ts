@@ -1,5 +1,6 @@
 import { MapEditor } from './MapEditor';
 import { ObjectType, ObjectTemplate } from './types';
+import { allBlocks } from '../blocks/blockRegistry';
 
 export class MapEditorUI {
   private mapEditor: MapEditor;
@@ -330,7 +331,11 @@ export class MapEditorUI {
     blocksList.className = 'blocks-list';
     
     // Verfügbare Blocks definieren
-    const availableBlocks = ['move_left', 'move_right', 'move_up'];
+    const availableBlocks: string[] = [];
+
+    allBlocks.forEach((block) => {
+      availableBlocks.push(block.type)
+    })
     
     availableBlocks.forEach(blockName => {
       const button = document.createElement('button');
