@@ -1,5 +1,5 @@
 {
-    "blocks": ["move_up"],
+    "blocks": ["move_left"],
     "moodleSuccessCode": "LEVEL1_AKN_DTZ",
     "objects": {
         "car": {

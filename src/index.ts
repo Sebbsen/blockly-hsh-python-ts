@@ -16,7 +16,7 @@ import {forBlock} from './generators/javascript';
 import {javascriptGenerator} from 'blockly/javascript';
 import {pythonGenerator} from 'blockly/python';
 import {save, load} from './serialization';
-import {toolbox} from './toolbox';
+import {defaultToolbox, createDynamicToolbox} from './toolbox';
 import './index.css';
 
 import { Maze } from './maze';
@@ -31,6 +31,7 @@ const loadLevel = async (): Promise<LevelData> => {
 };
 
 let levelConfig: LevelData | null = null;
+let ws: Blockly.WorkspaceSvg;
 
 // Load level data
 const initializeLevel = async () => {
@@ -47,7 +48,7 @@ Blockly.common.defineBlocks(blocks);
 Object.assign(javascriptGenerator.forBlock, forBlock);
 Object.assign(pythonGenerator.forBlock, pythonForBlock);
 
-// Set up UI elements and inject Blockly
+// Set up UI elements
 const codeDiv = document.getElementById('generatedCode')?.firstChild;
 const outputDiv = document.getElementById('output');
 const blocklyDiv = document.getElementById('blocklyDiv');
@@ -55,7 +56,6 @@ const blocklyDiv = document.getElementById('blocklyDiv');
 if (!blocklyDiv) {
   throw new Error(`div with id 'blocklyDiv' not found`);
 }
-const ws = Blockly.inject(blocklyDiv, {toolbox});
 
 const drawMaze = () => {
   // init Maze
@@ -119,6 +119,12 @@ runCodeBtn?.addEventListener('click', ()=> {
 const initializeApp = async () => {
   // Load level data first
   await initializeLevel();
+  
+  // Erstelle dynamische Toolbox basierend auf Level-Konfiguration
+  const toolbox = createDynamicToolbox(levelConfig);
+  
+  // Initialisiere Workspace mit dynamischer Toolbox
+  ws = Blockly.inject(blocklyDiv, {toolbox});
   
   if (ws) {
     drawMaze();
