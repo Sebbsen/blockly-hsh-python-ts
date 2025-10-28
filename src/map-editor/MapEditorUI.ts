@@ -24,6 +24,9 @@ export class MapEditorUI {
     // Toolbar erstellen
     this.createToolbar();
     
+    // Blocks-Sektion erstellen
+    this.createBlocksSection();
+    
     // Canvas Container erstellen
     this.createCanvasContainer();
     
@@ -179,6 +182,60 @@ export class MapEditorUI {
         border-color: #3B82F6;
         color: #3B82F6;
       }
+      
+      .blocks-section {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+      
+      .blocks-title {
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 8px;
+      }
+      
+      .blocks-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      
+      .block-button {
+        padding: 6px 12px;
+        border: 1px solid #D1D5DB;
+        border-radius: 4px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 14px;
+        color: #374151;
+      }
+      
+      .block-button:hover {
+        background: #F9FAFB;
+        border-color: #3B82F6;
+        color: #3B82F6;
+      }
+      
+      .block-button.added {
+        background: #EFF6FF;
+        border-color: #3B82F6;
+        color: #3B82F6;
+      }
+      
+      .current-blocks {
+        margin-top: 8px;
+        padding: 8px;
+        background: #F9FAFB;
+        border-radius: 4px;
+        font-size: 12px;
+        color: #6B7280;
+      }
     `;
     document.head.appendChild(style);
   }
@@ -261,6 +318,45 @@ export class MapEditorUI {
     return button;
   }
 
+  private createBlocksSection(): void {
+    const blocksSection = document.createElement('div');
+    blocksSection.className = 'blocks-section';
+    
+    const title = document.createElement('div');
+    title.className = 'blocks-title';
+    title.textContent = 'Verfügbare Blocks:';
+    
+    const blocksList = document.createElement('div');
+    blocksList.className = 'blocks-list';
+    
+    // Verfügbare Blocks definieren
+    const availableBlocks = ['move_left', 'move_right', 'move_up'];
+    
+    availableBlocks.forEach(blockName => {
+      const button = document.createElement('button');
+      button.className = 'block-button';
+      button.textContent = blockName;
+      button.dataset.block = blockName;
+      
+      button.addEventListener('click', () => {
+        this.toggleBlock(blockName);
+      });
+      
+      blocksList.appendChild(button);
+    });
+    
+    const currentBlocks = document.createElement('div');
+    currentBlocks.className = 'current-blocks';
+    currentBlocks.id = 'current-blocks-display';
+    currentBlocks.textContent = 'Aktuelle Blocks: Keine';
+    
+    blocksSection.appendChild(title);
+    blocksSection.appendChild(blocksList);
+    blocksSection.appendChild(currentBlocks);
+    
+    this.container.appendChild(blocksSection);
+  }
+
   private createCanvasContainer(): void {
     this.canvasContainer = document.createElement('div');
     this.canvasContainer.className = 'canvas-container';
@@ -338,6 +434,8 @@ export class MapEditorUI {
   private clearLevel(): void {
     if (confirm('Möchtest du das Level wirklich leeren? Alle Objekte werden entfernt.')) {
       this.mapEditor.clearLevel();
+      this.updateBlocksDisplay();
+      this.updateBlockButtons();
     }
   }
 
@@ -365,11 +463,49 @@ export class MapEditorUI {
         try {
           const levelData = JSON.parse(e.target?.result as string);
           this.mapEditor.loadLevel(levelData);
+          this.updateBlocksDisplay();
         } catch (error) {
           alert('Fehler beim Laden der Datei. Bitte überprüfe das Format.');
         }
       };
       reader.readAsText(file);
     }
+  }
+
+  private toggleBlock(blockName: string): void {
+    if (this.mapEditor.hasBlock(blockName)) {
+      this.mapEditor.removeBlock(blockName);
+    } else {
+      this.mapEditor.addBlock(blockName);
+    }
+    
+    this.updateBlocksDisplay();
+    this.updateBlockButtons();
+  }
+
+  private updateBlocksDisplay(): void {
+    const display = document.getElementById('current-blocks-display');
+    if (display) {
+      const blocks = this.mapEditor.getBlocks();
+      if (blocks.length === 0) {
+        display.textContent = 'Aktuelle Blocks: Keine';
+      } else {
+        display.textContent = `Aktuelle Blocks: ${blocks.join(', ')}`;
+      }
+    }
+  }
+
+  private updateBlockButtons(): void {
+    const buttons = this.container.querySelectorAll('.block-button');
+    buttons.forEach(button => {
+      const blockName = button.getAttribute('data-block');
+      if (blockName) {
+        if (this.mapEditor.hasBlock(blockName)) {
+          button.classList.add('added');
+        } else {
+          button.classList.remove('added');
+        }
+      }
+    });
   }
 }

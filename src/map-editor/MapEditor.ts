@@ -260,4 +260,33 @@ export class MapEditor {
   public exportLevel(): string {
     return JSON.stringify(this.state.currentLevel, null, 2);
   }
+
+  // Blocks-Management Methoden
+  public addBlock(blockName: string): void {
+    if (!this.state.currentLevel.blocks.includes(blockName)) {
+      this.state.currentLevel.blocks.push(blockName);
+    }
+  }
+
+  public removeBlock(blockName: string): void {
+    this.state.currentLevel.blocks = this.state.currentLevel.blocks.filter(
+      block => block !== blockName
+    );
+  }
+
+  public getBlocks(): string[] {
+    return [...this.state.currentLevel.blocks];
+  }
+
+  public setBlocks(blocks: string[]): void {
+    this.state.currentLevel.blocks = [...blocks];
+  }
+
+  public clearBlocks(): void {
+    this.state.currentLevel.blocks = [];
+  }
+
+  public hasBlock(blockName: string): boolean {
+    return this.state.currentLevel.blocks.includes(blockName);
+  }
 }
