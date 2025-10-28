@@ -9,7 +9,7 @@ Für jeden neuen Block musst du **4 Dateien** bearbeiten:
 1. **`src/blocks/text.ts`** - Block-Definition
 2. **`src/generators/javascript.ts`** - JavaScript-Code-Generator
 3. **`src/generators/python.ts`** - Python-Code-Generator
-4. **`src/toolbox.ts`** - Toolbox (damit Block verfügbar ist)
+4. **`src/blocks/blockRegistry.ts`** - Block-Registry (damit Block verfügbar ist)
 
 ## 🚀 Schritt-für-Schritt Anleitung
 
@@ -59,27 +59,20 @@ forBlock['mein_neuer_block'] = function (
 };
 ```
 
-### 4. Block zur Toolbox hinzufügen (`src/toolbox.ts`)
+### 4. Block zur Block-Registry hinzufügen (`src/blocks/blockRegistry.ts`)
 
 ```typescript
-export const toolbox = {
-  kind: 'categoryToolbox',
-  contents: [
-    {
-      kind: 'category',
-      name: 'Drive',
-      expanded: true,
-      contents: [
-        { kind: 'block', type: 'move_up' },
-        { kind: 'block', type: 'move_right' },
-        { kind: 'block', type: 'move_left' },
-        { kind: 'block', type: 'move_down' },
-        { kind: 'block', type: 'mein_neuer_block' },  // ← Hier hinzufügen
-      ],
-    },
-  ],
-};
+export const allBlocks: BlockDefinition[] = [
+  { kind: 'block', type: 'move_up' },
+  { kind: 'block', type: 'move_right' },
+  { kind: 'block', type: 'move_left' },
+  { kind: 'block', type: 'move_down' },
+  { kind: 'block', type: 'repeat_loop' },
+  { kind: 'block', type: 'mein_neuer_block' },  // ← Hier hinzufügen
+];
 ```
+
+**Hinweis**: Die Toolbox (`src/toolbox.ts`) muss nicht mehr manuell angepasst werden, da sie automatisch alle Blöcke aus der `blockRegistry.ts` lädt.
 
 ## 🎨 Block-Eigenschaften
 
