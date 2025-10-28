@@ -15,6 +15,7 @@ export class Maze {
     waypoints: LevelObject[];
     inventory: LevelObject[];
     moodleSuccessCode: string;
+    enforceWaypointOrder: boolean;
 
     constructor(
         canvasContainer: HTMLElement,
@@ -33,6 +34,7 @@ export class Maze {
         this.waypoints = levelData.objects.waypoints
         this.inventory = [];
         this.moodleSuccessCode = levelData.moodleSuccessCode;
+        this.enforceWaypointOrder = levelData.enforceWaypointOrder;
         message('hide', '');
     }
 
@@ -216,6 +218,11 @@ export class Maze {
     }
 
     handleCarOnWaypoint(waypoint: LevelObject, index: number) {
+        if(this.enforceWaypointOrder && index != 0){
+            message('yellow', 'Achte auf die Reihenfolge der Dinge, die du einsammeln musst');
+            this.draw();
+            return;
+        } 
         this.inventory.push(waypoint);
         this.waypoints.splice(index, 1);
         this.draw();
