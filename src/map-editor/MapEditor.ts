@@ -7,6 +7,7 @@ export class MapEditor {
   private config: MapEditorConfig;
   private state: MapEditorState;
   private objectTemplates: ObjectTemplate[];
+  private isRemoveMode: boolean = false;
 
   constructor(canvasContainer: HTMLElement, initialLevel?: LevelData) {
     this.canvasContainer = canvasContainer;
@@ -48,32 +49,52 @@ export class MapEditor {
 
   private setupEventListeners(): void {
     this.canvas.addEventListener('click', (e) => this.handleCanvasClick(e));
+    this.canvas.addEventListener('contextmenu', (e) => this.handleRightClick(e));
     this.canvas.addEventListener('mousemove', (e) => this.handleMouseMove(e));
     this.canvas.addEventListener('mouseleave', () => this.handleMouseLeave());
   }
 
   private handleCanvasClick(e: MouseEvent): void {
-    if (!this.state.selectedObjectType) return;
-
     const rect = this.canvas.getBoundingClientRect();
     const x = Math.floor((e.clientX - rect.left) / this.config.cellSize);
     const y = Math.floor((e.clientY - rect.top) / this.config.cellSize);
 
     if (x >= 0 && x < this.config.gridSize && y >= 0 && y < this.config.gridSize) {
-      this.placeObject(this.state.selectedObjectType, { x, y });
+      if (this.isRemoveMode) {
+        this.removeObjectAt({ x, y });
+      } else if (this.state.selectedObjectType) {
+        this.placeObject(this.state.selectedObjectType, { x, y });
+      }
+    }
+  }
+
+  private handleRightClick(e: MouseEvent): void {
+    e.preventDefault(); // Verhindert das Kontextmenü
+    
+    const rect = this.canvas.getBoundingClientRect();
+    const x = Math.floor((e.clientX - rect.left) / this.config.cellSize);
+    const y = Math.floor((e.clientY - rect.top) / this.config.cellSize);
+
+    if (x >= 0 && x < this.config.gridSize && y >= 0 && y < this.config.gridSize) {
+      this.removeObjectAt({ x, y });
     }
   }
 
   private handleMouseMove(e: MouseEvent): void {
-    if (!this.state.selectedObjectType) return;
-
     const rect = this.canvas.getBoundingClientRect();
     const x = Math.floor((e.clientX - rect.left) / this.config.cellSize);
     const y = Math.floor((e.clientY - rect.top) / this.config.cellSize);
 
     if (x >= 0 && x < this.config.gridSize && y >= 0 && y < this.config.gridSize) {
-      this.canvas.style.cursor = 'crosshair';
-      this.drawPreview(x, y);
+      if (this.isRemoveMode) {
+        this.canvas.style.cursor = 'not-allowed';
+      } else if (this.state.selectedObjectType) {
+        this.canvas.style.cursor = 'crosshair';
+        this.drawPreview(x, y);
+      } else {
+        this.canvas.style.cursor = 'default';
+        this.draw();
+      }
     } else {
       this.canvas.style.cursor = 'default';
       this.draw();
@@ -288,5 +309,18 @@ export class MapEditor {
 
   public hasBlock(blockName: string): boolean {
     return this.state.currentLevel.blocks.includes(blockName);
+  }
+
+  // Entfernen-Modus Methoden
+  public setRemoveMode(enabled: boolean): void {
+    this.isRemoveMode = enabled;
+    if (enabled) {
+      this.state.selectedObjectType = null;
+    }
+    this.draw();
+  }
+
+  public isInRemoveMode(): boolean {
+    return this.isRemoveMode;
   }
 }

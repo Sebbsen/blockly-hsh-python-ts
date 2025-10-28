@@ -265,6 +265,11 @@ export class MapEditorUI {
     const actionSection = document.createElement('div');
     actionSection.className = 'toolbar-section';
     
+    const removeModeButton = document.createElement('button');
+    removeModeButton.textContent = 'Entfernen-Modus';
+    removeModeButton.className = 'action-button secondary';
+    removeModeButton.addEventListener('click', () => this.toggleRemoveMode());
+    
     const clearButton = document.createElement('button');
     clearButton.textContent = 'Level leeren';
     clearButton.className = 'action-button danger';
@@ -286,6 +291,7 @@ export class MapEditorUI {
     fileInput.className = 'file-input';
     fileInput.addEventListener('change', (e) => this.handleFileImport(e));
     
+    actionSection.appendChild(removeModeButton);
     actionSection.appendChild(clearButton);
     actionSection.appendChild(exportButton);
     actionSection.appendChild(importButton);
@@ -390,7 +396,7 @@ export class MapEditorUI {
     statusInfo.appendChild(gridInfo);
     
     const instructions = document.createElement('span');
-    instructions.textContent = 'Klicke auf ein Objekt und dann auf das Grid, um es zu platzieren';
+    instructions.textContent = 'Klicke auf ein Objekt und dann auf das Grid, um es zu platzieren. Rechtsklick zum Entfernen.';
     
     this.statusBar.appendChild(statusInfo);
     this.statusBar.appendChild(instructions);
@@ -407,6 +413,12 @@ export class MapEditorUI {
   }
 
   private selectObjectType(type: ObjectType | null): void {
+    // Entfernen-Modus deaktivieren, wenn ein Objekt ausgewählt wird
+    if (type && this.mapEditor.isInRemoveMode()) {
+      this.mapEditor.setRemoveMode(false);
+      this.updateRemoveModeButton();
+    }
+    
     // Alle Buttons deaktivieren
     const buttons = this.toolbar.querySelectorAll('.object-button');
     buttons.forEach(button => button.classList.remove('active'));
@@ -424,10 +436,12 @@ export class MapEditorUI {
     this.updateStatus(type);
   }
 
-  private updateStatus(selectedType: ObjectType | null): void {
+  private updateStatus(selectedType?: ObjectType | null): void {
     const statusElement = document.getElementById('selected-object-info');
     if (statusElement) {
-      if (selectedType) {
+      if (this.mapEditor.isInRemoveMode()) {
+        statusElement.textContent = 'Entfernen-Modus aktiv - Rechtsklick oder Linksklick zum Entfernen';
+      } else if (selectedType) {
         const template = this.mapEditor.getObjectTemplates().find(t => t.type === selectedType);
         statusElement.textContent = `Ausgewählt: ${template?.label || selectedType}`;
       } else {
@@ -512,5 +526,39 @@ export class MapEditorUI {
         }
       }
     });
+  }
+
+  private toggleRemoveMode(): void {
+    const isCurrentlyInRemoveMode = this.mapEditor.isInRemoveMode();
+    this.mapEditor.setRemoveMode(!isCurrentlyInRemoveMode);
+    
+    // UI-Buttons aktualisieren
+    this.updateRemoveModeButton();
+    this.updateObjectButtons();
+    this.updateStatus();
+  }
+
+  private updateRemoveModeButton(): void {
+    const buttons = this.toolbar.querySelectorAll('button');
+    const removeButton = Array.from(buttons).find(btn => 
+      btn.textContent?.includes('Entfernen-Modus')
+    ) as HTMLButtonElement;
+    
+    if (removeButton) {
+      if (this.mapEditor.isInRemoveMode()) {
+        removeButton.textContent = 'Entfernen-Modus (Aktiv)';
+        removeButton.classList.add('danger');
+        removeButton.classList.remove('secondary');
+      } else {
+        removeButton.textContent = 'Entfernen-Modus';
+        removeButton.classList.remove('danger');
+        removeButton.classList.add('secondary');
+      }
+    }
+  }
+
+  private updateObjectButtons(): void {
+    const buttons = this.toolbar.querySelectorAll('.object-button');
+    buttons.forEach(button => button.classList.remove('active'));
   }
 }
