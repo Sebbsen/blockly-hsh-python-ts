@@ -69,12 +69,12 @@ mapEditor.selectObjectType('car');
 
 ## 🎨 Objekt-Typen
 
-| Typ | Emoji | Beschreibung | Farbe |
-|-----|-------|--------------|-------|
-| `car` | 🚗 | Das spielbare Auto | Blau |
-| `destination` | 🏠 | Das Ziel | Grün |
-| `waypoint` | ⭐ | Wegpunkt zum Einsammeln | Gelb |
-| `obstacle` | ❌ | Hindernis | Rot |
+| Typ | Emoji | Beschreibung |
+|-----|-------|--------------|
+| `car` | 🚗 | Das spielbare Auto |
+| `destination` | 🏠 | Das Ziel |
+| `waypoint` | ⭐ | Wegpunkt zum Einsammeln |
+| `obstacle` | ❌ | Hindernis |
 
 ## 🖱️ Bedienung
 
