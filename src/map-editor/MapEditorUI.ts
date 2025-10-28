@@ -404,21 +404,7 @@ export class MapEditorUI {
     header.appendChild(title);
     header.appendChild(status);
     
-    // Content
-    const content = document.createElement('div');
-    content.className = 'json-view-content';
-    
-    // Textarea für JSON
-    this.jsonTextarea = document.createElement('textarea');
-    this.jsonTextarea.className = 'json-textarea';
-    this.jsonTextarea.placeholder = 'JSON wird automatisch aktualisiert...';
-    
-    // Error Element
-    this.jsonErrorElement = document.createElement('div');
-    this.jsonErrorElement.className = 'json-error';
-    this.jsonErrorElement.style.display = 'none';
-    
-    // Actions
+    // Actions direkt unter Header
     const actions = document.createElement('div');
     actions.className = 'json-actions';
     
@@ -441,6 +427,20 @@ export class MapEditorUI {
     actions.appendChild(validateButton);
     actions.appendChild(resetButton);
     
+    // Content
+    const content = document.createElement('div');
+    content.className = 'json-view-content';
+    
+    // Textarea für JSON
+    this.jsonTextarea = document.createElement('textarea');
+    this.jsonTextarea.className = 'json-textarea';
+    this.jsonTextarea.placeholder = 'JSON wird automatisch aktualisiert...';
+    
+    // Error Element
+    this.jsonErrorElement = document.createElement('div');
+    this.jsonErrorElement.className = 'json-error';
+    this.jsonErrorElement.style.display = 'none';
+    
     // Event Listeners für Textarea
     this.jsonTextarea.addEventListener('input', () => this.onJSONInput());
     this.jsonTextarea.addEventListener('blur', () => this.validateAndApplyJSON());
@@ -450,8 +450,8 @@ export class MapEditorUI {
     content.appendChild(this.jsonErrorElement);
     
     rightPanel.appendChild(header);
-    rightPanel.appendChild(content);
     rightPanel.appendChild(actions);
+    rightPanel.appendChild(content);
     
     // Initial JSON laden
     this.updateJSONFromEditor();
