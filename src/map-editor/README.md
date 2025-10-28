@@ -20,7 +20,9 @@ src/map-editor/
 - **Objekt-Platzierung**: Einfaches Klicken zum Platzieren von Objekten
 - **Live-Vorschau**: Vorschau beim Bewegen der Maus über das Grid
 - **Objekt-Typen**: Auto, Ziel, Wegpunkte, Hindernisse
-- **Import/Export**: JSON-basierte Speicherung und Laden von Leveln
+- **Live JSON View**: Echtzeit-Anzeige und Bearbeitung des Level-JSON
+- **Erweiterte Bearbeitung**: Emoji-Änderungen und Waypoint-Reihenfolge über JSON
+- **Export**: JSON-basierte Speicherung von Leveln
 - **Responsive UI**: Moderne, benutzerfreundliche Oberfläche
 
 ## 🎯 Verwendung
@@ -76,12 +78,51 @@ mapEditor.selectObjectType('car');
 
 ## 🖱️ Bedienung
 
+### Visueller Editor (Linke Seite)
 1. **Objekt auswählen**: Klicke auf ein Objekt in der Toolbar
 2. **Platzieren**: Klicke auf das Grid, um das Objekt zu platzieren
 3. **Vorschau**: Bewege die Maus über das Grid für eine Vorschau
 4. **Abbrechen**: Drücke `ESC` oder wähle ein anderes Objekt
-5. **Exportieren**: Speichere dein Level als JSON-Datei
-6. **Importieren**: Lade ein bestehendes Level
+5. **Entfernen**: Aktiviere den "Entfernen-Modus" und klicke auf Objekte
+6. **Exportieren**: Speichere dein Level als JSON-Datei
+
+### JSON View (Rechte Seite)
+Die JSON View zeigt das aktuelle Level in Echtzeit an und ermöglicht erweiterte Bearbeitungen:
+
+#### Live-Updates
+- Das JSON wird automatisch aktualisiert, wenn du Objekte im visuellen Editor platzierst
+- Status zeigt "Live" wenn alles synchron ist
+- Status zeigt "Bearbeitet" wenn du das JSON manuell änderst
+
+#### Erweiterte Bearbeitungen
+**Emojis ändern:**
+```json
+{
+  "objects": {
+    "car": { "emoji": "🚙", "pos": { "x": 0, "y": 0 } },
+    "destination": { "emoji": "🎯", "pos": { "x": 7, "y": 7 } }
+  }
+}
+```
+
+**Waypoint-Reihenfolge ändern:**
+```json
+{
+  "objects": {
+    "waypoints": [
+      { "emoji": "⭐", "pos": { "x": 2, "y": 3 } },
+      { "emoji": "⭐", "pos": { "x": 4, "y": 5 } },
+      { "emoji": "⭐", "pos": { "x": 6, "y": 2 } }
+    ]
+  }
+}
+```
+Die Reihenfolge im Array bestimmt die Reihenfolge, in der die Waypoints eingesammelt werden müssen.
+
+#### JSON-Aktionen
+- **Formatieren**: Formatiert das JSON für bessere Lesbarkeit
+- **Speichern**: Validiert und übernimmt die JSON-Änderungen in den Editor
+- **Fehlerbehandlung**: Zeigt Syntax-Fehler oder ungültige Level-Strukturen an
 
 ## 🔧 API-Referenz
 
