@@ -24,6 +24,10 @@ export class MapEditor {
       currentLevel: initialLevel || this.createEmptyLevel()
     };
 
+    if (!Array.isArray(this.state.currentLevel.fixedBlocks)) {
+      this.state.currentLevel.fixedBlocks = [];
+    }
+
     this.objectTemplates = [
       { type: 'car', emoji: '🚗', label: 'Auto', color: '#3B82F6' },
       { type: 'destination', emoji: '🏠', label: 'Ziel', color: '#10B981' },
@@ -266,6 +270,9 @@ export class MapEditor {
   }
 
   public loadLevel(level: LevelData): void {
+    if (!Array.isArray(level.fixedBlocks)) {
+      level.fixedBlocks = [];
+    }
     this.state.currentLevel = level;
     this.draw();
     this.notifyChange();
@@ -331,6 +338,39 @@ export class MapEditor {
 
   public hasBlock(blockName: string): boolean {
     return this.state.currentLevel.blocks.includes(blockName);
+  }
+
+  // Fixed-Blocks-Management Methoden
+  public addFixedBlock(blockName: string): void {
+    if (!this.state.currentLevel.fixedBlocks.includes(blockName)) {
+      this.state.currentLevel.fixedBlocks.push(blockName);
+      this.notifyChange();
+    }
+  }
+
+  public removeFixedBlock(blockName: string): void {
+    this.state.currentLevel.fixedBlocks = this.state.currentLevel.fixedBlocks.filter(
+      block => block !== blockName
+    );
+    this.notifyChange();
+  }
+
+  public getFixedBlocks(): string[] {
+    return [...this.state.currentLevel.fixedBlocks];
+  }
+
+  public setFixedBlocks(blocks: string[]): void {
+    this.state.currentLevel.fixedBlocks = [...blocks];
+    this.notifyChange();
+  }
+
+  public clearFixedBlocks(): void {
+    this.state.currentLevel.fixedBlocks = [];
+    this.notifyChange();
+  }
+
+  public hasFixedBlock(blockName: string): boolean {
+    return this.state.currentLevel.fixedBlocks.includes(blockName);
   }
 
   // Entfernen-Modus Methoden

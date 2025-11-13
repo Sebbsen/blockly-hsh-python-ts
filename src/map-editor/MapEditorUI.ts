@@ -11,6 +11,8 @@ export class MapEditorUI {
   private statusBar!: HTMLElement;
   private jsonTextarea!: HTMLTextAreaElement;
   private jsonErrorElement!: HTMLElement;
+  private fixedBlocksList!: HTMLElement;
+  private currentFixedBlocksDisplay!: HTMLElement;
   private isUpdatingFromEditor: boolean = false;
 
   constructor(container: HTMLElement, mapEditor: MapEditor) {
@@ -79,6 +81,17 @@ export class MapEditorUI {
             </div>
           </div>
 
+          <!-- Fixed Blocks-Sektion -->
+          <div class="blocks-section">
+            <div class="blocks-title">Fixierte Blocks:</div>
+            <div class="blocks-list" id="fixed-blocks-list">
+              <!-- Fixed-Block-Buttons werden dynamisch generiert -->
+            </div>
+            <div class="current-blocks" id="current-fixed-blocks-display">
+              Fixierte Blocks: Keine
+            </div>
+          </div>
+
           <!-- Canvas Container -->
           <div class="canvas-container" id="canvas-container">
             <!-- Canvas wird vom MapEditor erstellt -->
@@ -126,10 +139,13 @@ export class MapEditorUI {
     this.statusBar = this.container.querySelector('.status-bar')!;
     this.jsonTextarea = this.container.querySelector('#json-textarea')!;
     this.jsonErrorElement = this.container.querySelector('#json-error')!;
+    this.fixedBlocksList = this.container.querySelector('#fixed-blocks-list')!;
+    this.currentFixedBlocksDisplay = this.container.querySelector('#current-fixed-blocks-display')!;
     
     // Dynamische Inhalte generieren
     this.createObjectButtons();
     this.createBlockButtons();
+    this.createFixedBlockButtons();
     this.setupActionButtons();
     
     // Canvas hinzufügen
@@ -163,12 +179,35 @@ export class MapEditorUI {
       button.className = 'block-button';
       button.textContent = blockName;
       button.dataset.block = blockName;
+      button.dataset.listType = 'regular';
       
       button.addEventListener('click', () => {
         this.toggleBlock(blockName);
       });
       
       blocksList.appendChild(button);
+    });
+  }
+
+  private createFixedBlockButtons(): void {
+    const availableBlocks: string[] = [];
+
+    allBlocks.forEach((block) => {
+      availableBlocks.push(block.type);
+    });
+
+    availableBlocks.forEach(blockName => {
+      const button = document.createElement('button');
+      button.className = 'block-button';
+      button.textContent = blockName;
+      button.dataset.block = blockName;
+      button.dataset.listType = 'fixed';
+
+      button.addEventListener('click', () => {
+        this.toggleFixedBlock(blockName);
+      });
+
+      this.fixedBlocksList.appendChild(button);
     });
   }
 
@@ -276,6 +315,8 @@ export class MapEditorUI {
       this.mapEditor.clearLevel();
       this.updateBlocksDisplay();
       this.updateBlockButtons();
+      this.updateFixedBlocksDisplay();
+      this.updateFixedBlockButtons();
     }
   }
 
@@ -305,6 +346,17 @@ export class MapEditorUI {
     this.updateBlockButtons();
   }
 
+  private toggleFixedBlock(blockName: string): void {
+    if (this.mapEditor.hasFixedBlock(blockName)) {
+      this.mapEditor.removeFixedBlock(blockName);
+    } else {
+      this.mapEditor.addFixedBlock(blockName);
+    }
+
+    this.updateFixedBlocksDisplay();
+    this.updateFixedBlockButtons();
+  }
+
   private updateBlocksDisplay(): void {
     const display = document.getElementById('current-blocks-display');
     if (display) {
@@ -318,11 +370,36 @@ export class MapEditorUI {
   }
 
   private updateBlockButtons(): void {
-    const buttons = this.container.querySelectorAll('.block-button');
+    const buttons = this.container.querySelectorAll('.block-button[data-list-type="regular"]');
     buttons.forEach(button => {
       const blockName = button.getAttribute('data-block');
       if (blockName) {
         if (this.mapEditor.hasBlock(blockName)) {
+          button.classList.add('added');
+        } else {
+          button.classList.remove('added');
+        }
+      }
+    });
+  }
+
+  private updateFixedBlocksDisplay(): void {
+    if (this.currentFixedBlocksDisplay) {
+      const fixedBlocks = this.mapEditor.getFixedBlocks();
+      if (fixedBlocks.length === 0) {
+        this.currentFixedBlocksDisplay.textContent = 'Fixierte Blocks: Keine';
+      } else {
+        this.currentFixedBlocksDisplay.textContent = `Fixierte Blocks: ${fixedBlocks.join(', ')}`;
+      }
+    }
+  }
+
+  private updateFixedBlockButtons(): void {
+    const buttons = this.container.querySelectorAll('.block-button[data-list-type="fixed"]');
+    buttons.forEach(button => {
+      const blockName = button.getAttribute('data-block');
+      if (blockName) {
+        if (this.mapEditor.hasFixedBlock(blockName)) {
           button.classList.add('added');
         } else {
           button.classList.remove('added');
@@ -387,6 +464,10 @@ export class MapEditorUI {
     if (checkbox) {
       checkbox.checked = levelData.enforceWaypointOrder;
     }
+    this.updateBlocksDisplay();
+    this.updateBlockButtons();
+    this.updateFixedBlocksDisplay();
+    this.updateFixedBlockButtons();
     
     this.hideJSONError();
     this.updateJSONStatus('Live', '#10B981');
@@ -440,6 +521,7 @@ export class MapEditorUI {
       data &&
       typeof data === 'object' &&
       Array.isArray(data.blocks) &&
+      Array.isArray(data.fixedBlocks) &&
       typeof data.moodleSuccessCode === 'string' &&
       typeof data.enforceWaypointOrder === 'boolean' &&
       data.objects &&
