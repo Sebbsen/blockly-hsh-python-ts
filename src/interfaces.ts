@@ -7,6 +7,7 @@ export interface LevelObject {
 
 export interface LevelData {
   blocks: string[];
+  fixedBlocks: string[];
   moodleSuccessCode: string;
   enforceWaypointOrder: boolean;
   objects: {

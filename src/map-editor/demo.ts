@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Beispiel-Level laden (optional)
     const exampleLevel = {
       blocks: ["move_left"],
+      fixedBlocks: ["move_up"],
       moodleSuccessCode: "DEMO_LEVEL",
       enforceWaypointOrder: false,
       objects: {

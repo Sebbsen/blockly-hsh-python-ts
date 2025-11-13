@@ -1,5 +1,6 @@
 {
     "blocks": ["move_up", "move_left", "move_right", "move_down"],
+    "fixedBlocks":[],
     "moodleSuccessCode": "LEVEL2_SCB_QAY",
     "enforceWaypointOrder": false,
     "objects": {

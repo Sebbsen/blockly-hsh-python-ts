@@ -22,6 +22,10 @@ import './index.css';
 import { Maze } from './maze';
 import {forBlock as pythonForBlock} from './generators/python';
 import {LevelData} from './interfaces';
+
+let levelConfig: LevelData | null = null;
+let ws: Blockly.WorkspaceSvg;
+
 const loadLevel = async (): Promise<LevelData> => {
   const response = await fetch('level/level.json');
   if (!response.ok) {
@@ -29,9 +33,6 @@ const loadLevel = async (): Promise<LevelData> => {
   }
   return response.json();
 };
-
-let levelConfig: LevelData | null = null;
-let ws: Blockly.WorkspaceSvg;
 
 // Load level data
 const initializeLevel = async () => {
@@ -115,6 +116,34 @@ runCodeBtn?.addEventListener('click', ()=> {
   runCode();
 });
 
+const renderStartBlock = (ws: Blockly.WorkspaceSvg) => {
+  // Prüfe ob bereits ein Start Block vorhanden ist
+  const existingStartBlock = ws.getTopBlocks().find(block => block.type === 'start');
+  if (!existingStartBlock) {
+    // Erstellt einen Start Block
+    const startBlock = ws.newBlock('start');
+    startBlock.initSvg();
+    startBlock.render();
+    startBlock.moveBy(50, 50);
+    
+  }
+}
+
+const renderFiexedBlocks = (ws: Blockly.WorkspaceSvg) => {
+  if (!levelConfig) return;
+
+  let blockArray = levelConfig.fixedBlocks;
+
+  blockArray.forEach((block, index) => {
+    // Erstellt einen Block
+    const newBlock = ws.newBlock(block);
+    newBlock.initSvg();
+    newBlock.render();
+    newBlock.setDeletable(false);
+    newBlock.moveBy(150, 50 * (index+1));
+  })
+}
+
 // Initialize the application
 const initializeApp = async () => {
   // Load level data first
@@ -124,21 +153,12 @@ const initializeApp = async () => {
   const toolbox = createDynamicToolbox(levelConfig);
   
   // Initialisiere Workspace mit dynamischer Toolbox
-  ws = Blockly.inject(blocklyDiv, {toolbox});
+  ws = Blockly.inject(blocklyDiv, {toolbox}); // ws = workspace
   
   if (ws) {
     drawMaze();
-    
-    // Prüfe ob bereits ein Start Block vorhanden ist
-    const existingStartBlock = ws.getTopBlocks().find(block => block.type === 'start');
-    if (!existingStartBlock) {
-      // Erstellt einen Start Block
-      const startBlock = ws.newBlock('start');
-      startBlock.initSvg();
-      startBlock.render();
-      startBlock.moveBy(50, 50);
-
-    }
+    renderStartBlock(ws);
+    renderFiexedBlocks(ws);
     
     // Load the initial state from storage and run the code.
     //load(ws);

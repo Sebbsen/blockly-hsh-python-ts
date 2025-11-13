@@ -243,6 +243,7 @@ export class MapEditor {
   private createEmptyLevel(): LevelData {
     return {
       blocks: [],
+      fixedBlocks: [],
       moodleSuccessCode: 'NEW_LEVEL',
       enforceWaypointOrder: false,
       objects: {

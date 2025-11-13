@@ -1,5 +1,6 @@
 {
     "blocks": ["move_up"],
+    "fixedBlocks":[],
     "moodleSuccessCode": "LEVEL1_FJB_PDT",
     "enforceWaypointOrder": false,
     "objects": {

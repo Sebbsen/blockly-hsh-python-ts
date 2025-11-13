@@ -6,6 +6,8 @@
       "move_down",
       "repeat_loop"
     ],
+    "fixedBlocks":["move_up",
+      "move_right"],
     "moodleSuccessCode": "NEW_LEVEL",
     "enforceWaypointOrder": true,
     "objects": {
