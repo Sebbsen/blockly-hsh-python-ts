@@ -16,6 +16,7 @@ export class Maze {
     inventory: LevelObject[];
     moodleSuccessCode: string;
     enforceWaypointOrder: boolean;
+    private animationTimeouts: number[];
 
     constructor(
         canvasContainer: HTMLElement,
@@ -35,6 +36,7 @@ export class Maze {
         this.inventory = [];
         this.moodleSuccessCode = levelData.moodleSuccessCode;
         this.enforceWaypointOrder = levelData.enforceWaypointOrder;
+        this.animationTimeouts = [];
         message('hide', '');
     }
 
@@ -70,11 +72,16 @@ export class Maze {
         this.checkGameState();
     }
 
+    stopExecution() {
+        this.animationTimeouts.forEach((timeoutId) => clearTimeout(timeoutId));
+        this.animationTimeouts = [];
+        this.moveShedulerCount = 0;
+    }
+
     animationScheduler(move: string) {
         this.moveShedulerCount ++;
         const delay = 500 * this.moveShedulerCount
-        
-        setTimeout(() => {
+        const timeoutId = window.setTimeout(() => {
             switch (move) {
                 case 'moveUp':
                     this.moveUp();
@@ -92,6 +99,7 @@ export class Maze {
                     break;
             }
         }, delay);
+        this.animationTimeouts.push(timeoutId);
     }
 
     draw() {

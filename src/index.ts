@@ -65,6 +65,10 @@ const drawMaze = () => {
     throw new Error('Element with id "output" not found');
   }
 
+  if (window.maze) {
+    window.maze.stopExecution();
+  }
+
   if (!levelConfig) {
     console.error('Level configuration not loaded');
     return;
