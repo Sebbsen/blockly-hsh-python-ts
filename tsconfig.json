@@ -1,15 +1,16 @@
 {
   "compilerOptions": {
     "baseUrl": "./",
-    "outDir": "dist",
-    "declaration": true,
-    "declarationMap": true,
     "module": "ES2015",
     "moduleResolution": "node",
     "target": "ES2015",
     "strict": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
-  }
+    "esModuleInterop": true,
+    "sourceMap": false,
+    "declaration": false,
+    "declarationMap": false
+  },
+  "exclude": ["dist"]
 }

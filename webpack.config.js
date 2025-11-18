@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 // Base config that applies to either development or production mode.
 const config = {
@@ -42,8 +43,8 @@ const config = {
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: 'src/level',
-          to: 'level',
+          from: path.resolve(__dirname, 'src/level/level.json'),
+          to: 'level/level.json',
         },
       ],
     }),
@@ -71,6 +72,18 @@ module.exports = (env, argv) => {
     // Ignore spurious warnings from source-map-loader
     // It can't find source maps for some Closure modules and that is expected
     config.ignoreWarnings = [/Failed to parse source map/];
+  }
+
+  if (argv.mode === 'production') {
+    config.devtool = false;
+    config.optimization = {
+      minimize: true,
+      minimizer: [
+        new TerserPlugin({
+          extractComments: false,
+        }),
+      ],
+    };
   }
   return config;
 };
