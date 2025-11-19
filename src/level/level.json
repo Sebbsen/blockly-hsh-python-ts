@@ -4,7 +4,8 @@
       "move_right",
       "move_left",
       "move_down",
-      "repeat_loop"
+      "repeat_loop",
+      "if_else"
     ],
     "fixedBlocks":["move_up",
       "move_right"],

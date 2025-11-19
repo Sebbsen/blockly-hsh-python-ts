@@ -48,3 +48,18 @@ forBlock['repeat_loop'] = function (
   
   return `for i in range(${times}):\n${statements}`;
 };
+
+forBlock['if_else'] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  const condition = generator.valueToCode(block, 'CONDITION', Order.NONE) || 'False';
+  const thenStatements = generator.statementToCode(block, 'THEN');
+  const elseStatements = generator.statementToCode(block, 'ELSE');
+  
+  if (elseStatements) {
+    return `if ${condition}:\n${thenStatements}else:\n${elseStatements}`;
+  } else {
+    return `if ${condition}:\n${thenStatements}`;
+  }
+};
