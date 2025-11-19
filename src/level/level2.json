@@ -2,7 +2,9 @@
   "blocks": [
     "move_right"
   ],
-  "fixedBlocks": [],
+  "fixedBlocks": [
+    "repeat_loop"
+  ],
   "moodleSuccessCode": "NEW_LEVEL",
   "enforceWaypointOrder": false,
   "objects": {
