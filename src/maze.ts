@@ -280,4 +280,8 @@ export class Maze {
         }
     }
 
+    isGoalReached(): boolean {
+        return this.destination.pos.x === this.car.pos.x && this.destination.pos.y === this.car.pos.y;
+    }
+
 }

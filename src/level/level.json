@@ -5,6 +5,7 @@
       "move_left",
       "move_down",
       "repeat_loop",
+      "repeat_until_goal",
       "if_else",
       "is_obstacle_in_way"
     ],

@@ -102,6 +102,23 @@ const repeatLoop = {
   helpUrl: '',
 };
 
+const repeatUntilGoal = {
+  type: 'repeat_until_goal',
+  message0: 'Wiederhole bis Ziel erreicht',
+  message1: '%1',
+  args1: [
+    {
+      type: 'input_statement',
+      name: 'DO',
+    },
+  ],
+  previousStatement: null,
+  nextStatement: null,
+  colour: 270,
+  tooltip: 'Wiederhole Blöcke bis das Ziel erreicht wurde',
+  helpUrl: '',
+};
+
 const ifElse = {
   type: 'if_else',
   message0: 'wenn %1',
@@ -153,6 +170,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
   moveLeft,
   moveDown,
   repeatLoop,
+  repeatUntilGoal,
   ifElse,
   isObstacleInWay
 ]);

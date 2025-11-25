@@ -49,6 +49,15 @@ forBlock['repeat_loop'] = function (
   return `for i in range(${times}):\n${statements}`;
 };
 
+forBlock['repeat_until_goal'] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  const statements = generator.statementToCode(block, 'DO');
+  
+  return `while not is_goal_reached():\n${statements}`;
+};
+
 forBlock['if_else'] = function (
   block: Blockly.Block,
   generator: Blockly.CodeGenerator,

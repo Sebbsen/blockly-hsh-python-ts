@@ -10,6 +10,7 @@ export const allBlocks: BlockDefinition[] = [
     { kind: 'block', type: 'move_left' },
     { kind: 'block', type: 'move_down' },
     { kind: 'block', type: 'repeat_loop' },
+    { kind: 'block', type: 'repeat_until_goal' },
     { kind: 'block', type: 'if_else' },
     { kind: 'block', type: 'is_obstacle_in_way' },
 ];
