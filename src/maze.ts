@@ -9,7 +9,6 @@ export class Maze {
     ctx: CanvasRenderingContext2D;
     moveShedulerCount: number;
     cachedCarPos: {x: number, y:number}
-    startCarPos: {x: number, y:number}
     car: LevelObject;
     destination: LevelObject;
     obstacles: LevelObject[];
@@ -31,7 +30,6 @@ export class Maze {
         this.ctx = this.canvas.getContext('2d')!
         this.moveShedulerCount = 0;
         this.car = levelData.objects.car;
-        this.startCarPos = {...this.car.pos}
         this.cachedCarPos = {...this.car.pos}
         this.destination = levelData.objects.destination; 
         this.obstacles = levelData.objects.obstacles
@@ -48,40 +46,32 @@ export class Maze {
         console.log("Move Up");
         this.cachedCarPos = {...this.car.pos}
         this.car.pos.y = this.car.pos.y - 1;
-        //this.draw();
-        if(this.checkGameState()) {
-            this.animationScheduler({...this.car.pos})
-        }
+        this.checkGameState();
+        this.draw();
     }
 
     moveRight() {
         console.log("Move Right");
         this.cachedCarPos = {...this.car.pos}
         this.car.pos.x = this.car.pos.x + 1;
-        //this.draw();
-        if(this.checkGameState()) {
-            this.animationScheduler({...this.car.pos})
-        }
+        this.checkGameState();
+        this.draw();
     }
 
     moveLeft() {
         console.log("Move Left");
         this.cachedCarPos = {...this.car.pos}
         this.car.pos.x = this.car.pos.x - 1;
-        //this.draw();
-        if(this.checkGameState()) {
-            this.animationScheduler({...this.car.pos})
-        }
+        this.checkGameState();
+        this.draw();
     }
 
     moveDown() {
         console.log("Move Down");
         this.cachedCarPos = {...this.car.pos}
         this.car.pos.y = this.car.pos.y + 1;
-        //this.draw();
-        if(this.checkGameState()) {
-            this.animationScheduler({...this.car.pos})
-        }
+        this.checkGameState();
+        this.draw();
     }
 
     lastMoveOnObstacle(): boolean {
@@ -97,6 +87,7 @@ export class Maze {
     }
 
     async animationScheduler(move: string) {
+        await this.sleep(500);   
         switch (move) {
             case 'moveUp':
                 this.moveUp();
@@ -112,10 +103,7 @@ export class Maze {
                 break;
             default:
                 break;
-        }
-        await this.sleep(500);
-        console.log("SOLLTE SLEEP");
-        
+        } 
     }
 
     sleep(ms: number) {
@@ -127,7 +115,7 @@ export class Maze {
         this.drawDestination();
         this.drawObstacles();
         this.drawWaypoints();
-        this.drawCar(carPos);
+        this.drawCar(this.car.pos);
     }
 
     drawGrid() {
@@ -243,26 +231,26 @@ export class Maze {
 
     handleCarOutsideGrid(){
         this.car.pos = {...this.cachedCarPos};
-        //this.draw();
+        this.draw();
         message('yellow', 'Achtung, du fährt gegen das Ende des Grids');
     }
 
     handleCarHitObstacle(){
         this.lastMoveOnObstacleBool = true;
         this.car.pos = {...this.cachedCarPos};
-        //this.draw();
+        this.draw();
         message('yellow', 'Achtung, du bist gegen ein Hindernis gefahren');
     }
 
     handleCarOnWaypoint(waypoint: LevelObject, index: number) {
         if(this.enforceWaypointOrder && index != 0){
             message('yellow', 'Achte auf die Reihenfolge der Dinge, die du einsammeln musst');
-            //this.draw();
+            this.draw();
             return;
         } 
         this.inventory.push(waypoint);
         this.waypoints.splice(index, 1);
-        //this.draw();
+        this.draw();
     }
 
     handleCarOnDestination() {
