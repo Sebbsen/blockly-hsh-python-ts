@@ -7,7 +7,6 @@ export class Maze {
     canvasSize: number;
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
-    moveShedulerCount: number;
     cachedCarPos: {x: number, y:number}
     car: LevelObject;
     destination: LevelObject;
@@ -16,8 +15,8 @@ export class Maze {
     inventory: LevelObject[];
     moodleSuccessCode: string;
     enforceWaypointOrder: boolean;
-    private animationTimeouts: number[];
     lastMoveOnObstacleBool: boolean;
+    abortController: AbortController;
 
     constructor(
         canvasContainer: HTMLElement,
@@ -28,7 +27,7 @@ export class Maze {
         this.canvasContainer = canvasContainer;
         this.canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d')!
-        this.moveShedulerCount = 0;
+
         this.car = levelData.objects.car;
         this.cachedCarPos = {...this.car.pos}
         this.destination = levelData.objects.destination; 
@@ -37,9 +36,13 @@ export class Maze {
         this.inventory = [];
         this.moodleSuccessCode = levelData.moodleSuccessCode;
         this.enforceWaypointOrder = levelData.enforceWaypointOrder;
-        this.animationTimeouts = [];
         this.lastMoveOnObstacleBool = false;
+        this.abortController = new AbortController();
         message('hide', '');
+    }
+
+    stopExecution() {
+        this.abortController.abort();
     }
 
     moveUp() {
@@ -77,17 +80,25 @@ export class Maze {
     lastMoveOnObstacle(): boolean {
         return this.lastMoveOnObstacleBool;
     }
-    // TODO: Problem ist, dass diese Abfrage in realtime mache aber die animationen delaye. Ich müsste also etweder die Animation von dem ganzen logic code trennen oder die Abfrgae (auch if else) in das delay einbauen
-    // ich weiß zu dem Zeitpunkt der if Abfrage aktuell nicht, ob das Auto gegen eine wand fährt. Die If abfrage wird nach 1ms gestellt. Das auto bewegt sich aber mit der animation und bruacht 500ms für jeden step 
-
-    stopExecution() {
-        this.animationTimeouts.forEach((timeoutId) => clearTimeout(timeoutId));
-        this.animationTimeouts = [];
-        this.moveShedulerCount = 0;
-    }
 
     async animationScheduler(move: string) {
-        await this.sleep(500);   
+        // Prüfe sofort ob bereits gestoppt
+        if (this.abortController.signal.aborted) {
+            throw new Error('Execution aborted');
+        }
+
+        try {
+            await this.sleep(500);
+        } catch (error) {
+            // Sleep wurde abgebrochen
+            throw new Error('Execution aborted');
+        }
+        
+        // Prüfe nochmal nach dem Sleep
+        if (this.abortController.signal.aborted) {
+            throw new Error('Execution aborted');
+        }
+
         switch (move) {
             case 'moveUp':
                 this.moveUp();
@@ -106,8 +117,16 @@ export class Maze {
         } 
     }
 
-    sleep(ms: number) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+    sleep(ms: number): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const timeout = setTimeout(resolve, ms);
+            
+            // Wenn aborted wird, Promise ablehnen und Timeout clearen
+            this.abortController.signal.addEventListener('abort', () => {
+                clearTimeout(timeout);
+                reject(new Error('Sleep aborted'));
+            });
+        });
     }
 
     draw() {
