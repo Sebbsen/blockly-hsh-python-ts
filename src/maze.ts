@@ -7,9 +7,7 @@ export class Maze {
     canvasSize: number;
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
-    moveShedulerCount: number;
     cachedCarPos: {x: number, y:number}
-    startCarPos: {x: number, y:number}
     car: LevelObject;
     destination: LevelObject;
     obstacles: LevelObject[];
@@ -17,8 +15,8 @@ export class Maze {
     inventory: LevelObject[];
     moodleSuccessCode: string;
     enforceWaypointOrder: boolean;
-    private animationTimeouts: number[];
     lastMoveOnObstacleBool: boolean;
+    abortController: AbortController;
 
     constructor(
         canvasContainer: HTMLElement,
@@ -29,9 +27,8 @@ export class Maze {
         this.canvasContainer = canvasContainer;
         this.canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d')!
-        this.moveShedulerCount = 0;
+
         this.car = levelData.objects.car;
-        this.startCarPos = {...this.car.pos}
         this.cachedCarPos = {...this.car.pos}
         this.destination = levelData.objects.destination; 
         this.obstacles = levelData.objects.obstacles
@@ -39,80 +36,105 @@ export class Maze {
         this.inventory = [];
         this.moodleSuccessCode = levelData.moodleSuccessCode;
         this.enforceWaypointOrder = levelData.enforceWaypointOrder;
-        this.animationTimeouts = [];
         this.lastMoveOnObstacleBool = false;
+        this.abortController = new AbortController();
         message('hide', '');
+    }
+
+    stopExecution() {
+        this.abortController.abort();
     }
 
     moveUp() {
         console.log("Move Up");
         this.cachedCarPos = {...this.car.pos}
         this.car.pos.y = this.car.pos.y - 1;
-        //this.draw();
-        if(this.checkGameState()) {
-            this.animationScheduler({...this.car.pos})
-        }
+        this.checkGameState();
+        this.draw();
     }
 
     moveRight() {
         console.log("Move Right");
         this.cachedCarPos = {...this.car.pos}
         this.car.pos.x = this.car.pos.x + 1;
-        //this.draw();
-        if(this.checkGameState()) {
-            this.animationScheduler({...this.car.pos})
-        }
+        this.checkGameState();
+        this.draw();
     }
 
     moveLeft() {
         console.log("Move Left");
         this.cachedCarPos = {...this.car.pos}
         this.car.pos.x = this.car.pos.x - 1;
-        //this.draw();
-        if(this.checkGameState()) {
-            this.animationScheduler({...this.car.pos})
-        }
+        this.checkGameState();
+        this.draw();
     }
 
     moveDown() {
         console.log("Move Down");
         this.cachedCarPos = {...this.car.pos}
         this.car.pos.y = this.car.pos.y + 1;
-        //this.draw();
-        if(this.checkGameState()) {
-            this.animationScheduler({...this.car.pos})
-        }
+        this.checkGameState();
+        this.draw();
     }
 
     lastMoveOnObstacle(): boolean {
         return this.lastMoveOnObstacleBool;
     }
-    // TODO: Problem ist, dass diese Abfrage in realtime mache aber die animationen delaye. Ich müsste also etweder die Animation von dem ganzen logic code trennen oder die Abfrgae (auch if else) in das delay einbauen
-    // ich weiß zu dem Zeitpunkt der if Abfrage aktuell nicht, ob das Auto gegen eine wand fährt. Die If abfrage wird nach 1ms gestellt. Das auto bewegt sich aber mit der animation und bruacht 500ms für jeden step 
 
-    stopExecution() {
-        this.animationTimeouts.forEach((timeoutId) => clearTimeout(timeoutId));
-        this.animationTimeouts = [];
-        this.moveShedulerCount = 0;
-    }
+    async animationScheduler(move: string) {
+        // Prüfe sofort ob bereits gestoppt
+        if (this.abortController.signal.aborted) {
+            throw new Error('Execution aborted');
+        }
 
-    animationScheduler(carPos: {x: number, y:number}) {
-        this.moveShedulerCount ++;
-        const delay = 500 * this.moveShedulerCount
-        const timeoutId = window.setTimeout(() => {
-            this.draw(carPos);
-        }, delay);
-        this.animationTimeouts.push(timeoutId);
-    }
-
-    draw(carPos: {x: number, y:number} = this.car.pos) {
-        console.log("drtaw car at: ", carPos);
+        try {
+            await this.sleep(500);
+        } catch (error) {
+            // Sleep wurde abgebrochen
+            throw new Error('Execution aborted');
+        }
         
+        // Prüfe nochmal nach dem Sleep
+        if (this.abortController.signal.aborted) {
+            throw new Error('Execution aborted');
+        }
+
+        switch (move) {
+            case 'moveUp':
+                this.moveUp();
+                break;
+            case 'moveRight':
+                this.moveRight();
+                break;
+            case 'moveLeft':
+                this.moveLeft();
+                break;
+            case 'moveDown':
+                this.moveDown();
+                break;
+            default:
+                break;
+        } 
+    }
+
+    sleep(ms: number): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const timeout = setTimeout(resolve, ms);
+            
+            // Wenn aborted wird, Promise ablehnen und Timeout clearen
+            this.abortController.signal.addEventListener('abort', () => {
+                clearTimeout(timeout);
+                reject(new Error('Sleep aborted'));
+            });
+        });
+    }
+
+    draw() {
         this.drawGrid();
         this.drawDestination();
         this.drawObstacles();
         this.drawWaypoints();
-        this.drawCar(carPos);
+        this.drawCar(this.car.pos);
     }
 
     drawGrid() {
@@ -228,26 +250,26 @@ export class Maze {
 
     handleCarOutsideGrid(){
         this.car.pos = {...this.cachedCarPos};
-        //this.draw();
+        this.draw();
         message('yellow', 'Achtung, du fährt gegen das Ende des Grids');
     }
 
     handleCarHitObstacle(){
         this.lastMoveOnObstacleBool = true;
         this.car.pos = {...this.cachedCarPos};
-        //this.draw();
+        this.draw();
         message('yellow', 'Achtung, du bist gegen ein Hindernis gefahren');
     }
 
     handleCarOnWaypoint(waypoint: LevelObject, index: number) {
         if(this.enforceWaypointOrder && index != 0){
             message('yellow', 'Achte auf die Reihenfolge der Dinge, die du einsammeln musst');
-            //this.draw();
+            this.draw();
             return;
         } 
         this.inventory.push(waypoint);
         this.waypoints.splice(index, 1);
-        //this.draw();
+        this.draw();
     }
 
     handleCarOnDestination() {

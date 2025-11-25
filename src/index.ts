@@ -65,6 +65,7 @@ const drawMaze = () => {
     throw new Error('Element with id "output" not found');
   }
 
+  // STOP CURRENT EXECUTION
   if (window.maze) {
     window.maze.stopExecution();
   }
@@ -112,7 +113,21 @@ const runCode = () => {
 
   if (outputDiv) drawMaze(); // Maze wird in canvas gezeichnet
 
-  eval(jsCodeString);
+  // Fehlerbehandlung für abgebrochene Ausführungen
+  const wrappedCode = `
+    (async () => {
+      try {
+        ${jsCodeString}
+      } catch (error) {
+        if (error.message === 'Execution aborted') {
+          console.log('Execution was stopped');
+        } else {
+          throw error;
+        }
+      }
+    })();
+  `;
+  eval(wrappedCode);
 };
 
 const runCodeBtn = document.getElementById('runCodeBtn')
