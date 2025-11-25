@@ -133,6 +133,15 @@ const ifElse = {
   helpUrl: '',
 };
 
+const isObstacleInWay = {
+  type: 'is_obstacle_in_way',
+  message0: 'Hindernis im Weg',
+  output: 'Boolean',
+  colour: 180,
+  tooltip: 'Prüft, ob das Auto auf einem Hindernis steht',
+  helpUrl: '',
+};
+
 // Create the block definitions for the JSON-only blocks.
 // This does not register their definitions with Blockly.
 // This file has no side effects!
@@ -144,5 +153,6 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
   moveLeft,
   moveDown,
   repeatLoop,
-  ifElse
+  ifElse,
+  isObstacleInWay
 ]);

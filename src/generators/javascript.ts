@@ -45,28 +45,28 @@ forBlock['move_up'] = function (
   block: Blockly.Block,
   generator: Blockly.CodeGenerator,
 ) {
-  return "maze.animationScheduler('moveUp');\n";
+  return "maze.moveUp();\n";
 };
 
 forBlock['move_right'] = function (
   block: Blockly.Block,
   generator: Blockly.CodeGenerator,
 ) {
-  return "maze.animationScheduler('moveRight');\n";
+  return "maze.moveRight();\n";
 };
 
 forBlock['move_left'] = function (
   block: Blockly.Block,
   generator: Blockly.CodeGenerator,
 ) {
-  return "maze.animationScheduler('moveLeft');\n";
+  return "maze.moveLeft();\n";
 };
 
 forBlock['move_down'] = function (
   block: Blockly.Block,
   generator: Blockly.CodeGenerator,
 ) {
-  return "maze.animationScheduler('moveDown');\n";
+  return "maze.moveDown();\n";
 };
 
 forBlock['repeat_loop'] = function (
@@ -92,5 +92,12 @@ forBlock['if_else'] = function (
   } else {
     return `if (${condition}) {\n${thenStatements}}\n`;
   }
+};
+
+forBlock['is_obstacle_in_way'] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  return [`maze.lastMoveOnObstacle()`, Order.ATOMIC];
 };
 

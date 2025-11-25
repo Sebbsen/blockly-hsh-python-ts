@@ -63,3 +63,10 @@ forBlock['if_else'] = function (
     return `if ${condition}:\n${thenStatements}`;
   }
 };
+
+forBlock['is_obstacle_in_way'] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  return [`maze.isObstacleInWay()`, Order.ATOMIC];
+};
