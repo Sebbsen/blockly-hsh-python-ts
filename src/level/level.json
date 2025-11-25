@@ -4,43 +4,53 @@
       "move_right",
       "move_left",
       "move_down",
-      "repeat_loop"
+      "repeat_loop",
+      "if_else",
+      "is_obstacle_in_way"
     ],
-    "fixedBlocks":["move_up",
-      "move_right"],
-    "moodleSuccessCode": "NEW_LEVEL",
-    "enforceWaypointOrder": true,
+    "fixedBlocks":[],
+    "moodleSuccessCode": "LEVEL2_SCB_QAY",
+    "enforceWaypointOrder": false,
     "objects": {
-      "car": {
-        "emoji": "🚗",
-        "pos": {
-          "x": 3,
-          "y": 4
-        }
-      },
-      "destination": {
-        "emoji": "🏠",
-        "pos": {
-          "x": 3,
-          "y": 1
-        }
-      },
-      "waypoints": [
-        {
-          "emoji": "1️⃣",
-          "pos": {
-            "x": 3,
-            "y": 2
-          }
+        "car": {
+            "emoji": "🚗",
+            "pos": {"x": 3, "y":5}
         },
-        {
-          "emoji": "2️⃣",
-          "pos": {
-            "x": 3,
-            "y": 3
-          }
-        }
-      ],
-      "obstacles": []
+        "destination": {
+            "emoji": "🏠",
+            "pos": {"x": 6, "y":5}
+        },
+        "waypoints": [
+            {
+                "emoji": "📦",
+                "pos": {"x": 0, "y":2}
+            },
+            {
+                "emoji": "🍕",
+                "pos": {"x": 3, "y":1}
+            }
+        ],
+        "obstacles": [
+            {
+                "emoji": "🚧",
+                "pos": {"x": 3, "y":3}
+            },
+            {
+                "emoji": "🚧",
+                "pos": {"x": 4, "y":3}
+            },
+            {
+                "emoji": "🚧",
+                "pos": {"x": 5, "y":3}
+            },
+            {
+                "emoji": "🚧",
+                "pos": {"x": 5, "y":4}
+            },
+            {
+                "emoji": "🚧",
+                "pos": {"x": 5, "y":5}
+            }
+        ]
     }
-  }
+}

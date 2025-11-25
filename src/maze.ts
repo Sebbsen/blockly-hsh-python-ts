@@ -9,6 +9,7 @@ export class Maze {
     ctx: CanvasRenderingContext2D;
     moveShedulerCount: number;
     cachedCarPos: {x: number, y:number}
+    startCarPos: {x: number, y:number}
     car: LevelObject;
     destination: LevelObject;
     obstacles: LevelObject[];
@@ -17,6 +18,7 @@ export class Maze {
     moodleSuccessCode: string;
     enforceWaypointOrder: boolean;
     private animationTimeouts: number[];
+    lastMoveOnObstacleBool: boolean;
 
     constructor(
         canvasContainer: HTMLElement,
@@ -29,6 +31,7 @@ export class Maze {
         this.ctx = this.canvas.getContext('2d')!
         this.moveShedulerCount = 0;
         this.car = levelData.objects.car;
+        this.startCarPos = {...this.car.pos}
         this.cachedCarPos = {...this.car.pos}
         this.destination = levelData.objects.destination; 
         this.obstacles = levelData.objects.obstacles
@@ -37,6 +40,7 @@ export class Maze {
         this.moodleSuccessCode = levelData.moodleSuccessCode;
         this.enforceWaypointOrder = levelData.enforceWaypointOrder;
         this.animationTimeouts = [];
+        this.lastMoveOnObstacleBool = false;
         message('hide', '');
     }
 
@@ -44,33 +48,47 @@ export class Maze {
         console.log("Move Up");
         this.cachedCarPos = {...this.car.pos}
         this.car.pos.y = this.car.pos.y - 1;
-        this.draw();
-        this.checkGameState();
+        //this.draw();
+        if(this.checkGameState()) {
+            this.animationScheduler({...this.car.pos})
+        }
     }
 
     moveRight() {
         console.log("Move Right");
         this.cachedCarPos = {...this.car.pos}
         this.car.pos.x = this.car.pos.x + 1;
-        this.draw();
-        this.checkGameState();
+        //this.draw();
+        if(this.checkGameState()) {
+            this.animationScheduler({...this.car.pos})
+        }
     }
 
     moveLeft() {
         console.log("Move Left");
         this.cachedCarPos = {...this.car.pos}
         this.car.pos.x = this.car.pos.x - 1;
-        this.draw();
-        this.checkGameState();
+        //this.draw();
+        if(this.checkGameState()) {
+            this.animationScheduler({...this.car.pos})
+        }
     }
 
     moveDown() {
         console.log("Move Down");
         this.cachedCarPos = {...this.car.pos}
         this.car.pos.y = this.car.pos.y + 1;
-        this.draw();
-        this.checkGameState();
+        //this.draw();
+        if(this.checkGameState()) {
+            this.animationScheduler({...this.car.pos})
+        }
     }
+
+    lastMoveOnObstacle(): boolean {
+        return this.lastMoveOnObstacleBool;
+    }
+    // TODO: Problem ist, dass diese Abfrage in realtime mache aber die animationen delaye. Ich müsste also etweder die Animation von dem ganzen logic code trennen oder die Abfrgae (auch if else) in das delay einbauen
+    // ich weiß zu dem Zeitpunkt der if Abfrage aktuell nicht, ob das Auto gegen eine wand fährt. Die If abfrage wird nach 1ms gestellt. Das auto bewegt sich aber mit der animation und bruacht 500ms für jeden step 
 
     stopExecution() {
         this.animationTimeouts.forEach((timeoutId) => clearTimeout(timeoutId));
@@ -109,7 +127,7 @@ export class Maze {
         this.drawDestination();
         this.drawObstacles();
         this.drawWaypoints();
-        this.drawCar(this.car.pos);
+        this.drawCar(carPos);
     }
 
     drawGrid() {
@@ -189,16 +207,21 @@ export class Maze {
         return {centerX, centerY}
     }
 
-    checkGameState() {
+    checkGameState(): boolean {
+        // reset obstacle bool
+        this.lastMoveOnObstacleBool = false;
+
         // check if car is at destination
         if(this.destination.pos.x === this.car.pos.x && this.destination.pos.y === this.car.pos.y) {
             this.handleCarOnDestination();
+            return true;
         }
 
         // check if car is at waypoint
         this.waypoints.forEach((waypoint, index) => {
             if(waypoint.pos.x === this.car.pos.x && waypoint.pos.y === this.car.pos.y) {
                 this.handleCarOnWaypoint(waypoint, index);
+                return true;
             }
         });
 
@@ -206,36 +229,40 @@ export class Maze {
         this.obstacles.forEach((obstacle) => {
             if(obstacle.pos.x === this.car.pos.x && obstacle.pos.y === this.car.pos.y) {
                 this.handleCarHitObstacle();
+                return false;
             }
         });
 
         // check if going outside grid
         if(this.car.pos.x < 0 || this.car.pos.x > 7 || this.car.pos.y < 0 || this.car.pos.y > 7) {
             this.handleCarOutsideGrid();
+            return false;
         }
+        return true;
     }
 
     handleCarOutsideGrid(){
         this.car.pos = {...this.cachedCarPos};
-        this.draw();
+        //this.draw();
         message('yellow', 'Achtung, du fährt gegen das Ende des Grids');
     }
 
     handleCarHitObstacle(){
+        this.lastMoveOnObstacleBool = true;
         this.car.pos = {...this.cachedCarPos};
-        this.draw();
+        //this.draw();
         message('yellow', 'Achtung, du bist gegen ein Hindernis gefahren');
     }
 
     handleCarOnWaypoint(waypoint: LevelObject, index: number) {
         if(this.enforceWaypointOrder && index != 0){
             message('yellow', 'Achte auf die Reihenfolge der Dinge, die du einsammeln musst');
-            this.draw();
+            //this.draw();
             return;
         } 
         this.inventory.push(waypoint);
         this.waypoints.splice(index, 1);
-        this.draw();
+        //this.draw();
     }
 
     handleCarOnDestination() {

@@ -1,0 +1,48 @@
+{
+    "blocks": [
+      "move_up",
+      "move_right",
+      "move_left",
+      "move_down",
+      "repeat_loop",
+      "if_else",
+      "is_obstacle_in_way"
+    ],
+    "fixedBlocks":["move_up",
+      "move_right"],
+    "moodleSuccessCode": "NEW_LEVEL",
+    "enforceWaypointOrder": true,
+    "objects": {
+      "car": {
+        "emoji": "🚗",
+        "pos": {
+          "x": 3,
+          "y": 4
+        }
+      },
+      "destination": {
+        "emoji": "🏠",
+        "pos": {
+          "x": 3,
+          "y": 1
+        }
+      },
+      "waypoints": [
+        {
+          "emoji": "1️⃣",
+          "pos": {
+            "x": 3,
+            "y": 2
+          }
+        },
+        {
+          "emoji": "2️⃣",
+          "pos": {
+            "x": 3,
+            "y": 3
+          }
+        }
+      ],
+      "obstacles": []
+    }
+  }

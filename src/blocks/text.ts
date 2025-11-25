@@ -102,6 +102,46 @@ const repeatLoop = {
   helpUrl: '',
 };
 
+const ifElse = {
+  type: 'if_else',
+  message0: 'wenn %1',
+  args0: [
+    {
+      type: 'input_value',
+      name: 'CONDITION',
+      check: 'Boolean',
+    },
+  ],
+  message1: 'dann %1',
+  args1: [
+    {
+      type: 'input_statement',
+      name: 'THEN',
+    },
+  ],
+  message2: 'sonst %1',
+  args2: [
+    {
+      type: 'input_statement',
+      name: 'ELSE',
+    },
+  ],
+  previousStatement: null,
+  nextStatement: null,
+  colour: 210,
+  tooltip: 'Führe Code aus, wenn eine Bedingung erfüllt ist, sonst führe anderen Code aus',
+  helpUrl: '',
+};
+
+const isObstacleInWay = {
+  type: 'is_obstacle_in_way',
+  message0: 'Hindernis im Weg',
+  output: 'Boolean',
+  colour: 180,
+  tooltip: 'Prüft, ob das Auto auf einem Hindernis steht',
+  helpUrl: '',
+};
+
 // Create the block definitions for the JSON-only blocks.
 // This does not register their definitions with Blockly.
 // This file has no side effects!
@@ -112,5 +152,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
   moveRight,
   moveLeft,
   moveDown,
-  repeatLoop
+  repeatLoop,
+  ifElse,
+  isObstacleInWay
 ]);

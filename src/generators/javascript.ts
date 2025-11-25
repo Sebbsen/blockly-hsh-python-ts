@@ -79,3 +79,25 @@ forBlock['repeat_loop'] = function (
   return `for (let i = 0; i < ${times}; i++) {\n${statements}}\n`;
 };
 
+forBlock['if_else'] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  const condition = generator.valueToCode(block, 'CONDITION', Order.NONE) || 'false';
+  const thenStatements = generator.statementToCode(block, 'THEN');
+  const elseStatements = generator.statementToCode(block, 'ELSE');
+  
+  if (elseStatements) {
+    return `if (${condition}) {\n${thenStatements}} else {\n${elseStatements}}\n`;
+  } else {
+    return `if (${condition}) {\n${thenStatements}}\n`;
+  }
+};
+
+forBlock['is_obstacle_in_way'] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  return [`maze.lastMoveOnObstacle()`, Order.ATOMIC];
+};
+
