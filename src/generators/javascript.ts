@@ -45,28 +45,28 @@ forBlock['move_up'] = function (
   block: Blockly.Block,
   generator: Blockly.CodeGenerator,
 ) {
-  return "maze.animationScheduler('moveUp');\n";
+  return "await maze.animationScheduler('moveUp');\n";
 };
 
 forBlock['move_right'] = function (
   block: Blockly.Block,
   generator: Blockly.CodeGenerator,
 ) {
-  return "maze.animationScheduler('moveRight');\n";
+  return "await maze.animationScheduler('moveRight');\n";
 };
 
 forBlock['move_left'] = function (
   block: Blockly.Block,
   generator: Blockly.CodeGenerator,
 ) {
-  return "maze.animationScheduler('moveLeft');\n";
+  return "await maze.animationScheduler('moveLeft');\n";
 };
 
 forBlock['move_down'] = function (
   block: Blockly.Block,
   generator: Blockly.CodeGenerator,
 ) {
-  return "maze.animationScheduler('moveDown');\n";
+  return "await maze.animationScheduler('moveDown');\n";
 };
 
 forBlock['repeat_loop'] = function (

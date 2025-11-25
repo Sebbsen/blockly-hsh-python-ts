@@ -78,28 +78,30 @@ export class Maze {
         this.moveShedulerCount = 0;
     }
 
-    animationScheduler(move: string) {
-        this.moveShedulerCount ++;
-        const delay = 500 * this.moveShedulerCount
-        const timeoutId = window.setTimeout(() => {
-            switch (move) {
-                case 'moveUp':
-                    this.moveUp();
-                    break;
-                case 'moveRight':
-                    this.moveRight();
-                    break;
-                case 'moveLeft':
-                    this.moveLeft();
-                    break;
-                case 'moveDown':
-                    this.moveDown();
-                    break;
-                default:
-                    break;
-            }
-        }, delay);
-        this.animationTimeouts.push(timeoutId);
+    async animationScheduler(move: string) {
+        switch (move) {
+            case 'moveUp':
+                this.moveUp();
+                break;
+            case 'moveRight':
+                this.moveRight();
+                break;
+            case 'moveLeft':
+                this.moveLeft();
+                break;
+            case 'moveDown':
+                this.moveDown();
+                break;
+            default:
+                break;
+        }
+        await this.sleep(500);
+        console.log("SOLLTE SLEEP");
+        
+    }
+
+    sleep(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     draw() {

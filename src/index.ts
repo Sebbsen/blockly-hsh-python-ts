@@ -112,7 +112,8 @@ const runCode = () => {
 
   if (outputDiv) drawMaze(); // Maze wird in canvas gezeichnet
 
-  eval(jsCodeString);
+  const wrappedCode = `(async () => {\n${jsCodeString}\n})();`;
+  eval(wrappedCode);
 };
 
 const runCodeBtn = document.getElementById('runCodeBtn')
