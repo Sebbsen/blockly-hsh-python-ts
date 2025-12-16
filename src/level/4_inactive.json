@@ -1,9 +1,5 @@
 {
   "blocks": [
-    "move_left",
-    "move_right",
-    "move_up",
-    "move_down",
     "repeat_loop",
     "repeat_until_goal",
     "if_else",
@@ -11,7 +7,9 @@
   ],
   "fixedBlocks": [
     "if_else",
-    "is_obstacle_in_way"
+    "is_obstacle_in_way",
+    "move_right",
+    "move_up"
   ],
   "moodleSuccessCode": "DEMO_LEVEL",
   "enforceWaypointOrder": false,

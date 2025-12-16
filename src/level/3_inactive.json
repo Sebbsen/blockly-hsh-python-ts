@@ -1,13 +1,12 @@
 {
   "blocks": [
+    "repeat_loop"
+  ],
+  "fixedBlocks": [
     "move_right",
     "move_left",
     "move_down",
-    "repeat_loop",
     "move_up"
-  ],
-  "fixedBlocks": [
-    "repeat_loop"
   ],
   "moodleSuccessCode": "NEW_LEVEL",
   "enforceWaypointOrder": true,

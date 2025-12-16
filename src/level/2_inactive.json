@@ -1,9 +1,9 @@
 {
   "blocks": [
-    "move_right"
+    "repeat_loop"
   ],
   "fixedBlocks": [
-    "repeat_loop"
+    "move_right"
   ],
   "moodleSuccessCode": "NEW_LEVEL",
   "enforceWaypointOrder": false,
