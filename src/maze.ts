@@ -81,6 +81,35 @@ export class Maze {
         return this.lastMoveOnObstacleBool;
     }
 
+    isObstacleInDirection(direction: string): boolean {
+        const normalized = direction.toLowerCase();
+        const target = {...this.car.pos};
+
+        switch (normalized) {
+            case 'up':
+                target.y -= 1;
+                break;
+            case 'down':
+                target.y += 1;
+                break;
+            case 'left':
+                target.x -= 1;
+                break;
+            case 'right':
+                target.x += 1;
+                break;
+            default:
+                return false;
+        }
+
+        // Zellen außerhalb des Grids gelten als Blockierung
+        if (target.x < 0 || target.x >= this.mazeSize || target.y < 0 || target.y >= this.mazeSize) {
+            return true;
+        }
+
+        return this.obstacles.some(obstacle => obstacle.pos.x === target.x && obstacle.pos.y === target.y);
+    }
+
     async animationScheduler(move: string) {
         // Prüfe sofort ob bereits gestoppt
         if (this.abortController.signal.aborted) {

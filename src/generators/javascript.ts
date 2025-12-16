@@ -110,3 +110,11 @@ forBlock['is_obstacle_in_way'] = function (
   return [`maze.lastMoveOnObstacle()`, Order.ATOMIC];
 };
 
+forBlock['is_obstacle_in_direction'] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  const direction = (block.getFieldValue('DIRECTION') || 'UP').toLowerCase();
+  return [`maze.isObstacleInDirection('${direction}')`, Order.ATOMIC];
+};
+

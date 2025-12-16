@@ -159,6 +159,27 @@ const isObstacleInWay = {
   helpUrl: '',
 };
 
+const isObstacleInDirection = {
+  type: 'is_obstacle_in_direction',
+  message0: 'Hindernis im Weg %1',
+  args0: [
+    {
+      type: 'field_dropdown',
+      name: 'DIRECTION',
+      options: [
+        ['Oben', 'UP'],
+        ['Links', 'LEFT'],
+        ['Rechts', 'RIGHT'],
+        ['Unten', 'DOWN'],
+      ],
+    },
+  ],
+  output: 'Boolean',
+  colour: 180,
+  tooltip: 'Prüft, ob in der gewählten Richtung ein Hindernis ist',
+  helpUrl: '',
+};
+
 // Create the block definitions for the JSON-only blocks.
 // This does not register their definitions with Blockly.
 // This file has no side effects!
@@ -172,5 +193,6 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
   repeatLoop,
   repeatUntilGoal,
   ifElse,
-  isObstacleInWay
+  isObstacleInWay,
+  isObstacleInDirection
 ]);
