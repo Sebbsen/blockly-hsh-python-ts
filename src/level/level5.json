@@ -1,0 +1,237 @@
+{
+  "blocks": [
+    "move_up",
+    "move_right",
+    "move_left",
+    "move_down"
+  ],
+  "fixedBlocks": [
+    "repeat_until_goal",
+    "if_else",
+    "is_obstacle_in_way"
+  ],
+  "moodleSuccessCode": "NEW_LEVEL",
+  "enforceWaypointOrder": false,
+  "objects": {
+    "car": {
+      "emoji": "🚗",
+      "pos": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "destination": {
+      "emoji": "🏠",
+      "pos": {
+        "x": 1,
+        "y": 2
+      }
+    },
+    "waypoints": [],
+    "obstacles": [
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 0,
+          "y": 1
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 1,
+          "y": 1
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 2,
+          "y": 1
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 3,
+          "y": 1
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 4,
+          "y": 1
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 4,
+          "y": 2
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 4,
+          "y": 3
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 4,
+          "y": 4
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 3,
+          "y": 4
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 2,
+          "y": 4
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 6,
+          "y": 0
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 6,
+          "y": 1
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 6,
+          "y": 2
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 6,
+          "y": 3
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 6,
+          "y": 4
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 6,
+          "y": 5
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 6,
+          "y": 6
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 5,
+          "y": 6
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 3,
+          "y": 6
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 2,
+          "y": 6
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 1,
+          "y": 6
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 4,
+          "y": 6
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 0,
+          "y": 6
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 0,
+          "y": 5
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 0,
+          "y": 4
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 0,
+          "y": 3
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 2,
+          "y": 3
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 0,
+          "y": 2
+        }
+      },
+      {
+        "emoji": "❌",
+        "pos": {
+          "x": 2,
+          "y": 2
+        }
+      }
+    ]
+  }
+}
