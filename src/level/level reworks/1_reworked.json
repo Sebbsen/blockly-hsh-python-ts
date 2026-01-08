@@ -1,0 +1,26 @@
+{
+  "blocks": [
+    "move_right"
+  ],
+  "fixedBlocks": [],
+  "moodleSuccessCode": "NEW_LEVEL",
+  "enforceWaypointOrder": false,
+  "objects": {
+    "car": {
+      "emoji": "🚗",
+      "pos": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "destination": {
+      "emoji": "🏠",
+      "pos": {
+        "x": 7,
+        "y": 0
+      }
+    },
+    "waypoints": [],
+    "obstacles": []
+  }
+}
