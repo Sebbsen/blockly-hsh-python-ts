@@ -1,51 +1,50 @@
 {
   "blocks": [
-    "move_right",
-    "move_left",
-    "move_down",
-    "repeat_loop",
-    "move_up"
-  ],
-  "fixedBlocks": [
     "repeat_loop"
   ],
+  "fixedBlocks": [
+    "move_right",
+    "move_left",
+    "move_up",
+    "move_down"
+  ],
   "moodleSuccessCode": "NEW_LEVEL",
-  "enforceWaypointOrder": true,
+  "enforceWaypointOrder": false,
   "objects": {
     "car": {
       "emoji": "🚗",
       "pos": {
-        "x": 1,
-        "y": 1
+        "x": 0,
+        "y": 2
       }
     },
     "destination": {
       "emoji": "🏠",
       "pos": {
-        "x": 1,
-        "y": 2
+        "x": 0,
+        "y": 3
       }
     },
     "waypoints": [
       {
         "emoji": "⭐",
         "pos": {
-          "x": 6,
-          "y": 1
+          "x": 0,
+          "y": 5
         }
       },
       {
         "emoji": "⭐",
         "pos": {
-          "x": 6,
-          "y": 6
+          "x": 7,
+          "y": 5
         }
       },
       {
         "emoji": "⭐",
         "pos": {
-          "x": 1,
-          "y": 6
+          "x": 7,
+          "y": 2
         }
       }
     ],

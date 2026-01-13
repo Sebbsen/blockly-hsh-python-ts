@@ -1,14 +1,15 @@
 {
   "blocks": [
+
+    "repeat_until_goal",
+    "if_else",
+    "is_obstacle_in_way"
+  ],
+  "fixedBlocks": [
     "move_up",
     "move_right",
     "move_left",
     "move_down"
-  ],
-  "fixedBlocks": [
-    "repeat_until_goal",
-    "if_else",
-    "is_obstacle_in_way"
   ],
   "moodleSuccessCode": "NEW_LEVEL",
   "enforceWaypointOrder": false,

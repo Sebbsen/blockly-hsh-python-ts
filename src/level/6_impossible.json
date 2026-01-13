@@ -1,6 +1,17 @@
 {
-  "blocks": [],
-  "fixedBlocks": [],
+  "blocks": [
+    "move_up",
+    "move_right",
+    "move_left",
+    "move_down",
+    "repeat_until_goal",
+    "if_else",
+    "is_obstacle_in_way",
+    "repeat_loop"
+  ],
+  "fixedBlocks": [
+
+  ],
   "moodleSuccessCode": "NEW_LEVEL",
   "enforceWaypointOrder": true,
   "objects": {

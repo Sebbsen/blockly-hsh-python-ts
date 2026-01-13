@@ -1,0 +1,8 @@
+1: simple movement
+2: limited loops introduction
+3: chaining loops
+4: chaining loops + introducing waypoints
+5: looping loops (currently not possible)
+6: conditional loops
+7: Introducing blockades and if/else 
+8: impossible level again?
