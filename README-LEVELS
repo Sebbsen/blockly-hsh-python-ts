@@ -1,7 +1,66 @@
-# Level-Dateien erstellen und austauschen
+# Level-Dateien erstellen und in der Overview anzeigen
 
-Die Levelkonfigurationen werden als JSON-Dateien gepflegt. Jedes Level folgt dem Schema aus `src/interfaces.ts` (`LevelData` mit `blocks`, `objects.car`, `objects.destination`, `objects.waypoints`, `objects.obstacles`).
+Die Levelkonfigurationen werden als JSON-Dateien in `src/level/` gepflegt. Jedes Level folgt dem Schema aus `src/interfaces.ts` (`LevelData` mit `blocks`, `fixedBlocks`, `moodleSuccessCode`, `enforceWaypointOrder` und `objects`).
 
-- Neue oder experimentelle Level legst du zuerst im Ordner `src/level-builder` an – z. B. `level-2.json`, `level-3.json` usw.
-- Zum Testen kopierst oder verschiebst du die gewünschte Datei nach `src/level/` und benennst sie dort **level.json**. Diese Datei wird beim Build automatisch nach `dist/level/level.json` kopiert und beim Start per `fetch('level/level.json')` geladen.
-- Möchtest du im fertigen Build ein anderes Level einsetzen, kannst du die erzeugte Datei `dist/level/level.json` austauschen. Wichtig: Der Dateiname muss weiterhin **level.json** heißen, damit der Fetch-Aufruf sie findet.
+## Neues Level erstellen
+
+1. Starte die App:
+   ```bash
+   npm start
+   ```
+
+2. Öffne den Editor:
+   ```text
+   http://localhost:8080/editor
+   ```
+
+3. Erstelle das Level und exportiere es als JSON-Datei.
+
+4. Lege die exportierte Datei in `src/level/` ab, z. B.:
+   ```text
+   src/level/level-2.json
+   ```
+
+5. Ergänze `src/level/manifest.json`, damit das Level in der Overview erscheint und eine eigene Route bekommt:
+   ```json
+   [
+     {
+       "slug": "level-1",
+       "title": "Level 1",
+       "file": "level-1.json"
+     },
+     {
+       "slug": "level-2",
+       "title": "Level 2",
+       "file": "level-2.json"
+     }
+   ]
+   ```
+
+6. Rufe das Level auf:
+   ```text
+   http://localhost:8080/level-2
+   ```
+
+## Manifest-Felder
+
+- `slug`: URL-Pfad des Levels ohne `/`, z. B. `level-2`. Daraus wird `/level-2`.
+- `title`: Anzeigename in der Overview.
+- `file`: JSON-Datei in `src/level/`.
+- `source` (optional): Abweichender Quellpfad in `src/level/`, wenn die gebaute Datei unter einem anderen URL-sicheren Pfad liegen soll.
+
+Nur Einträge aus `src/level/manifest.json` werden in der Overview angezeigt und beim Build als eigene Route erzeugt. Dateien wie `_inactive`, `_impossible` oder Entwürfe bleiben unsichtbar, solange sie nicht im Manifest stehen.
+
+## Build
+
+```bash
+npm run build
+```
+
+Der Build kopiert alle Manifest-Level nach `dist/level/` und erzeugt statische HTML-Einstiege für:
+
+- `/` und `/overview`
+- `/editor`
+- jede Level-Route aus dem Manifest, z. B. `/level-1`
+
+Für statisches Hosting müssen die erzeugten Ordner aus `dist/` unverändert ausgeliefert werden.

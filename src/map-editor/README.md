@@ -10,8 +10,8 @@ src/map-editor/
 ├── MapEditor.ts       # Hauptklasse für den Map Editor
 ├── MapEditorUI.ts     # UI-Komponenten und Benutzeroberfläche
 ├── index.ts           # Hauptexport und App-Klasse
-├── demo.ts            # Demo-Implementierung
-└── demo.html          # HTML-Demo-Seite
+├── demo.ts            # Alte Demo-Implementierung
+└── demo.html          # Alte HTML-Demo-Seite
 ```
 
 ## 🚀 Features
@@ -27,6 +27,16 @@ src/map-editor/
 
 ## 🎯 Verwendung
 
+### In der App
+
+Der Editor ist in die Haupt-App integriert:
+
+```text
+http://localhost:8080/editor
+```
+
+Exportierte Level-JSON-Dateien werden in `src/level/` abgelegt und über `src/level/manifest.json` in der Overview sichtbar gemacht. Der Browser-Editor schreibt keine Dateien direkt ins Projekt.
+
 ### Grundlegende Verwendung
 
 ```typescript
@@ -41,7 +51,9 @@ const mapEditorApp = new MapEditorApp(container);
 // Level laden
 const levelData = {
   blocks: ["move_left"],
+  fixedBlocks: [],
   moodleSuccessCode: "LEVEL_1",
+  enforceWaypointOrder: false,
   objects: {
     car: { emoji: "🚗", pos: { x: 0, y: 0 } },
     destination: { emoji: "🏠", pos: { x: 7, y: 7 } },
@@ -171,7 +183,9 @@ Das Level-Format entspricht dem bestehenden `LevelData` Interface:
 ```typescript
 interface LevelData {
   blocks: string[];
+  fixedBlocks: string[];
   moodleSuccessCode: string;
+  enforceWaypointOrder: boolean;
   objects: {
     car: LevelObject;
     destination: LevelObject;
@@ -193,7 +207,7 @@ interface LevelPosition {
 
 ## 🎮 Demo
 
-Öffne `demo.html` in einem Browser, um den Map Editor zu testen. Die Demo lädt ein Beispiel-Level und zeigt alle Funktionen.
+Die aktive App-Integration läuft über `/editor`. Die Dateien `demo.ts` und `demo.html` sind nur noch als ältere Standalone-Demo vorhanden.
 
 ## 🔗 Integration
 

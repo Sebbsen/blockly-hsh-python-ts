@@ -1,79 +1,64 @@
-# 🗺️ Map Editor - npm Scripts
+# Map Editor und npm Scripts
+
+Der Map Editor ist Teil der Haupt-App und wird gemeinsam mit Overview und Leveln gebaut.
 
 ## Verfügbare Befehle
 
-### Map Editor starten
-```bash
-npm run editor
-```
-Startet den Map Editor im Development-Modus auf Port 3001.
-
-### Map Editor bauen
-```bash
-npm run build-editor
-```
-Erstellt eine Production-Version des Map Editors im `dist-editor` Ordner.
-
-### Hauptprojekt starten
+### App starten
 ```bash
 npm start
 ```
-Startet das Haupt-Blockly-Projekt im Development-Modus.
 
-### Hauptprojekt bauen
+Startet den Development-Server unter `http://localhost:8080`.
+
+Wichtige Routen:
+- `http://localhost:8080/overview`
+- `http://localhost:8080/editor`
+- `http://localhost:8080/level-1`
+
+### Editor direkt starten
+```bash
+npm run editor
+```
+
+Startet denselben Development-Server und öffnet direkt `/editor`.
+
+### Production Build erstellen
 ```bash
 npm run build
 ```
-Erstellt eine Production-Version des Hauptprojekts.
 
-## Map Editor verwenden
+Erstellt den kompletten Build in `dist/`: Overview, Editor, Level-Routen und Level-JSON-Dateien.
 
-1. **Starten:**
-   ```bash
-   npm run editor
+### Kompatibilitäts-Script
+```bash
+npm run build-editor
+```
+
+Dieses Script ruft ebenfalls `npm run build` auf. Einen separaten `dist-editor` Build gibt es nicht mehr.
+
+## Level mit dem Editor erstellen
+
+1. Editor öffnen:
+   ```text
+   http://localhost:8080/editor
    ```
 
-2. **Browser öffnet automatisch** auf `http://localhost:3001`
+2. Objekte, verfügbare Blocks und fixierte Blocks konfigurieren.
 
-3. **Objekt auswählen:** Klicke auf ein Objekt in der Toolbar (Auto 🚗, Ziel 🏠, Wegpunkt ⭐, Hindernis ❌)
+3. JSON exportieren.
 
-4. **Platzieren:** Klicke auf das Grid, um das ausgewählte Objekt zu platzieren
+4. Exportierte Datei in `src/level/` ablegen, z. B. `level-2.json`.
 
-5. **Exportieren:** Speichere dein Level als JSON-Datei
+5. `src/level/manifest.json` ergänzen:
+   ```json
+   {
+     "slug": "level-2",
+     "title": "Level 2",
+     "file": "level-2.json"
+   }
+   ```
 
-6. **Importieren:** Lade ein bestehendes Level
+6. Level über `/level-2` testen und mit `npm run build` in den Production Build aufnehmen.
 
-## Technische Details
-
-- **Port:** 3001 (unterschiedlich zum Hauptprojekt auf Port 8080)
-- **Build-Ordner:** `build-editor/` (Development) oder `dist-editor/` (Production)
-- **Entry-Point:** `src/map-editor/demo.ts`
-- **Template:** `src/map-editor/demo.html`
-
-## Integration in Hauptprojekt
-
-Der Map Editor kann auch in das Hauptprojekt integriert werden:
-
-```typescript
-import { MapEditorIntegration } from './src/map-editor/integration';
-
-// Automatisch verfügbar - Button erscheint oben rechts
-new MapEditorIntegration();
-```
-
-## Troubleshooting
-
-**Port bereits belegt?**
-```bash
-# Anderen Port verwenden
-npm run editor -- --port 3002
-```
-
-**Build-Fehler?**
-```bash
-# Dependencies neu installieren
-npm install
-
-# Cache leeren
-npm run build-editor -- --no-cache
-```
+Mehr Details stehen in `README-LEVELS`.
