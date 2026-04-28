@@ -21,22 +21,28 @@ Wichtige Routen:
 - `/editor` öffnet den Level Editor
 - `/{level-slug}` öffnet ein einzelnes Level, z. B. `/level-1`
 
+Im Production Build liegen dieselben Seiten als flache Dateien vor:
+- `index.html`
+- `overview.html`
+- `editor.html`
+- `level-1.html`
+
 ### Projekt builden
 ```bash
 # Production Build erstellen
 npm run build
 ```
-Das kompilierte Projekt wird im `dist/` Ordner erstellt. Der Build enthält Overview, Editor, alle Manifest-Level-Routen und die zugehörigen Level-JSON-Dateien.
+Das kompilierte Projekt wird im `dist/` Ordner erstellt. Alle Dateien liegen direkt in `dist/`, ohne Unterordner. Der Build enthält nur die Live-Level aus `src/level/live/`.
 
 ## Level erstellen
 
-Level werden als JSON-Dateien in `src/level/` gepflegt und über `src/level/manifest.json` in der Overview freigeschaltet.
+Live-Level werden in `src/level/live/` gepflegt und über `src/level/live/manifest.json` veröffentlicht. Test-Level bleiben in `src/level/test/` und `src/level/test/manifest.json`; sie erscheinen nur bei `npm start`.
 
 Kurzablauf:
-- Editor unter `/editor` öffnen
+- Editor unter `/editor` oder `editor.html` öffnen
 - Level exportieren
-- JSON-Datei in `src/level/` ablegen, z. B. `level-2.json`
-- Eintrag in `src/level/manifest.json` ergänzen
+- Live-Level in `src/level/live/` ablegen und `src/level/live/manifest.json` ergänzen
+- Test-Level in `src/level/test/` ablegen und `src/level/test/manifest.json` ergänzen
 - `npm run build` ausführen
 
 Details stehen in **[README-LEVELS](./README-LEVELS)**.

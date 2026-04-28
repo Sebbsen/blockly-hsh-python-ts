@@ -1,6 +1,11 @@
-# Level-Dateien erstellen und in der Overview anzeigen
+# Level-Dateien erstellen und veröffentlichen
 
-Die Levelkonfigurationen werden als JSON-Dateien in `src/level/` gepflegt. Jedes Level folgt dem Schema aus `src/interfaces.ts` (`LevelData` mit `blocks`, `fixedBlocks`, `moodleSuccessCode`, `enforceWaypointOrder` und `objects`).
+Die Levelkonfigurationen werden als JSON-Dateien gepflegt. Jedes Level folgt dem Schema aus `src/interfaces.ts` (`LevelData` mit `blocks`, `fixedBlocks`, `moodleSuccessCode`, `enforceWaypointOrder` und `objects`).
+
+Es gibt zwei Level-Bereiche:
+
+- `src/level/live/`: Live-Level. Nur diese Level werden bei `npm run build` in `dist/` veröffentlicht.
+- `src/level/test/`: Test-Level. Diese Level erscheinen bei `npm start` in der Overview unter "Test-Level", werden aber nicht in `dist/` gebaut.
 
 ## Neues Level erstellen
 
@@ -16,12 +21,31 @@ Die Levelkonfigurationen werden als JSON-Dateien in `src/level/` gepflegt. Jedes
 
 3. Erstelle das Level und exportiere es als JSON-Datei.
 
-4. Lege die exportierte Datei in `src/level/` ab, z. B.:
+4. Entscheide, ob das Level live gehen soll.
+
+   Live-Level:
    ```text
-   src/level/level-2.json
+   src/level/live/level-2.json
    ```
 
-5. Ergänze `src/level/manifest.json`, damit das Level in der Overview erscheint und eine eigene Route bekommt:
+   Test-Level:
+   ```text
+   src/level/test/level-2.json
+   ```
+
+5. Ergänze das passende Manifest.
+
+   Für Live-Level:
+   ```text
+   src/level/live/manifest.json
+   ```
+
+   Für Test-Level:
+   ```text
+   src/level/test/manifest.json
+   ```
+
+   Beispiel:
    ```json
    [
      {
@@ -37,19 +61,24 @@ Die Levelkonfigurationen werden als JSON-Dateien in `src/level/` gepflegt. Jedes
    ]
    ```
 
-6. Rufe das Level auf:
+6. Rufe das Level im Development-Server auf:
    ```text
    http://localhost:8080/level-2
    ```
 
+   Wenn das Level im Live-Manifest steht, ist es nach `npm run build` als flache Datei verfügbar:
+   ```text
+   level-2.html
+   ```
+
 ## Manifest-Felder
 
-- `slug`: URL-Pfad des Levels ohne `/`, z. B. `level-2`. Daraus wird `/level-2`.
+- `slug`: Name der Level-Seite ohne `.html`, z. B. `level-2`. Daraus wird im Build `level-2.html`.
 - `title`: Anzeigename in der Overview.
-- `file`: JSON-Datei in `src/level/`.
-- `source` (optional): Abweichender Quellpfad in `src/level/`, wenn die gebaute Datei unter einem anderen URL-sicheren Pfad liegen soll.
+- `file`: JSON-Datei, die in der App geladen wird. Bei Live-Leveln liegt sie in `src/level/live/`, bei Test-Leveln in `src/level/test/`.
+- `source` (optional): Abweichender Quellpfad im jeweiligen Level-Ordner, wenn die gebaute Datei unter einem anderen URL-sicheren Pfad liegen soll.
 
-Nur Einträge aus `src/level/manifest.json` werden in der Overview angezeigt und beim Build als eigene Route erzeugt. Dateien wie `_inactive`, `_impossible` oder Entwürfe bleiben unsichtbar, solange sie nicht im Manifest stehen.
+Bei `npm start` zeigt die Overview Live-Level und Test-Level getrennt an. Bei `npm run build` werden nur Einträge aus `src/level/live/manifest.json` gebaut.
 
 ## Build
 
@@ -57,10 +86,17 @@ Nur Einträge aus `src/level/manifest.json` werden in der Overview angezeigt und
 npm run build
 ```
 
-Der Build kopiert alle Manifest-Level nach `dist/level/` und erzeugt statische HTML-Einstiege für:
+Der Build erzeugt ausschließlich flache Dateien direkt in `dist/` und nimmt nur Live-Level aus `src/level/live/`, zum Beispiel:
 
-- `/` und `/overview`
-- `/editor`
-- jede Level-Route aus dem Manifest, z. B. `/level-1`
+- `index.html`
+- `overview.html`
+- `editor.html`
+- `level-1.html`
+- `level-1.json`
+- `manifest.json`
 
-Für statisches Hosting müssen die erzeugten Ordner aus `dist/` unverändert ausgeliefert werden.
+Es werden keine Unterordner erzeugt. Für eine iframe-Einbindung verweist du direkt auf die HTML-Datei, z. B.:
+
+```html
+<iframe src="level-1.html"></iframe>
+```

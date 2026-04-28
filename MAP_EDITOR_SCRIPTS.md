@@ -16,6 +16,8 @@ Wichtige Routen:
 - `http://localhost:8080/editor`
 - `http://localhost:8080/level-1`
 
+Im Production Build heißen die flachen Dateien `overview.html`, `editor.html` und z. B. `level-1.html`.
+
 ### Editor direkt starten
 ```bash
 npm run editor
@@ -28,7 +30,7 @@ Startet denselben Development-Server und öffnet direkt `/editor`.
 npm run build
 ```
 
-Erstellt den kompletten Build in `dist/`: Overview, Editor, Level-Routen und Level-JSON-Dateien.
+Erstellt den kompletten Build in `dist/`: Overview, Editor, Live-Level-Seiten und Live-Level-JSON-Dateien. Alle Dateien liegen direkt in `dist/`, ohne Unterordner. Test-Level aus `src/level/test/manifest.json` werden nicht veröffentlicht.
 
 ### Kompatibilitäts-Script
 ```bash
@@ -48,9 +50,15 @@ Dieses Script ruft ebenfalls `npm run build` auf. Einen separaten `dist-editor` 
 
 3. JSON exportieren.
 
-4. Exportierte Datei in `src/level/` ablegen, z. B. `level-2.json`.
+4. Exportierte Datei ablegen:
+   - Live-Level nach `src/level/live/`
+   - Test-Level nach `src/level/test/`
 
-5. `src/level/manifest.json` ergänzen:
+5. Passendes Manifest ergänzen:
+   - Live-Level: `src/level/live/manifest.json`
+   - Test-Level: `src/level/test/manifest.json`
+
+   Beispiel:
    ```json
    {
      "slug": "level-2",
@@ -59,6 +67,6 @@ Dieses Script ruft ebenfalls `npm run build` auf. Einen separaten `dist-editor` 
    }
    ```
 
-6. Level über `/level-2` testen und mit `npm run build` in den Production Build aufnehmen.
+6. Level über `/level-2` testen. Nur Live-Level werden mit `npm run build` als `level-2.html` in den Production Build aufgenommen.
 
 Mehr Details stehen in `README-LEVELS`.
