@@ -15,6 +15,111 @@
 body {
   margin: 0;
   max-width: 100vw;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #111827;
+}
+
+a {
+  color: inherit;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+.overview-page,
+.editor-page {
+  min-height: 100vh;
+  background: #f3f4f6;
+}
+
+.overview-shell,
+.editor-shell {
+  width: min(1120px, calc(100vw - 32px));
+  margin: 0 auto;
+  padding: 32px 0;
+}
+
+.overview-header,
+.editor-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.overview-header h1,
+.editor-header h1 {
+  margin: 0 0 8px;
+  font-size: 32px;
+  line-height: 1.1;
+}
+
+.overview-header p,
+.editor-header p {
+  margin: 0;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+.editor-link,
+.overview-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 8px;
+  background: #1f2937;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.level-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.level-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 92px;
+  padding: 18px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.level-card:hover {
+  border-color: #9ca3af;
+  box-shadow: 0 8px 22px rgba(17, 24, 39, 0.08);
+}
+
+.level-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.level-path {
+  color: #6b7280;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 13px;
+}
+
+.editor-shell {
+  width: min(1600px, calc(100vw - 32px));
+}
+
+#map-editor-container {
+  min-height: 640px;
 }
 
 pre,

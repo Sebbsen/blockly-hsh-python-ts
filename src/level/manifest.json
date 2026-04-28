@@ -1,0 +1,95 @@
+[
+  {
+    "slug": "level-1",
+    "title": "Level 1",
+    "file": "level-1.json"
+  },
+  {
+    "slug": "level-demo",
+    "title": "Level Demo",
+    "file": "level.json"
+  },
+  {
+    "slug": "level-g",
+    "title": "Level G",
+    "file": "level-g.json"
+  },
+  {
+    "slug": "inactive-1",
+    "title": "Inactive Level 1",
+    "file": "1_inactive.json"
+  },
+  {
+    "slug": "inactive-2",
+    "title": "Inactive Level 2",
+    "file": "2_inactive.json"
+  },
+  {
+    "slug": "inactive-3",
+    "title": "Inactive Level 3",
+    "file": "3_inactive.json"
+  },
+  {
+    "slug": "inactive-4",
+    "title": "Inactive Level 4",
+    "file": "4_inactive.json"
+  },
+  {
+    "slug": "impossible-5",
+    "title": "Impossible Level 5",
+    "file": "5_impossible.json"
+  },
+  {
+    "slug": "impossible-6",
+    "title": "Impossible Level 6",
+    "file": "6_impossible.json"
+  },
+  {
+    "slug": "rework-1",
+    "title": "Rework Level 1",
+    "file": "reworks/1_reworked.json",
+    "source": "level reworks/1_reworked.json"
+  },
+  {
+    "slug": "rework-2",
+    "title": "Rework Level 2",
+    "file": "reworks/2_reworked.json",
+    "source": "level reworks/2_reworked.json"
+  },
+  {
+    "slug": "rework-3",
+    "title": "Rework Level 3",
+    "file": "reworks/3_reworked.json",
+    "source": "level reworks/3_reworked.json"
+  },
+  {
+    "slug": "rework-4",
+    "title": "Rework Level 4",
+    "file": "reworks/4_reworked.json",
+    "source": "level reworks/4_reworked.json"
+  },
+  {
+    "slug": "rework-5",
+    "title": "Rework Level 5",
+    "file": "reworks/5_reworked.json",
+    "source": "level reworks/5_reworked.json"
+  },
+  {
+    "slug": "rework-6",
+    "title": "Rework Level 6",
+    "file": "reworks/6_reworked.json",
+    "source": "level reworks/6_reworked.json"
+  },
+  {
+    "slug": "rework-7",
+    "title": "Rework Level 7",
+    "file": "reworks/7_reworked.json",
+    "source": "level reworks/7_reworked.json"
+  },
+  {
+    "slug": "rework-8",
+    "title": "Rework Level 8",
+    "file": "reworks/8_reworked.json",
+    "source": "level reworks/8_reworked.json"
+  }
+]

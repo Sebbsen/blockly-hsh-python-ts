@@ -8,8 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --mode production",
     "start": "webpack serve --open --mode development",
-    "editor": "webpack serve --config webpack.editor.config.js --mode development",
-    "build-editor": "webpack --config webpack.editor.config.js --mode production"
+    "editor": "webpack serve --open /editor --mode development",
+    "build-editor": "npm run build"
   },
   "keywords": [
     "blockly"

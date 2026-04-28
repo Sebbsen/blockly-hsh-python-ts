@@ -2,6 +2,14 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const levelManifest = require('./src/level/manifest.json');
+
+const htmlPages = [
+  {filename: 'index.html'},
+  {filename: 'overview/index.html'},
+  {filename: 'editor/index.html'},
+  ...levelManifest.map((level) => ({filename: `${level.slug}/index.html`})),
+];
 
 // Base config that applies to either development or production mode.
 const config = {
@@ -9,12 +17,23 @@ const config = {
   output: {
     // Compile the source files into a bundle.
     filename: 'bundle.js',
+    publicPath: '/',
     path: path.resolve(__dirname, 'dist'),
     clean: true,
   },
   // Enable webpack-dev-server to get hot refresh of the app.
   devServer: {
     static: './build',
+    historyApiFallback: {
+      rewrites: [
+        {from: /^\/overview\/?$/, to: '/overview/index.html'},
+        {from: /^\/editor\/?$/, to: '/editor/index.html'},
+        ...levelManifest.map((level) => ({
+          from: new RegExp(`^/${level.slug}/?$`),
+          to: `/${level.slug}/index.html`,
+        })),
+      ],
+    },
   },
   module: {
     rules: [
@@ -34,18 +53,20 @@ const config = {
     extensions: ['.tsx', '.ts', '.js'],
   },
   plugins: [
-    // Generate the HTML index page based on our template.
-    // This will output the same index page with the bundle we
-    // created above added in a script tag.
-    new HtmlWebpackPlugin({
+    ...htmlPages.map((page) => new HtmlWebpackPlugin({
       template: 'src/index.html',
-    }),
+      filename: page.filename,
+    })),
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: path.resolve(__dirname, 'src/level/level.json'),
-          to: 'level/level.json',
+          from: path.resolve(__dirname, 'src/level/manifest.json'),
+          to: 'level/manifest.json',
         },
+        ...levelManifest.map((level) => ({
+          from: path.resolve(__dirname, `src/level/${level.source || level.file}`),
+          to: `level/${level.file}`,
+        })),
       ],
     }),
   ],
