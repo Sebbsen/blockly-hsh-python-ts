@@ -24,7 +24,6 @@ Wichtige Routen:
 Im Production Build liegen dieselben Seiten als flache Dateien vor:
 - `index.html`
 - `overview.html`
-- `editor.html`
 - `level-1.html`
 
 ### Projekt builden
@@ -32,7 +31,7 @@ Im Production Build liegen dieselben Seiten als flache Dateien vor:
 # Production Build erstellen
 npm run build
 ```
-Das kompilierte Projekt wird im `dist/` Ordner erstellt. Alle Dateien liegen direkt in `dist/`, ohne Unterordner. Der Build enthält nur die Live-Level aus `src/level/live/`.
+Das kompilierte Projekt wird im `dist/` Ordner erstellt. Alle Dateien liegen direkt in `dist/`, ohne Unterordner. Der Build enthält nur die Live-Level aus `src/level/live/` und keinen Editor.
 
 ## Level Erstellen
 

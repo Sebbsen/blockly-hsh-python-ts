@@ -23,7 +23,6 @@ import {createDynamicToolbox} from './toolbox';
 import {Maze} from './maze';
 import {forBlock as pythonForBlock} from './generators/python';
 import {LevelData} from './interfaces';
-import {MapEditorApp} from './map-editor';
 import './index.css';
 
 interface LevelManifestEntry {
@@ -95,7 +94,7 @@ const renderOverview = (app: HTMLElement): void => {
           <h1>Level Overview</h1>
           <p>Wähle ein Level oder öffne den Level Editor. Live-Level werden im Production-Build veröffentlicht.</p>
         </div>
-        <a class="editor-link" href="editor.html">Level Editor</a>
+        ${LEVEL_BUILD_TARGET === 'development' ? '<a class="editor-link" href="editor.html">Level Editor</a>' : ''}
       </header>
       <section class="overview-level-section" aria-label="Live-Level">
         <div class="level-section-header">
@@ -121,7 +120,12 @@ const renderOverview = (app: HTMLElement): void => {
   `;
 };
 
-const renderEditor = (app: HTMLElement): void => {
+const renderEditor = async (app: HTMLElement): Promise<void> => {
+  if (LEVEL_BUILD_TARGET === 'production') {
+    renderNotFound(app, 'editor');
+    return;
+  }
+
   document.title = 'Level Editor';
   app.className = 'editor-page';
   app.innerHTML = `
@@ -141,6 +145,7 @@ const renderEditor = (app: HTMLElement): void => {
   if (!container) {
     throw new Error(`div with id 'map-editor-container' not found`);
   }
+  const {MapEditorApp} = await import('./map-editor');
   new MapEditorApp(container);
 };
 
@@ -298,7 +303,7 @@ const initializeApp = async (): Promise<void> => {
   }
 
   if (route === 'editor') {
-    renderEditor(app);
+    await renderEditor(app);
     return;
   }
 

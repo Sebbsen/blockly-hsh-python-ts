@@ -63,7 +63,6 @@ Der Build erzeugt ausschließlich flache Dateien direkt in `dist/` und nimmt nur
 
 - `index.html`
 - `overview.html`
-- `editor.html`
 - `level-1.html`
 - `level-1.json`
 - `manifest.json`

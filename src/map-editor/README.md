@@ -29,13 +29,13 @@ src/map-editor/
 
 ### In der App
 
-Der Editor ist in die Haupt-App integriert:
+Der Editor ist im Development-Build in die Haupt-App integriert:
 
 ```text
 http://localhost:8080/editor
 ```
 
-Exportierte Level-JSON-Dateien werden je nach Status abgelegt: Live-Level in `src/level/live/`, Test-Level in `src/level/test/`. Der Build scannt diese Ordner automatisch. Der Production Build erzeugt nur aus Live-Leveln flache Dateien wie `level-1.html` und `level-1.json`. Der Browser-Editor schreibt keine Dateien direkt ins Projekt.
+Exportierte Level-JSON-Dateien werden je nach Status abgelegt: Live-Level in `src/level/live/`, Test-Level in `src/level/test/`. Der Build scannt diese Ordner automatisch. Der Production Build erzeugt nur aus Live-Leveln flache Dateien wie `level-1.html` und `level-1.json` und enthält keinen Editor. Der Browser-Editor schreibt keine Dateien direkt ins Projekt.
 
 ### Grundlegende Verwendung
 

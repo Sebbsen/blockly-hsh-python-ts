@@ -16,7 +16,7 @@ Wichtige Routen:
 - `http://localhost:8080/editor`
 - `http://localhost:8080/level-1`
 
-Im Production Build heißen die flachen Dateien `overview.html`, `editor.html` und z. B. `level-1.html`.
+Im Production Build heißen die flachen Dateien `overview.html` und z. B. `level-1.html`. Der Editor wird nur im Development-Build erzeugt.
 
 ### Editor direkt starten
 ```bash
@@ -30,7 +30,7 @@ Startet denselben Development-Server und öffnet direkt `/editor`.
 npm run build
 ```
 
-Erstellt den kompletten Build in `dist/`: Overview, Editor, Live-Level-Seiten und Live-Level-JSON-Dateien. Alle Dateien liegen direkt in `dist/`, ohne Unterordner. Test-Level aus `src/level/test/` werden nicht veröffentlicht.
+Erstellt den kompletten Build in `dist/`: Overview, Live-Level-Seiten und Live-Level-JSON-Dateien. Alle Dateien liegen direkt in `dist/`, ohne Unterordner. Test-Level aus `src/level/test/` und der Editor werden nicht veröffentlicht.
 
 ### Kompatibilitäts-Script
 ```bash

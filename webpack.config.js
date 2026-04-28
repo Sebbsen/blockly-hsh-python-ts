@@ -68,7 +68,7 @@ module.exports = (env, argv) => {
   const htmlPages = [
     {filename: 'index.html'},
     {filename: 'overview.html'},
-    {filename: 'editor.html'},
+    ...(mode === 'development' ? [{filename: 'editor.html'}] : []),
     ...levelManifest.map((level) => ({filename: `${level.slug}.html`})),
   ];
 
@@ -88,7 +88,7 @@ module.exports = (env, argv) => {
       historyApiFallback: {
         rewrites: [
           {from: /^\/overview\/?$/, to: '/overview.html'},
-          {from: /^\/editor\/?$/, to: '/editor.html'},
+          ...(mode === 'development' ? [{from: /^\/editor\/?$/, to: '/editor.html'}] : []),
           ...levelManifest.map((level) => ({
             from: new RegExp(`^/${level.slug}/?$`),
             to: `/${level.slug}.html`,
