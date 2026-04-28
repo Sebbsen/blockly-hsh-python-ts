@@ -11,6 +11,7 @@ declare global {
 }
 
 declare const LEVEL_BUILD_TARGET: 'production' | 'development';
+declare const LEVEL_MANIFEST: LevelManifestEntry[];
 
 import * as Blockly from 'blockly';
 import {blocks} from './blocks/text';
@@ -23,26 +24,16 @@ import {Maze} from './maze';
 import {forBlock as pythonForBlock} from './generators/python';
 import {LevelData} from './interfaces';
 import {MapEditorApp} from './map-editor';
-import liveManifestData from './level/live/manifest.json';
 import './index.css';
 
 interface LevelManifestEntry {
   slug: string;
   title: string;
   file: string;
-  source?: string;
   group: 'live' | 'test';
 }
 
-declare const TEST_LEVEL_MANIFEST: Omit<LevelManifestEntry, 'group'>[];
-
-const liveLevelManifest = (liveManifestData as Omit<LevelManifestEntry, 'group'>[])
-  .map((level) => ({...level, group: 'live' as const}));
-const testLevelManifest = TEST_LEVEL_MANIFEST
-  .map((level) => ({...level, group: 'test' as const}));
-const levelManifest: LevelManifestEntry[] = LEVEL_BUILD_TARGET === 'production'
-  ? liveLevelManifest
-  : [...liveLevelManifest, ...testLevelManifest];
+const levelManifest: LevelManifestEntry[] = LEVEL_MANIFEST;
 
 Blockly.common.defineBlocks(blocks);
 Object.assign(javascriptGenerator.forBlock, forBlock);
@@ -138,7 +129,7 @@ const renderEditor = (app: HTMLElement): void => {
       <header class="editor-header">
         <div>
           <h1>Level Editor</h1>
-          <p>Live-Level in <code>src/level/live/</code>, Test-Level in <code>src/level/test/</code> ablegen und im passenden Manifest eintragen.</p>
+          <p>Live-Level in <code>src/level/live/</code>, Test-Level in <code>src/level/test/</code> ablegen. Die Overview wird beim Starten automatisch erzeugt.</p>
         </div>
         <a class="overview-link" href="overview.html">Overview</a>
       </header>

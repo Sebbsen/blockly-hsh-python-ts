@@ -35,7 +35,7 @@ Der Editor ist in die Haupt-App integriert:
 http://localhost:8080/editor
 ```
 
-Exportierte Level-JSON-Dateien werden je nach Status abgelegt: Live-Level in `src/level/live/` mit Eintrag in `src/level/live/manifest.json`, Test-Level in `src/level/test/` mit Eintrag in `src/level/test/manifest.json`. Der Production Build erzeugt nur aus Live-Leveln flache Dateien wie `level-1.html` und `level-1.json`. Der Browser-Editor schreibt keine Dateien direkt ins Projekt.
+Exportierte Level-JSON-Dateien werden je nach Status abgelegt: Live-Level in `src/level/live/`, Test-Level in `src/level/test/`. Der Build scannt diese Ordner automatisch. Der Production Build erzeugt nur aus Live-Leveln flache Dateien wie `level-1.html` und `level-1.json`. Der Browser-Editor schreibt keine Dateien direkt ins Projekt.
 
 ### Grundlegende Verwendung
 

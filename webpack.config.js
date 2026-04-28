@@ -1,36 +1,65 @@
+const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
-const liveLevelManifest = require('./src/level/live/manifest.json');
-const testLevelManifest = require('./src/level/test/manifest.json');
+const levelDirs = {
+  live: path.resolve(__dirname, 'src/level/live'),
+  test: path.resolve(__dirname, 'src/level/test'),
+};
 
-const withSourcePath = (levels, sourceDir) => levels.map((level) => ({
-  ...level,
-  sourcePath: path.resolve(__dirname, sourceDir, level.source || level.file),
-}));
+const titleFromSlug = (slug) => slug
+  .split('-')
+  .filter(Boolean)
+  .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+  .join(' ');
+
+const getLevelTitle = (levelData, slug) => {
+  const rawTitle = levelData.title || levelData.name;
+  return typeof rawTitle === 'string' && rawTitle.trim()
+    ? rawTitle.trim()
+    : titleFromSlug(slug);
+};
+
+const scanLevelDir = (group) => {
+  const dir = levelDirs[group];
+  if (!fs.existsSync(dir)) return [];
+
+  return fs.readdirSync(dir)
+    .filter((fileName) => fileName.endsWith('.json'))
+    .sort((a, b) => a.localeCompare(b, undefined, {numeric: true}))
+    .map((fileName) => {
+      const sourcePath = path.join(dir, fileName);
+      const slug = path.basename(fileName, '.json');
+      const levelData = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
+      return {
+        slug,
+        title: getLevelTitle(levelData, slug),
+        file: fileName,
+        group,
+        sourcePath,
+      };
+    });
+};
 
 const getLevelManifest = (mode) => {
-  const liveLevels = withSourcePath(liveLevelManifest, 'src/level/live');
+  const liveLevels = scanLevelDir('live');
   if (mode === 'production') return liveLevels;
 
   return [
     ...liveLevels,
-    ...withSourcePath(testLevelManifest, 'src/level/test'),
+    ...scanLevelDir('test'),
   ];
 };
 
-const getManifestAsset = (mode) => {
-  const levels = mode === 'production'
-    ? liveLevelManifest
-    : [
-      ...liveLevelManifest.map((level) => ({...level, group: 'live'})),
-      ...testLevelManifest.map((level) => ({...level, group: 'test'})),
-    ];
+const getManifestAsset = (levels, mode) => {
+  const manifestLevels = mode === 'production'
+    ? levels.map(({slug, title, file}) => ({slug, title, file}))
+    : levels.map(({slug, title, file, group}) => ({slug, title, file, group}));
 
-  return JSON.stringify(levels, null, 2);
+  return JSON.stringify(manifestLevels, null, 2);
 };
 
 module.exports = (env, argv) => {
@@ -55,6 +84,7 @@ module.exports = (env, argv) => {
     // Enable webpack-dev-server to get hot refresh of the app.
     devServer: {
       static: './build',
+      watchFiles: ['src/level/live/*.json', 'src/level/test/*.json'],
       historyApiFallback: {
         rewrites: [
           {from: /^\/overview\/?$/, to: '/overview.html'},
@@ -86,7 +116,12 @@ module.exports = (env, argv) => {
     plugins: [
       new webpack.DefinePlugin({
         LEVEL_BUILD_TARGET: JSON.stringify(mode),
-        TEST_LEVEL_MANIFEST: JSON.stringify(mode === 'production' ? [] : testLevelManifest),
+        LEVEL_MANIFEST: JSON.stringify(levelManifest.map(({slug, title, file, group}) => ({
+          slug,
+          title,
+          file,
+          group,
+        }))),
       }),
       ...htmlPages.map((page) => new HtmlWebpackPlugin({
         template: 'src/index.html',
@@ -95,11 +130,9 @@ module.exports = (env, argv) => {
       new CopyWebpackPlugin({
         patterns: [
           {
-            from: path.resolve(__dirname, mode === 'production'
-              ? 'src/level/live/manifest.json'
-              : 'src/level/test/manifest.json'),
+            from: levelManifest[0]?.sourcePath || path.resolve(__dirname, 'src/index.html'),
             to: 'manifest.json',
-            transform: () => getManifestAsset(mode),
+            transform: () => getManifestAsset(levelManifest, mode),
           },
           ...levelManifest.map((level) => ({
             from: level.sourcePath,

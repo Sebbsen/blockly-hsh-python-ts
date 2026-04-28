@@ -33,52 +33,25 @@ Es gibt zwei Level-Bereiche:
    src/level/test/level-2.json
    ```
 
-5. Ergänze das passende Manifest.
+5. Lade die App neu. Der Development-Build scannt die Ordner automatisch und zeigt das neue Level in der Overview an.
 
-   Für Live-Level:
-   ```text
-   src/level/live/manifest.json
-   ```
-
-   Für Test-Level:
-   ```text
-   src/level/test/manifest.json
-   ```
-
-   Beispiel:
-   ```json
-   [
-     {
-       "slug": "level-1",
-       "title": "Level 1",
-       "file": "level-1.json"
-     },
-     {
-       "slug": "level-2",
-       "title": "Level 2",
-       "file": "level-2.json"
-     }
-   ]
-   ```
-
-6. Rufe das Level im Development-Server auf:
+6. Rufe das Level im Development-Server auf. Der Dateiname ohne `.json` ist der Slug:
    ```text
    http://localhost:8080/level-2
    ```
 
-   Wenn das Level im Live-Manifest steht, ist es nach `npm run build` als flache Datei verfügbar:
+   Wenn das Level in `src/level/live/` liegt, ist es nach `npm run build` als flache Datei verfügbar:
    ```text
    level-2.html
    ```
 
-## Manifest-Felder
+## Namen Und Slugs
 
-- `slug`: Name der Level-Seite ohne `.html`, z. B. `level-2`. Daraus wird im Build `level-2.html`.
-- `title`: Anzeigename in der Overview.
-- `file`: JSON-Datei, die in der App geladen wird. Bei Live-Leveln liegt sie in `src/level/live/`, bei Test-Leveln in `src/level/test/`.
-- `source` (optional): Abweichender Quellpfad im jeweiligen Level-Ordner, wenn die gebaute Datei unter einem anderen URL-sicheren Pfad liegen soll.
+- Der Dateiname bestimmt den Slug: `level-2.json` wird zu `level-2.html` und `/level-2`.
+- Wenn die JSON-Datei ein Feld `title` oder `name` enthält, wird es als Anzeigename in der Overview genutzt.
+- Ohne `title` oder `name` wird der Dateiname lesbar gemacht, z. B. `level-2.json` zu `Level 2`.
 
-Bei `npm start` zeigt die Overview Live-Level und Test-Level getrennt an. Bei `npm run build` werden nur Einträge aus `src/level/live/manifest.json` gebaut.
+Bei `npm start` zeigt die Overview Live-Level und Test-Level getrennt an. Bei `npm run build` werden nur JSON-Dateien aus `src/level/live/` gebaut.
 
 ## Build
 

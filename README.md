@@ -34,15 +34,15 @@ npm run build
 ```
 Das kompilierte Projekt wird im `dist/` Ordner erstellt. Alle Dateien liegen direkt in `dist/`, ohne Unterordner. Der Build enthält nur die Live-Level aus `src/level/live/`.
 
-## Level erstellen
+## Level Erstellen
 
-Live-Level werden in `src/level/live/` gepflegt und über `src/level/live/manifest.json` veröffentlicht. Test-Level bleiben in `src/level/test/` und `src/level/test/manifest.json`; sie erscheinen nur bei `npm start`.
+Live-Level werden in `src/level/live/` gepflegt. Test-Level bleiben in `src/level/test/`; sie erscheinen nur bei `npm start`. Die Level-Listen werden beim Starten oder Builden automatisch aus den JSON-Dateien in diesen Ordnern erzeugt.
 
 Kurzablauf:
 - Editor unter `/editor` oder `editor.html` öffnen
 - Level exportieren
-- Live-Level in `src/level/live/` ablegen und `src/level/live/manifest.json` ergänzen
-- Test-Level in `src/level/test/` ablegen und `src/level/test/manifest.json` ergänzen
+- Live-Level in `src/level/live/` ablegen
+- Test-Level in `src/level/test/` ablegen
 - `npm run build` ausführen
 
 Details stehen in **[README-LEVELS](./README-LEVELS)**.
