@@ -10,6 +10,8 @@ declare global {
   }
 }
 
+declare const LEVEL_BUILD_TARGET: 'production' | 'development';
+
 import * as Blockly from 'blockly';
 import {blocks} from './blocks/text';
 import {forBlock} from './generators/javascript';
@@ -21,7 +23,7 @@ import {Maze} from './maze';
 import {forBlock as pythonForBlock} from './generators/python';
 import {LevelData} from './interfaces';
 import {MapEditorApp} from './map-editor';
-import manifestData from './level/manifest.json';
+import liveManifestData from './level/live/manifest.json';
 import './index.css';
 
 interface LevelManifestEntry {
@@ -29,9 +31,18 @@ interface LevelManifestEntry {
   title: string;
   file: string;
   source?: string;
+  group: 'live' | 'test';
 }
 
-const levelManifest = manifestData as LevelManifestEntry[];
+declare const TEST_LEVEL_MANIFEST: Omit<LevelManifestEntry, 'group'>[];
+
+const liveLevelManifest = (liveManifestData as Omit<LevelManifestEntry, 'group'>[])
+  .map((level) => ({...level, group: 'live' as const}));
+const testLevelManifest = TEST_LEVEL_MANIFEST
+  .map((level) => ({...level, group: 'test' as const}));
+const levelManifest: LevelManifestEntry[] = LEVEL_BUILD_TARGET === 'production'
+  ? liveLevelManifest
+  : [...liveLevelManifest, ...testLevelManifest];
 
 Blockly.common.defineBlocks(blocks);
 Object.assign(javascriptGenerator.forBlock, forBlock);
@@ -46,7 +57,8 @@ const getAppElement = (): HTMLElement => {
 };
 
 const normalizeRoute = (pathname: string): string => {
-  return pathname.replace(/^\/+|\/+$/g, '');
+  const route = pathname.replace(/^\/+|\/+$/g, '').replace(/\.html$/, '');
+  return route === 'index' ? '' : route;
 };
 
 const escapeHtml = (value: string): string => {
@@ -58,8 +70,12 @@ const escapeHtml = (value: string): string => {
     .replace(/'/g, '&#039;');
 };
 
-const loadLevel = async (fileName: string): Promise<LevelData> => {
-  const response = await fetch(encodeURI(`/level/${fileName}`));
+const getPageHref = (route: string): string => {
+  return `${route}.html`;
+};
+
+const loadLevel = async (levelEntry: LevelManifestEntry): Promise<LevelData> => {
+  const response = await fetch(encodeURI(levelEntry.file));
   if (!response.ok) {
     throw new Error(`Failed to load level configuration (${response.status})`);
   }
@@ -67,6 +83,18 @@ const loadLevel = async (fileName: string): Promise<LevelData> => {
 };
 
 const renderOverview = (app: HTMLElement): void => {
+  const liveLevels = levelManifest.filter(level => level.group === 'live');
+  const testLevels = levelManifest.filter(level => level.group === 'test');
+  const renderLevelList = (levels: LevelManifestEntry[]): string => levels.map((level) => `
+    <a class="level-card level-card-${escapeHtml(level.group)}" href="${escapeHtml(getPageHref(level.slug))}">
+      <span class="level-card-header">
+        <span class="level-title">${escapeHtml(level.title)}</span>
+        <span class="level-badge">${level.group === 'live' ? 'Live' : 'Test'}</span>
+      </span>
+      <span class="level-path">${escapeHtml(getPageHref(level.slug))}</span>
+    </a>
+  `).join('');
+
   document.title = 'Level Overview';
   app.className = 'overview-page';
   app.innerHTML = `
@@ -74,18 +102,30 @@ const renderOverview = (app: HTMLElement): void => {
       <header class="overview-header">
         <div>
           <h1>Level Overview</h1>
-          <p>Wähle ein Level oder öffne den Level Editor.</p>
+          <p>Wähle ein Level oder öffne den Level Editor. Live-Level werden im Production-Build veröffentlicht.</p>
         </div>
-        <a class="editor-link" href="/editor">Level Editor</a>
+        <a class="editor-link" href="editor.html">Level Editor</a>
       </header>
-      <section class="level-list" aria-label="Level">
-        ${levelManifest.map((level) => `
-          <a class="level-card" href="/${escapeHtml(level.slug)}">
-            <span class="level-title">${escapeHtml(level.title)}</span>
-            <span class="level-path">/${escapeHtml(level.slug)}</span>
-          </a>
-        `).join('')}
+      <section class="overview-level-section" aria-label="Live-Level">
+        <div class="level-section-header">
+          <h2>Live-Level</h2>
+          <span>${liveLevels.length} Level</span>
+        </div>
+        <div class="level-list">
+          ${renderLevelList(liveLevels)}
+        </div>
       </section>
+      ${testLevels.length > 0 ? `
+        <section class="overview-level-section" aria-label="Test-Level">
+          <div class="level-section-header">
+            <h2>Test-Level</h2>
+            <span>${testLevels.length} Level</span>
+          </div>
+          <div class="level-list">
+            ${renderLevelList(testLevels)}
+          </div>
+        </section>
+      ` : ''}
     </main>
   `;
 };
@@ -98,9 +138,9 @@ const renderEditor = (app: HTMLElement): void => {
       <header class="editor-header">
         <div>
           <h1>Level Editor</h1>
-          <p>Exportierte JSON-Dateien in <code>src/level/</code> ablegen und im Manifest eintragen.</p>
+          <p>Live-Level in <code>src/level/live/</code>, Test-Level in <code>src/level/test/</code> ablegen und im passenden Manifest eintragen.</p>
         </div>
-        <a class="overview-link" href="/overview">Overview</a>
+        <a class="overview-link" href="overview.html">Overview</a>
       </header>
       <div id="map-editor-container"></div>
     </main>
@@ -172,7 +212,7 @@ const renderLevel = async (app: HTMLElement, levelEntry: LevelManifestEntry): Pr
     throw new Error(`div with id 'output' not found`);
   }
 
-  const levelConfig = await loadLevel(levelEntry.file);
+  const levelConfig = await loadLevel(levelEntry);
 
   const drawMaze = (): void => {
     if (window.maze) {
@@ -251,7 +291,7 @@ const renderNotFound = (app: HTMLElement, route: string): void => {
           <h1>Seite nicht gefunden</h1>
           <p>Die Route <code>/${escapeHtml(route)}</code> ist keinem Level zugeordnet.</p>
         </div>
-        <a class="editor-link" href="/overview">Overview</a>
+        <a class="editor-link" href="overview.html">Overview</a>
       </header>
     </main>
   `;
@@ -291,7 +331,7 @@ initializeApp().catch((error) => {
           <h1>Fehler beim Laden</h1>
           <p>${escapeHtml(error instanceof Error ? error.message : 'Unbekannter Fehler')}</p>
         </div>
-        <a class="editor-link" href="/overview">Overview</a>
+        <a class="editor-link" href="overview.html">Overview</a>
       </header>
     </main>
   `;

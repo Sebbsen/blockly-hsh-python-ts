@@ -85,6 +85,30 @@ a {
   gap: 12px;
 }
 
+.overview-level-section {
+  margin-top: 28px;
+}
+
+.level-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.level-section-header h2 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.level-section-header span {
+  color: #6b7280;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
 .level-card {
   display: flex;
   flex-direction: column;
@@ -98,14 +122,53 @@ a {
   box-sizing: border-box;
 }
 
+.level-card-live {
+  border-left: 4px solid #16a34a;
+}
+
+.level-card-test {
+  border-left: 4px solid #f59e0b;
+}
+
 .level-card:hover {
   border-color: #9ca3af;
   box-shadow: 0 8px 22px rgba(17, 24, 39, 0.08);
 }
 
+.level-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
 .level-title {
   font-size: 18px;
   font-weight: 700;
+}
+
+.level-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  color: #374151;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.level-card-live .level-badge {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.level-card-test .level-badge {
+  background: #fef3c7;
+  color: #92400e;
 }
 
 .level-path {

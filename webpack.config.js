@@ -1,79 +1,116 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const levelManifest = require('./src/level/manifest.json');
 
-const htmlPages = [
-  {filename: 'index.html'},
-  {filename: 'overview/index.html'},
-  {filename: 'editor/index.html'},
-  ...levelManifest.map((level) => ({filename: `${level.slug}/index.html`})),
-];
+const liveLevelManifest = require('./src/level/live/manifest.json');
+const testLevelManifest = require('./src/level/test/manifest.json');
 
-// Base config that applies to either development or production mode.
-const config = {
-  entry: './src/index.ts',
-  output: {
-    // Compile the source files into a bundle.
-    filename: 'bundle.js',
-    publicPath: '/',
-    path: path.resolve(__dirname, 'dist'),
-    clean: true,
-  },
-  // Enable webpack-dev-server to get hot refresh of the app.
-  devServer: {
-    static: './build',
-    historyApiFallback: {
-      rewrites: [
-        {from: /^\/overview\/?$/, to: '/overview/index.html'},
-        {from: /^\/editor\/?$/, to: '/editor/index.html'},
-        ...levelManifest.map((level) => ({
-          from: new RegExp(`^/${level.slug}/?$`),
-          to: `/${level.slug}/index.html`,
-        })),
-      ],
-    },
-  },
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/,
-      },
-      {
-        // Load CSS files. They can be imported into JS files.
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
-      },
-    ],
-  },
-  resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
-  },
-  plugins: [
-    ...htmlPages.map((page) => new HtmlWebpackPlugin({
-      template: 'src/index.html',
-      filename: page.filename,
-    })),
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: path.resolve(__dirname, 'src/level/manifest.json'),
-          to: 'level/manifest.json',
-        },
-        ...levelManifest.map((level) => ({
-          from: path.resolve(__dirname, `src/level/${level.source || level.file}`),
-          to: `level/${level.file}`,
-        })),
-      ],
-    }),
-  ],
+const withSourcePath = (levels, sourceDir) => levels.map((level) => ({
+  ...level,
+  sourcePath: path.resolve(__dirname, sourceDir, level.source || level.file),
+}));
+
+const getLevelManifest = (mode) => {
+  const liveLevels = withSourcePath(liveLevelManifest, 'src/level/live');
+  if (mode === 'production') return liveLevels;
+
+  return [
+    ...liveLevels,
+    ...withSourcePath(testLevelManifest, 'src/level/test'),
+  ];
+};
+
+const getManifestAsset = (mode) => {
+  const levels = mode === 'production'
+    ? liveLevelManifest
+    : [
+      ...liveLevelManifest.map((level) => ({...level, group: 'live'})),
+      ...testLevelManifest.map((level) => ({...level, group: 'test'})),
+    ];
+
+  return JSON.stringify(levels, null, 2);
 };
 
 module.exports = (env, argv) => {
-  if (argv.mode === 'development') {
+  const mode = argv.mode === 'production' ? 'production' : 'development';
+  const levelManifest = getLevelManifest(mode);
+  const htmlPages = [
+    {filename: 'index.html'},
+    {filename: 'overview.html'},
+    {filename: 'editor.html'},
+    ...levelManifest.map((level) => ({filename: `${level.slug}.html`})),
+  ];
+
+  const config = {
+    entry: './src/index.ts',
+    output: {
+      // Compile the source files into a bundle.
+      filename: 'bundle.js',
+      publicPath: '',
+      path: path.resolve(__dirname, 'dist'),
+      clean: true,
+    },
+    // Enable webpack-dev-server to get hot refresh of the app.
+    devServer: {
+      static: './build',
+      historyApiFallback: {
+        rewrites: [
+          {from: /^\/overview\/?$/, to: '/overview.html'},
+          {from: /^\/editor\/?$/, to: '/editor.html'},
+          ...levelManifest.map((level) => ({
+            from: new RegExp(`^/${level.slug}/?$`),
+            to: `/${level.slug}.html`,
+          })),
+        ],
+      },
+    },
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/,
+          use: 'ts-loader',
+          exclude: /node_modules/,
+        },
+        {
+          // Load CSS files. They can be imported into JS files.
+          test: /\.css$/i,
+          use: ['style-loader', 'css-loader'],
+        },
+      ],
+    },
+    resolve: {
+      extensions: ['.tsx', '.ts', '.js'],
+    },
+    plugins: [
+      new webpack.DefinePlugin({
+        LEVEL_BUILD_TARGET: JSON.stringify(mode),
+        TEST_LEVEL_MANIFEST: JSON.stringify(mode === 'production' ? [] : testLevelManifest),
+      }),
+      ...htmlPages.map((page) => new HtmlWebpackPlugin({
+        template: 'src/index.html',
+        filename: page.filename,
+      })),
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: path.resolve(__dirname, mode === 'production'
+              ? 'src/level/live/manifest.json'
+              : 'src/level/test/manifest.json'),
+            to: 'manifest.json',
+            transform: () => getManifestAsset(mode),
+          },
+          ...levelManifest.map((level) => ({
+            from: level.sourcePath,
+            to: level.file,
+          })),
+        ],
+      }),
+    ],
+  };
+
+  if (mode === 'development') {
     // Set the output path to the `build` directory
     // so we don't clobber production builds.
     config.output.path = path.resolve(__dirname, 'build');
@@ -95,7 +132,7 @@ module.exports = (env, argv) => {
     config.ignoreWarnings = [/Failed to parse source map/];
   }
 
-  if (argv.mode === 'production') {
+  if (mode === 'production') {
     config.devtool = false;
     config.optimization = {
       minimize: true,
@@ -106,5 +143,6 @@ module.exports = (env, argv) => {
       ],
     };
   }
+
   return config;
 };
