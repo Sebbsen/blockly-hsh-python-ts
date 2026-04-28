@@ -118,6 +118,7 @@ const runCode = () => {
     (async () => {
       try {
         ${jsCodeString}
+        maze.finishExecution();
       } catch (error) {
         if (error.message === 'Execution aborted') {
           console.log('Execution was stopped');

@@ -247,12 +247,6 @@ export class Maze {
         // reset obstacle bool
         this.lastMoveOnObstacleBool = false;
 
-        // check if car is at destination
-        if(this.destination.pos.x === this.car.pos.x && this.destination.pos.y === this.car.pos.y) {
-            this.handleCarOnDestination();
-            return true;
-        }
-
         // check if car is at waypoint
         this.waypoints.forEach((waypoint, index) => {
             if(waypoint.pos.x === this.car.pos.x && waypoint.pos.y === this.car.pos.y) {
@@ -306,6 +300,16 @@ export class Maze {
             message('green', `✅ Mission erfolgreich 🥳 <br> Füge diesen Code in Moodle ein um fortzufahren: <span id="moodleSuccessCode">${this.moodleSuccessCode}</span>`);
         } else {
             message('red', 'Achte auf die Reihenfolge der Dinge, die du einsammeln musst');
+        }
+    }
+
+    finishExecution() {
+        if(this.abortController.signal.aborted) {
+            return;
+        }
+
+        if(this.isGoalReached()) {
+            this.handleCarOnDestination();
         }
     }
 
