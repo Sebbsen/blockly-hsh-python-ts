@@ -47,7 +47,8 @@ const getAppElement = (): HTMLElement => {
 };
 
 const normalizeRoute = (pathname: string): string => {
-  const route = pathname.replace(/^\/+|\/+$/g, '').replace(/\.html$/, '');
+  const fileName = pathname.split('/').filter(Boolean).pop() || '';
+  const route = fileName.replace(/\.html$/, '');
   return route === 'index' ? '' : route;
 };
 
