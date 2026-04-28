@@ -39,7 +39,7 @@ const start= {
 
 const moveUp= {
   type: 'move_up',
-  message0: 'move up',
+  message0: 'nach oben fahren',
   previousStatement: null,
   nextStatement: null,
   colour: 200,
@@ -49,7 +49,7 @@ const moveUp= {
 
 const moveRight = {
   type: 'move_right',
-  message0: 'move right',
+  message0: 'nach rechts fahren',
   previousStatement: null,
   nextStatement: null,
   colour: 200,
@@ -59,7 +59,7 @@ const moveRight = {
 
 const moveLeft = {
   type: 'move_left',
-  message0: 'move left',
+  message0: 'nach links fahren',
   previousStatement: null,
   nextStatement: null,
   colour: 200,
@@ -69,7 +69,7 @@ const moveLeft = {
 
 const moveDown = {
   type: 'move_down',
-  message0: 'move down',
+  message0: 'nach unten fahren',
   previousStatement: null,
   nextStatement: null,
   colour: 200,

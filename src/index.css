@@ -47,6 +47,7 @@ code {
   flex: 0 0 402px;
   overflow: auto;
   margin: 0rem 1rem 0rem 0rem;
+  overflow: hidden;
 }
 
 #outputPane canvas {
@@ -70,6 +71,7 @@ code {
   padding: 13px;
   flex-grow: 1;
   background-color: rgb(247, 240, 228);
+  min-height: 112px;
 }
 
 #output {
