@@ -1,0 +1,42 @@
+[
+  {
+    "slug": "rework-1",
+    "title": "Rework Level 1",
+    "file": "rework-1.json"
+  },
+  {
+    "slug": "rework-2",
+    "title": "Rework Level 2",
+    "file": "rework-2.json"
+  },
+  {
+    "slug": "rework-3",
+    "title": "Rework Level 3",
+    "file": "rework-3.json"
+  },
+  {
+    "slug": "rework-4",
+    "title": "Rework Level 4",
+    "file": "rework-4.json"
+  },
+  {
+    "slug": "rework-5",
+    "title": "Rework Level 5",
+    "file": "rework-5.json"
+  },
+  {
+    "slug": "rework-6",
+    "title": "Rework Level 6",
+    "file": "rework-6.json"
+  },
+  {
+    "slug": "rework-7",
+    "title": "Rework Level 7",
+    "file": "rework-7.json"
+  },
+  {
+    "slug": "rework-8",
+    "title": "Rework Level 8",
+    "file": "rework-8.json"
+  }
+]

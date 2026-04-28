@@ -1,0 +1,47 @@
+[
+  {
+    "slug": "level-1",
+    "title": "Level 1",
+    "file": "level-1.json"
+  },
+  {
+    "slug": "level-demo",
+    "title": "Level Demo",
+    "file": "level-demo.json"
+  },
+  {
+    "slug": "level-g",
+    "title": "Level G",
+    "file": "level-g.json"
+  },
+  {
+    "slug": "inactive-1",
+    "title": "Inactive Level 1",
+    "file": "inactive-1.json"
+  },
+  {
+    "slug": "inactive-2",
+    "title": "Inactive Level 2",
+    "file": "inactive-2.json"
+  },
+  {
+    "slug": "inactive-3",
+    "title": "Inactive Level 3",
+    "file": "inactive-3.json"
+  },
+  {
+    "slug": "inactive-4",
+    "title": "Inactive Level 4",
+    "file": "inactive-4.json"
+  },
+  {
+    "slug": "impossible-5",
+    "title": "Impossible Level 5",
+    "file": "impossible-5.json"
+  },
+  {
+    "slug": "impossible-6",
+    "title": "Impossible Level 6",
+    "file": "impossible-6.json"
+  }
+]
