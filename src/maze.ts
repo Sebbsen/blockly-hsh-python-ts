@@ -297,7 +297,7 @@ export class Maze {
 
     handleCarOnDestination() {
         if(this.waypoints.length == 0) {
-            message('green', `✅ Mission erfolgreich 🥳 <br> Füge diesen Code in Moodle ein um fortzufahren: <span id="moodleSuccessCode">${this.moodleSuccessCode}</span>`);
+            message('green', `✅ Mission erfolgreich 🥳`);
         } else {
             message('red', 'Achte auf die Reihenfolge der Dinge, die du einsammeln musst');
         }
