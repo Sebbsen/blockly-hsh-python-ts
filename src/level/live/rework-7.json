@@ -1,8 +1,7 @@
 {
-  "blocks": [],
+  "blocks": ["repeat_until_goal"],
   "fixedBlocks": [
     "move_right",
-    "repeat_until_goal",
     "if_else",
     "is_obstacle_in_way",
     "move_down"
