@@ -1,4 +1,5 @@
 import { MapEditorConfig, MapEditorState, ObjectType, ObjectTemplate, LevelData, LevelObject, LevelPosition } from './types';
+import { DEFAULT_LEVEL_SOLUTION, normalizeLevelHelp } from '../levelContent';
 
 export class MapEditor {
   private canvasContainer: HTMLElement;
@@ -21,7 +22,7 @@ export class MapEditor {
     this.state = {
       selectedObjectType: null,
       isPlacing: false,
-      currentLevel: initialLevel || this.createEmptyLevel()
+      currentLevel: normalizeLevelHelp(initialLevel || this.createEmptyLevel())
     };
 
     if (!Array.isArray(this.state.currentLevel.fixedBlocks)) {
@@ -250,6 +251,8 @@ export class MapEditor {
       fixedBlocks: [],
       moodleSuccessCode: 'NEW_LEVEL',
       enforceWaypointOrder: false,
+      hints: [],
+      solution: DEFAULT_LEVEL_SOLUTION,
       objects: {
         car: { emoji: '🚗', pos: { x: 0, y: 0 } },
         destination: { emoji: '🏠', pos: { x: 7, y: 7 } },
@@ -273,7 +276,7 @@ export class MapEditor {
     if (!Array.isArray(level.fixedBlocks)) {
       level.fixedBlocks = [];
     }
-    this.state.currentLevel = level;
+    this.state.currentLevel = normalizeLevelHelp(level);
     this.draw();
     this.notifyChange();
   }
@@ -304,7 +307,7 @@ export class MapEditor {
   }
 
   public exportLevel(): string {
-    return JSON.stringify(this.state.currentLevel, null, 2);
+    return JSON.stringify(normalizeLevelHelp(this.state.currentLevel), null, 2);
   }
 
   // Blocks-Management Methoden

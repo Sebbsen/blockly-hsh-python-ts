@@ -1,6 +1,7 @@
 import { MapEditor } from './MapEditor';
 import { ObjectType, ObjectTemplate } from './types';
 import { allBlocks } from '../blocks/blockRegistry';
+import { MAX_LEVEL_HINTS, normalizeLevelHelp } from '../levelContent';
 import './map-editor.css';
 
 export class MapEditorUI {
@@ -13,6 +14,9 @@ export class MapEditorUI {
   private jsonErrorElement!: HTMLElement;
   private fixedBlocksList!: HTMLElement;
   private currentFixedBlocksDisplay!: HTMLElement;
+  private hintEditorList!: HTMLElement;
+  private addHintButton!: HTMLButtonElement;
+  private solutionTextarea!: HTMLTextAreaElement;
   private isUpdatingFromEditor: boolean = false;
 
   constructor(container: HTMLElement, mapEditor: MapEditor) {
@@ -92,6 +96,16 @@ export class MapEditorUI {
             </div>
           </div>
 
+          <!-- Tipps & Lösung -->
+          <div class="blocks-section hints-editor-section">
+            <div class="blocks-title">Tipps & Lösung:</div>
+            <p class="hint-editor-help">Du kannst Markdown schreiben. Gib dem Nutzer kurze Tipps; sie werden nach 5 Minuten oder nach 5 Fehlversuchen angezeigt.</p>
+            <div class="hint-editor-list" id="hint-editor-list"></div>
+            <button class="action-button secondary hint-add-button" id="add-hint-btn" type="button">+ Tipp</button>
+            <label class="hint-editor-label" for="solution-textarea">Lösung</label>
+            <textarea class="hint-textarea solution-textarea" id="solution-textarea" rows="6"></textarea>
+          </div>
+
           <!-- Canvas Container -->
           <div class="canvas-container" id="canvas-container">
             <!-- Canvas wird vom MapEditor erstellt -->
@@ -141,12 +155,16 @@ export class MapEditorUI {
     this.jsonErrorElement = this.container.querySelector('#json-error')!;
     this.fixedBlocksList = this.container.querySelector('#fixed-blocks-list')!;
     this.currentFixedBlocksDisplay = this.container.querySelector('#current-fixed-blocks-display')!;
+    this.hintEditorList = this.container.querySelector('#hint-editor-list')!;
+    this.addHintButton = this.container.querySelector('#add-hint-btn')!;
+    this.solutionTextarea = this.container.querySelector('#solution-textarea')!;
     
     // Dynamische Inhalte generieren
     this.createObjectButtons();
     this.createBlockButtons();
     this.createFixedBlockButtons();
     this.setupActionButtons();
+    this.renderHintEditor();
     
     // Canvas hinzufügen
     const canvasElement = this.mapEditor['canvas'];
@@ -225,6 +243,15 @@ export class MapEditorUI {
     formatBtn.addEventListener('click', () => this.formatJSON());
     saveBtn.addEventListener('click', () => this.validateAndApplyJSON());
     enforceWaypointOrderCheckbox.addEventListener('change', () => this.toggleEnforceWaypointOrder());
+    this.addHintButton.addEventListener('click', () => this.addHint());
+    this.solutionTextarea.addEventListener('input', () => this.updateSolution(this.solutionTextarea.value));
+    this.solutionTextarea.addEventListener('blur', () => {
+      if (this.solutionTextarea.value.trim() !== '') return;
+
+      const levelData = this.getNormalizedLevelData();
+      this.solutionTextarea.value = levelData.solution ?? '';
+      this.syncJSONAfterHintEdit();
+    });
   }
 
   private setupJSONEventListeners(): void {
@@ -408,6 +435,89 @@ export class MapEditorUI {
     });
   }
 
+  private getNormalizedLevelData() {
+    return normalizeLevelHelp(this.mapEditor.getCurrentLevel());
+  }
+
+  private syncJSONAfterHintEdit(): void {
+    const levelData = this.getNormalizedLevelData();
+    this.jsonTextarea.value = JSON.stringify(levelData, null, 2);
+    this.hideJSONError();
+    this.updateJSONStatus('Live', '#10B981');
+  }
+
+  private renderHintEditor(): void {
+    const levelData = this.getNormalizedLevelData();
+    const hints = levelData.hints ?? [];
+
+    this.hintEditorList.innerHTML = '';
+    hints.forEach((hint, index) => {
+      const item = document.createElement('div');
+      item.className = 'hint-editor-item';
+
+      const header = document.createElement('div');
+      header.className = 'hint-editor-item-header';
+
+      const label = document.createElement('label');
+      label.className = 'hint-editor-label';
+      label.textContent = `Tipp ${index + 1}`;
+
+      const removeButton = document.createElement('button');
+      removeButton.className = 'json-button hint-remove-button';
+      removeButton.type = 'button';
+      removeButton.textContent = 'Entfernen';
+      removeButton.addEventListener('click', () => this.removeHint(index));
+
+      const textarea = document.createElement('textarea');
+      textarea.className = 'hint-textarea';
+      textarea.rows = 4;
+      textarea.value = hint;
+      textarea.addEventListener('input', () => this.updateHint(index, textarea.value));
+
+      header.appendChild(label);
+      header.appendChild(removeButton);
+      item.appendChild(header);
+      item.appendChild(textarea);
+      this.hintEditorList.appendChild(item);
+    });
+
+    this.addHintButton.disabled = hints.length >= MAX_LEVEL_HINTS;
+    this.addHintButton.textContent = hints.length >= MAX_LEVEL_HINTS ? 'Max. 3 Tipps' : '+ Tipp';
+    this.solutionTextarea.value = levelData.solution ?? '';
+  }
+
+  private addHint(): void {
+    const levelData = this.getNormalizedLevelData();
+    const hints = levelData.hints ?? [];
+    if (hints.length >= MAX_LEVEL_HINTS) return;
+
+    hints.push('');
+    levelData.hints = hints;
+    this.renderHintEditor();
+    this.syncJSONAfterHintEdit();
+  }
+
+  private removeHint(index: number): void {
+    const levelData = this.getNormalizedLevelData();
+    levelData.hints = (levelData.hints ?? []).filter((_, hintIndex) => hintIndex !== index);
+    this.renderHintEditor();
+    this.syncJSONAfterHintEdit();
+  }
+
+  private updateHint(index: number, value: string): void {
+    const levelData = this.getNormalizedLevelData();
+    const hints = levelData.hints ?? [];
+    hints[index] = value;
+    levelData.hints = hints.slice(0, MAX_LEVEL_HINTS);
+    this.syncJSONAfterHintEdit();
+  }
+
+  private updateSolution(value: string): void {
+    const levelData = this.getNormalizedLevelData();
+    levelData.solution = value;
+    this.syncJSONAfterHintEdit();
+  }
+
   private toggleRemoveMode(): void {
     const isCurrentlyInRemoveMode = this.mapEditor.isInRemoveMode();
     this.mapEditor.setRemoveMode(!isCurrentlyInRemoveMode);
@@ -457,6 +567,7 @@ export class MapEditorUI {
     
     this.isUpdatingFromEditor = true;
     const levelData = this.mapEditor.getCurrentLevel();
+    normalizeLevelHelp(levelData);
     this.jsonTextarea.value = JSON.stringify(levelData, null, 2);
     
     // Checkbox-Status synchronisieren
@@ -468,6 +579,7 @@ export class MapEditorUI {
     this.updateBlockButtons();
     this.updateFixedBlocksDisplay();
     this.updateFixedBlockButtons();
+    this.renderHintEditor();
     
     this.hideJSONError();
     this.updateJSONStatus('Live', '#10B981');
@@ -492,6 +604,7 @@ export class MapEditorUI {
   private validateAndApplyJSON(): void {
     try {
       const parsed = JSON.parse(this.jsonTextarea.value);
+      normalizeLevelHelp(parsed);
       
       // Validierung der Level-Struktur
       if (!this.validateLevelStructure(parsed)) {
@@ -503,6 +616,7 @@ export class MapEditorUI {
       this.mapEditor.loadLevel(parsed);
       this.updateBlocksDisplay();
       this.updateBlockButtons();
+      this.renderHintEditor();
       
       this.hideJSONError();
       this.updateJSONStatus('Angewendet', '#10B981');
@@ -524,6 +638,11 @@ export class MapEditorUI {
       Array.isArray(data.fixedBlocks) &&
       typeof data.moodleSuccessCode === 'string' &&
       typeof data.enforceWaypointOrder === 'boolean' &&
+      Array.isArray(data.hints) &&
+      data.hints.length <= MAX_LEVEL_HINTS &&
+      data.hints.every((hint: unknown) => typeof hint === 'string') &&
+      typeof data.solution === 'string' &&
+      data.solution.trim().length > 0 &&
       data.objects &&
       typeof data.objects === 'object' &&
       data.objects.car &&

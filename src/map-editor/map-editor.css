@@ -223,6 +223,81 @@
   color: #6B7280;
 }
 
+.hints-editor-section {
+  gap: 10px;
+}
+
+.hint-editor-help {
+  margin: -2px 0 2px;
+  color: #6B7280;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.hint-editor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hint-editor-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hint-editor-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.hint-editor-label {
+  color: #374151;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.hint-textarea {
+  width: 100%;
+  min-height: 88px;
+  padding: 8px 10px;
+  border: 1px solid #D1D5DB;
+  border-radius: 6px;
+  background: #FAFAFA;
+  color: #374151;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.hint-textarea:focus {
+  outline: none;
+  border-color: #3B82F6;
+  background: white;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.16);
+}
+
+.hint-add-button {
+  align-self: flex-start;
+}
+
+.hint-add-button:disabled {
+  background: #D1D5DB;
+  cursor: not-allowed;
+}
+
+.hint-remove-button {
+  flex: 0 0 auto;
+}
+
+.solution-textarea {
+  min-height: 128px;
+}
+
 .json-view-header {
   padding: 12px 16px;
   background: #F9FAFB;

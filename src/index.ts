@@ -23,6 +23,8 @@ import {createDynamicToolbox} from './toolbox';
 import {Maze} from './maze';
 import {forBlock as pythonForBlock} from './generators/python';
 import {LevelData} from './interfaces';
+import {DEFAULT_LEVEL_SOLUTION, normalizeLevelHelp} from './levelContent';
+import {renderMarkdown} from './markdown';
 import './index.css';
 
 interface LevelManifestEntry {
@@ -70,7 +72,7 @@ const loadLevel = async (levelEntry: LevelManifestEntry): Promise<LevelData> => 
   if (!response.ok) {
     throw new Error(`Failed to load level configuration (${response.status})`);
   }
-  return response.json();
+  return normalizeLevelHelp(await response.json());
 };
 
 const renderOverview = (app: HTMLElement): void => {
@@ -174,21 +176,8 @@ const createLevelMarkup = (): string => {
               <h2 id="hintPopupTitle">Tipp auswählen</h2>
               <button id="hintPopupClose" type="button" aria-label="Tipp schließen">x</button>
             </div>
-            <p class="hint-popup-text">Tipps, falls du gerade nicht weiterkommst. Du kannst auch erst weiterprobieren. Ausprobieren gehört dazu!</p>
-            <div class="hint-accordion" aria-label="Tipps">
-              <details class="hint-accordion-item">
-                <summary>Tipp 1</summary>
-                <div class="hint-accordion-panel"></div>
-              </details>
-              <details class="hint-accordion-item">
-                <summary>Tipp 2</summary>
-                <div class="hint-accordion-panel"></div>
-              </details>
-              <details class="hint-accordion-item">
-                <summary>Lösung</summary>
-                <div class="hint-accordion-panel"></div>
-              </details>
-            </div>
+            <p class="hint-popup-text">Hier ein paar Tipps, falls du nicht weiter kommst. Probiere aber gerne weiter ohne Hilfe aus. Ausprobieren ist Teil des Prozesses!</p>
+            <div class="hint-accordion" id="hintAccordion" aria-label="Tipps"></div>
           </div>
         </div>
         <pre id="generatedCode"><code></code></pre>
@@ -223,6 +212,30 @@ const renderFixedBlocks = (ws: Blockly.WorkspaceSvg, levelConfig: LevelData): vo
   });
 };
 
+const renderHintAccordion = (levelConfig: LevelData): void => {
+  const hintAccordion = document.getElementById('hintAccordion');
+  if (!hintAccordion) return;
+
+  const hints = levelConfig.hints ?? [];
+  const entries = [
+    ...hints.map((hint, index) => ({
+      title: `Tipp ${index + 1}`,
+      content: hint,
+    })),
+    {
+      title: 'Lösung',
+      content: levelConfig.solution || DEFAULT_LEVEL_SOLUTION,
+    },
+  ];
+
+  hintAccordion.innerHTML = entries.map((entry) => `
+    <details class="hint-accordion-item">
+      <summary>${escapeHtml(entry.title)}</summary>
+      <div class="hint-accordion-panel hint-markdown">${renderMarkdown(entry.content)}</div>
+    </details>
+  `).join('');
+};
+
 const renderLevel = async (app: HTMLElement, levelEntry: LevelManifestEntry): Promise<void> => {
   document.title = levelEntry.title;
   app.className = 'level-page';
@@ -248,6 +261,7 @@ const renderLevel = async (app: HTMLElement, levelEntry: LevelManifestEntry): Pr
   }
 
   const levelConfig = await loadLevel(levelEntry);
+  renderHintAccordion(levelConfig);
 
   const drawMaze = (): void => {
     if (window.maze) {

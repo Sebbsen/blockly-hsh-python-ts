@@ -10,6 +10,8 @@ export interface LevelData {
   fixedBlocks: string[];
   moodleSuccessCode: string;
   enforceWaypointOrder: boolean;
+  hints?: string[];
+  solution?: string;
   objects: {
     car: LevelObject;
     destination: LevelObject;
