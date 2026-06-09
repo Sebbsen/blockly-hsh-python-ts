@@ -137,6 +137,52 @@ const renderEditor = async (app: HTMLElement): Promise<void> => {
         <div>
           <h1>Level Editor</h1>
           <p>Live-Level in <code>src/level/live/</code>, Test-Level in <code>src/level/test/</code> ablegen. Die Overview wird beim Starten automatisch erzeugt.</p>
+          <details class="editor-help">
+            <summary>Help</summary>
+            <div class="editor-help-content">
+              <section>
+                <h2>Workflow</h2>
+                <ul>
+                  <li><strong>Level erstellen:</strong> Objekte, Blocks, Tipps und Lösung im Editor konfigurieren</li>
+                  <li><strong>JSON exportieren:</strong> Links auf "Exportieren" klicken und die Datei sinnvoll benennen</li>
+                  <li><strong>Test-Level anzeigen:</strong> JSON in <code>src/level/test/</code> ablegen und den Dev-Server neu starten</li>
+                  <li><strong>Live Level anzeigen:</strong> JSON in <code>src/level/live/</code> ablegen und den Dev-Server neu starten</li>
+                  <li><strong>Live Level auf Moodle veröffentlichen:</strong> <code>npm run build</code> ausführen und die Dateien aus dem <code>dist/</code>-Ordner in Moodle hochladen</li>
+                </ul>
+              </section>
+              <section>
+                <h2>Visueller Editor (Linke Seite)</h2>
+                <ul>
+                  <li><strong>Objekt auswählen:</strong> Klicke auf ein Objekt in der Toolbar (Auto 🚗, Ziel 🏠, Wegpunkt ⭐, Hindernis ❌)</li>
+                  <li><strong>Platzieren:</strong> Klicke auf das Grid, um das ausgewählte Objekt zu platzieren</li>
+                  <li><strong>Vorschau:</strong> Bewege die Maus über das Grid, um eine Vorschau zu sehen</li>
+                  <li><strong>Abbrechen:</strong> Drücke <code>ESC</code> oder wähle ein anderes Objekt</li>
+                  <li><strong>Entfernen:</strong> Aktiviere den "Entfernen-Modus" und klicke auf Objekte</li>
+                  <li><strong>Exportieren:</strong> Speichere dein Level als JSON-Datei</li>
+                  <li><strong>Leeren:</strong> Entferne alle Objekte vom Level</li>
+                </ul>
+              </section>
+              <section>
+                <h2>JSON View (Rechte Seite)</h2>
+                <ul>
+                  <li><strong>Live-Updates:</strong> Das JSON wird automatisch aktualisiert beim Platzieren von Objekten</li>
+                  <li><strong>Emojis ändern:</strong> Bearbeite die Emoji-Werte direkt im JSON</li>
+                  <li><strong>Waypoint-Reihenfolge:</strong> Ändere die Reihenfolge im Array für die Einsammel-Reihenfolge</li>
+                  <li><strong>Formatieren:</strong> Formatiert das JSON für bessere Lesbarkeit</li>
+                  <li><strong>Speichern:</strong> Validiert und übernimmt die JSON-Änderungen in den Editor</li>
+                </ul>
+              </section>
+              <section>
+                <h2>Objekt-Typen</h2>
+                <ul>
+                  <li><strong>Auto (🚗):</strong> Das spielbare Auto</li>
+                  <li><strong>Ziel (🏠):</strong> Das Ziel</li>
+                  <li><strong>Wegpunkt (⭐):</strong> Wegpunkt zum Einsammeln</li>
+                  <li><strong>Hindernis (❌):</strong> Hindernis</li>
+                </ul>
+              </section>
+            </div>
+          </details>
         </div>
         <a class="overview-link" href="overview.html">Overview</a>
       </header>

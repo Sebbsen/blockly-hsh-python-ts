@@ -64,6 +64,65 @@ a {
   line-height: 1.5;
 }
 
+.editor-help {
+  margin-top: 14px;
+  max-width: 1180px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.editor-help summary {
+  min-height: 42px;
+  padding: 10px 14px;
+  box-sizing: border-box;
+  color: #111827;
+  cursor: pointer;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.editor-help summary:hover {
+  background: #f9fafb;
+}
+
+.editor-help-content {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  padding: 0 14px 14px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.editor-help-content h2 {
+  margin: 14px 0 8px;
+  color: #111827;
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+.editor-help-content ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #374151;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.editor-help-content li + li {
+  margin-top: 6px;
+}
+
+.editor-help-content code {
+  color: #111827;
+  font-size: 13px;
+}
+
+.editor-header > div {
+  flex: 1;
+  min-width: 0;
+}
+
 .editor-link,
 .overview-link {
   display: inline-flex;
@@ -542,4 +601,15 @@ code {
   background-color: #fef3c7;
   color: #92400e;
   border-color: #fcd34d;
+}
+
+@media (max-width: 900px) {
+  .overview-header,
+  .editor-header {
+    flex-direction: column;
+  }
+
+  .editor-help-content {
+    grid-template-columns: 1fr;
+  }
 }
