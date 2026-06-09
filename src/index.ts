@@ -159,7 +159,38 @@ const createLevelMarkup = (): string => {
           <div class="message warning-message hidden"></div>
           <div class="message fail-message hidden"></div>
         </div>
-        <button id="runCodeBtn">Programm ausführen</button>
+        <div class="run-controls">
+          <button id="runCodeBtn">Programm ausführen</button>
+          <button id="hintBtn" class="hint-hidden" type="button" aria-label="Tipp anzeigen" title="Tipp anzeigen" aria-hidden="true">💡</button>
+        </div>
+        <div id="hintPopup" class="hint-popup hidden" role="dialog" aria-labelledby="hintPopupTitle">
+          <div class="hint-popup-panel">
+            <div class="hint-popup-drag-handle" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="hint-popup-header">
+              <h2 id="hintPopupTitle">Tipp auswählen</h2>
+              <button id="hintPopupClose" type="button" aria-label="Tipp schließen">x</button>
+            </div>
+            <p class="hint-popup-text">Tipps, falls du gerade nicht weiterkommst. Du kannst auch erst weiterprobieren. Ausprobieren gehört dazu!</p>
+            <div class="hint-accordion" aria-label="Tipps">
+              <details class="hint-accordion-item">
+                <summary>Tipp 1</summary>
+                <div class="hint-accordion-panel"></div>
+              </details>
+              <details class="hint-accordion-item">
+                <summary>Tipp 2</summary>
+                <div class="hint-accordion-panel"></div>
+              </details>
+              <details class="hint-accordion-item">
+                <summary>Lösung</summary>
+                <div class="hint-accordion-panel"></div>
+              </details>
+            </div>
+          </div>
+        </div>
         <pre id="generatedCode"><code></code></pre>
         <div id="output"></div>
       </div>
@@ -201,6 +232,13 @@ const renderLevel = async (app: HTMLElement, levelEntry: LevelManifestEntry): Pr
   const codeDiv = document.getElementById('generatedCode')?.firstChild;
   const outputDiv = document.getElementById('output');
   const runCodeBtn = document.getElementById('runCodeBtn');
+  const hintBtn = document.getElementById('hintBtn');
+  const hintPopup = document.getElementById('hintPopup');
+  const hintPopupPanel = document.querySelector('.hint-popup-panel') as HTMLElement | null;
+  const hintPopupDragHandle = document.querySelector('.hint-popup-drag-handle') as HTMLElement | null;
+  const hintPopupHeader = document.querySelector('.hint-popup-header') as HTMLElement | null;
+  const hintPopupClose = document.getElementById('hintPopupClose');
+  const firstHintAccordionSummary = document.querySelector('.hint-accordion summary') as HTMLElement | null;
 
   if (!blocklyDiv) {
     throw new Error(`div with id 'blocklyDiv' not found`);
@@ -227,6 +265,26 @@ const renderLevel = async (app: HTMLElement, levelEntry: LevelManifestEntry): Pr
   renderStartBlock(ws);
   renderFixedBlocks(ws, levelConfig);
 
+  let unsolvedRunCount = 0;
+
+  const isLevelSolved = (): boolean => {
+    const successMessage = document.querySelector('.success-message');
+    return successMessage instanceof HTMLElement && !successMessage.classList.contains('hidden');
+  };
+
+  const handleRunCompletion = (): void => {
+    if (isLevelSolved()) {
+      unsolvedRunCount = 0;
+      return;
+    }
+
+    unsolvedRunCount += 1;
+    if (unsolvedRunCount >= 5) {
+      window.clearTimeout(hintTimer);
+      revealHintButton();
+    }
+  };
+
   const runCode = (): void => {
     const startBlock = ws.getTopBlocks().find(block => block.type === 'start');
 
@@ -236,6 +294,7 @@ const renderLevel = async (app: HTMLElement, levelEntry: LevelManifestEntry): Pr
         (codeDiv as HTMLElement).style.color = 'red';
         (codeDiv as HTMLElement).style.fontWeight = 'bold';
       }
+      handleRunCompletion();
       return;
     }
 
@@ -256,6 +315,7 @@ const renderLevel = async (app: HTMLElement, levelEntry: LevelManifestEntry): Pr
         try {
           ${jsCodeString}
           maze.finishExecution();
+          handleRunCompletion();
         } catch (error) {
           if (error.message === 'Execution aborted') {
             console.log('Execution was stopped');
@@ -270,6 +330,150 @@ const renderLevel = async (app: HTMLElement, levelEntry: LevelManifestEntry): Pr
 
   runCodeBtn?.addEventListener('click', () => {
     runCode();
+  });
+
+  const revealHintButton = (): void => {
+    if (!hintBtn) return;
+
+    hintBtn.classList.remove('hint-hidden');
+    hintBtn.removeAttribute('aria-hidden');
+    hintBtn.classList.remove('hint-pulse');
+    void hintBtn.offsetWidth;
+    hintBtn.classList.add('hint-pulse');
+  };
+
+  const openHintPopup = (): void => {
+    revealHintButton();
+    if (!hintPopup) return;
+
+    hintPopup.classList.remove('hidden');
+    firstHintAccordionSummary?.focus();
+  };
+
+  const closeHintPopup = (): void => {
+    if (!hintPopup) return;
+
+    hintPopup.classList.add('hidden');
+    hintBtn?.focus();
+  };
+
+  const hintTimer = window.setTimeout(revealHintButton, 5 * 60 * 1000);
+
+  hintBtn?.addEventListener('click', () => {
+    openHintPopup();
+  });
+
+  hintPopupClose?.addEventListener('click', () => {
+    closeHintPopup();
+  });
+
+  let hintDragOffsetX = 0;
+  let hintDragOffsetY = 0;
+  let isHintDragging = false;
+
+  const moveHintPopup = (clientX: number, clientY: number): void => {
+    if (!hintPopupPanel || !isHintDragging) return;
+
+    const panelRect = hintPopupPanel.getBoundingClientRect();
+    const maxLeft = Math.max(0, window.innerWidth - panelRect.width);
+    const maxTop = Math.max(0, window.innerHeight - panelRect.height);
+    const nextLeft = Math.min(Math.max(0, clientX - hintDragOffsetX), maxLeft);
+    const nextTop = Math.min(Math.max(0, clientY - hintDragOffsetY), maxTop);
+
+    hintPopupPanel.style.left = `${nextLeft}px`;
+    hintPopupPanel.style.top = `${nextTop}px`;
+  };
+
+  const startHintDrag = (clientX: number, clientY: number): void => {
+    if (!hintPopupPanel) return;
+
+    const panelRect = hintPopupPanel.getBoundingClientRect();
+    hintDragOffsetX = clientX - panelRect.left;
+    hintDragOffsetY = clientY - panelRect.top;
+    isHintDragging = true;
+    hintPopupPanel.classList.add('is-dragging');
+  };
+
+  const isDragHandleTarget = (target: EventTarget | null): boolean => {
+    return target instanceof HTMLElement && !target.closest('button');
+  };
+
+  const handleHintPointerDown = (event: PointerEvent): void => {
+    const target = event.target;
+    if (!isDragHandleTarget(target)) {
+      return;
+    }
+
+    startHintDrag(event.clientX, event.clientY);
+    (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
+  };
+
+  const handleHintPointerMove = (event: PointerEvent): void => {
+    moveHintPopup(event.clientX, event.clientY);
+  };
+
+  const stopHintDrag = (event: PointerEvent): void => {
+    if (!isHintDragging) return;
+
+    isHintDragging = false;
+    hintPopupPanel?.classList.remove('is-dragging');
+    const currentTarget = event.currentTarget;
+    if (currentTarget instanceof HTMLElement && currentTarget.hasPointerCapture(event.pointerId)) {
+      currentTarget.releasePointerCapture(event.pointerId);
+    }
+  };
+
+  const registerHintDragHandle = (element: HTMLElement | null): void => {
+    element?.addEventListener('pointerdown', handleHintPointerDown);
+    element?.addEventListener('pointermove', handleHintPointerMove);
+    element?.addEventListener('pointerup', stopHintDrag);
+    element?.addEventListener('pointercancel', stopHintDrag);
+    element?.addEventListener('mousedown', (event) => {
+      if (!isDragHandleTarget(event.target)) {
+        return;
+      }
+
+      startHintDrag(event.clientX, event.clientY);
+    });
+  };
+
+  registerHintDragHandle(hintPopupDragHandle);
+  registerHintDragHandle(hintPopupHeader);
+
+  document.addEventListener('mousemove', (event) => {
+    moveHintPopup(event.clientX, event.clientY);
+  });
+
+  document.addEventListener('mouseup', () => {
+    isHintDragging = false;
+    hintPopupPanel?.classList.remove('is-dragging');
+  });
+
+  document.querySelectorAll<HTMLDetailsElement>('.hint-accordion-item').forEach((item) => {
+    item.addEventListener('toggle', () => {
+      if (!item.open) return;
+
+      document.querySelectorAll<HTMLDetailsElement>('.hint-accordion-item').forEach((otherItem) => {
+        if (otherItem !== item) {
+          otherItem.open = false;
+        }
+      });
+    });
+  });
+
+  document.addEventListener('keydown', (event) => {
+    const target = event.target;
+    const isTypingTarget = target instanceof HTMLInputElement
+      || target instanceof HTMLTextAreaElement
+      || target instanceof HTMLSelectElement
+      || (target instanceof HTMLElement && target.isContentEditable);
+
+    if (isTypingTarget || event.altKey || event.ctrlKey || event.metaKey || event.key.toLowerCase() !== 'h') {
+      return;
+    }
+
+    window.clearTimeout(hintTimer);
+    openHintPopup();
   });
 
   ws.addChangeListener((e: Blockly.Events.Abstract) => {
