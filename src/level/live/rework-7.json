@@ -1,5 +1,7 @@
 {
-  "blocks": ["repeat_until_goal"],
+  "blocks": [
+    "repeat_until_goal"
+  ],
   "fixedBlocks": [
     "move_right",
     "if_else",
@@ -55,5 +57,10 @@
         }
       }
     ]
-  }
+  },
+  "hints": [
+    "Um dieses Level zu lösen, brauchst du eine verschachtelte Schleife.",
+    "Die erste Schleife kommt direkt unter „Start“ und die nächste muss in den „Wenn → Dann“-Block."
+  ],
+  "solution": "```python\nwhile not is_goal_reached():\n  if isObstacleInWay():\n    while not is_goal_reached():\n      move_down()\n  else:\n    move_right()\n```"
 }
