@@ -1,0 +1,29 @@
+{
+  "blocks": [],
+  "fixedBlocks": [],
+  "moodleSuccessCode": "NEW_LEVEL",
+  "enforceWaypointOrder": false,
+  "hints": [
+    "Mache das so und so\n```python\ntest\n```",
+    "## Mache das so und so\n```python\nund dann soo\n```"
+  ],
+  "solution": "```python\nwhile not is_goal_reached():\n  move_right()\nif isObstacleInWay():\n```",
+  "objects": {
+    "car": {
+      "emoji": "🚗",
+      "pos": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "destination": {
+      "emoji": "🏠",
+      "pos": {
+        "x": 7,
+        "y": 7
+      }
+    },
+    "waypoints": [],
+    "obstacles": []
+  }
+}
