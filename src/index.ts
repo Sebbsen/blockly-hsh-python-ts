@@ -325,27 +325,19 @@ const renderLevel = async (app: HTMLElement, levelEntry: LevelManifestEntry): Pr
   renderStartBlock(ws);
   renderFixedBlocks(ws, levelConfig);
 
-  let unsolvedRunCount = 0;
+  let startProgramClickCount = 0;
 
-  const isLevelSolved = (): boolean => {
-    const successMessage = document.querySelector('.success-message');
-    return successMessage instanceof HTMLElement && !successMessage.classList.contains('hidden');
-  };
-
-  const handleRunCompletion = (): void => {
-    if (isLevelSolved()) {
-      unsolvedRunCount = 0;
-      return;
-    }
-
-    unsolvedRunCount += 1;
-    if (unsolvedRunCount >= 5) {
+  const handleStartProgramClick = (): void => {
+    startProgramClickCount += 1;
+    if (startProgramClickCount >= 5) {
       window.clearTimeout(hintTimer);
       revealHintButton();
     }
   };
 
   const runCode = (): void => {
+    handleStartProgramClick();
+
     const startBlock = ws.getTopBlocks().find(block => block.type === 'start');
 
     if (!startBlock) {
@@ -354,7 +346,6 @@ const renderLevel = async (app: HTMLElement, levelEntry: LevelManifestEntry): Pr
         (codeDiv as HTMLElement).style.color = 'red';
         (codeDiv as HTMLElement).style.fontWeight = 'bold';
       }
-      handleRunCompletion();
       return;
     }
 
@@ -375,7 +366,6 @@ const renderLevel = async (app: HTMLElement, levelEntry: LevelManifestEntry): Pr
         try {
           ${jsCodeString}
           maze.finishExecution();
-          handleRunCompletion();
         } catch (error) {
           if (error.message === 'Execution aborted') {
             console.log('Execution was stopped');

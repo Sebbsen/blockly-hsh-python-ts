@@ -99,7 +99,7 @@ export class MapEditorUI {
           <!-- Tipps & Lösung -->
           <div class="blocks-section hints-editor-section">
             <div class="blocks-title">Tipps & Lösung:</div>
-            <p class="hint-editor-help">Du kannst Markdown schreiben. Gib dem Nutzer kurze Tipps; sie werden nach 5 Minuten oder nach 5 Fehlversuchen angezeigt.</p>
+            <p class="hint-editor-help">Du kannst Markdown schreiben. Gib dem Nutzer kurze Tipps; sie werden nach 5 Minuten oder nach 5 Klicks auf Programm starten angezeigt.</p>
             <div class="hint-editor-list" id="hint-editor-list"></div>
             <button class="action-button secondary hint-add-button" id="add-hint-btn" type="button">+ Tipp</button>
             <label class="hint-editor-label" for="solution-textarea">Lösung</label>
